@@ -22,6 +22,13 @@ function checkAuthentication() {
     const userData = localStorage.getItem('userData');
     
     if (token && userData) {
+        // Verificar si el token está expirado
+        if (isTokenExpired(token)) {
+            console.log('Token expirado, limpiando sesión...');
+            logout();
+            return;
+        }
+        
         authToken = token;
         window.authToken = token;
         currentUser = JSON.parse(userData);
@@ -33,6 +40,28 @@ function checkAuthentication() {
         isAuthenticated = false;
         window.isAuthenticated = false;
         updateUIForUnauthenticatedUser();
+    }
+}
+
+// Verificar si el token está expirado
+function isTokenExpired(token) {
+    try {
+        // Decodificar el payload del JWT (solo la parte del payload, sin verificar firma)
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const currentTime = Math.floor(Date.now() / 1000);
+        
+        console.log('Token exp:', payload.exp, 'Current time:', currentTime);
+        
+        // Si el token no tiene fecha de expiración, considerarlo válido
+        if (!payload.exp) {
+            return false;
+        }
+        
+        // Si el token expira en los próximos 5 minutos, considerarlo expirado para renovarlo
+        return payload.exp < (currentTime + 300); // 5 minutos de buffer
+    } catch (error) {
+        console.error('Error verificando expiración del token:', error);
+        return true; // Si hay error, considerar expirado
     }
 }
 
@@ -98,9 +127,9 @@ async function handleLogin(event) {
         // Mostrar mensaje de éxito
         showAlert(`¡Bienvenido, ${response.user.first_name}!`, 'success');
         
-        // Redirigir al dashboard
+        // Redirigir según el rol del usuario
         setTimeout(() => {
-            window.location.href = '/home';
+            redirectByRole(response.user.role);
         }, 1000);
         
     } catch (error) {
@@ -354,4 +383,47 @@ function getCurrentUser() {
 
 function isLoggedIn() {
     return isAuthenticated;
+}
+
+/**
+ * Redirigir usuario según su rol
+ */
+function redirectByRole(userRole) {
+    console.log('Redirigiendo usuario con rol:', userRole);
+    
+    switch(userRole) {
+        case 'admin':
+            window.location.href = '/home'; // Dashboard admin (actual)
+            break;
+        case 'solicitante':
+            window.location.href = '/dashboard-solicitante'; // Dashboard solicitante (nuevo)
+            break;
+        case 'aprobador':
+            window.location.href = '/dashboard-aprobador'; // Dashboard aprobador (futuro)
+            break;
+        case 'pagador':
+            window.location.href = '/dashboard-pagador'; // Dashboard pagador (futuro)
+            break;
+        default:
+            console.warn('Rol no reconocido:', userRole);
+            window.location.href = '/home'; // Fallback al dashboard admin
+            break;
+    }
+}
+
+/**
+ * Verificar si el usuario tiene permisos para acceder a una ruta específica
+ */
+function hasRoleAccess(requiredRole) {
+    if (!isAuthenticated || !currentUser) {
+        return false;
+    }
+    
+    // Admin tiene acceso a todo
+    if (currentUser.role === 'admin') {
+        return true;
+    }
+    
+    // Verificar rol específico
+    return currentUser.role === requiredRole;
 }

@@ -343,5 +343,45 @@ class UserController:
                 detail=f"Error en login: {str(e)}"
             )
 
+    async def refresh_token(self, email: str) -> Token:
+        """Renovar token para un usuario existente"""
+        try:
+            # Buscar usuario
+            user = self.collection.find_one({"email": email})
+            if not user:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Usuario no encontrado"
+                )
+
+            user_obj = UserInDB(**user)
+
+            # Verificar que el usuario esté activo
+            if user_obj.status != UserStatus.ACTIVE:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Usuario inactivo o suspendido"
+                )
+
+            # Crear nuevo token
+            access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+            access_token = self.create_access_token(
+                data={"sub": user_obj.email}, expires_delta=access_token_expires
+            )
+
+            return Token(
+                access_token=access_token,
+                token_type="bearer",
+                user=UserResponse(**user_obj.dict())
+            )
+
+        except Exception as e:
+            if isinstance(e, HTTPException):
+                raise e
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Error renovando token: {str(e)}"
+            )
+
 # Instancia global del controlador
 user_controller = UserController()

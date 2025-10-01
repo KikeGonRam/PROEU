@@ -34,7 +34,130 @@
     100% { transform: rotate(360deg); }
 }
 
-/* Estilos para badges de estado */
+/* Estilos para previsualización de archivos */
+.archivo-preview {
+    transition: all 0.3s ease;
+}
+
+.archivo-preview:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.archivo-image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background: #f9fafb;
+}
+
+.archivo-image-container img {
+    transition: transform 0.3s ease;
+}
+
+.archivo-image-container:hover img {
+    transform: scale(1.05);
+}
+
+.archivo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.archivo-image-container:hover .archivo-overlay {
+    opacity: 1;
+}
+
+/* Modal de preview mejorado */
+.modal-preview-backdrop {
+    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.modal-preview-content {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* Animaciones para modales */
+.modal-enter {
+    animation: modalEnter 0.3s ease-out;
+}
+
+@keyframes modalEnter {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Estilos para botones de archivo */
+.btn-archivo {
+    transition: all 0.2s ease;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.btn-archivo:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Iconos de tipo de archivo con colores */
+.fa-file-pdf {
+    color: #dc2626;
+}
+
+.fa-file-word {
+    color: #2563eb;
+}
+
+.fa-file-excel {
+    color: #059669;
+}
+
+.fa-file-powerpoint {
+    color: #ea580c;
+}
+
+.fa-image {
+    color: #7c3aed;
+}
+
+/* Tooltips personalizados */
+.tooltip {
+    position: relative;
+}
+
+.tooltip:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+/* Estilos para el badge personalizado */
 .badge {
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
 }

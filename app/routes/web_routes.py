@@ -59,6 +59,36 @@ async def register_page(request: Request):
         "title": "Registro"
     })
 
+@router.get("/dashboard-solicitante", response_class=HTMLResponse, summary="Dashboard del solicitante")
+async def dashboard_solicitante(request: Request):
+    """
+    Dashboard específico para usuarios con rol de solicitante.
+    """
+    return templates.TemplateResponse("dashboards/solicitante.html", {
+        "request": request,
+        "title": "Dashboard Solicitante - Sistema de Solicitudes de Pagos"
+    })
+
+@router.get("/solicitud-estandar/nueva", response_class=HTMLResponse, summary="Nueva solicitud estándar")
+async def nueva_solicitud_estandar(request: Request):
+    """
+    Formulario para crear una nueva solicitud estándar.
+    """
+    return templates.TemplateResponse("solicitudes/estandar.html", {
+        "request": request,
+        "title": "Nueva Solicitud Estándar - Sistema de Solicitudes de Pagos"
+    })
+
+@router.get("/solicitud-estandar/editar", response_class=HTMLResponse, summary="Editar solicitud estándar")
+async def editar_solicitud_estandar(request: Request):
+    """
+    Formulario para editar una solicitud estándar existente.
+    """
+    return templates.TemplateResponse("solicitudes/editar.html", {
+        "request": request,
+        "title": "Editar Solicitud Estándar - Sistema de Solicitudes de Pagos"
+    })
+
 @router.get("/dashboard", response_class=HTMLResponse, summary="Dashboard principal")
 async def dashboard(request: Request):
     """
@@ -73,6 +103,16 @@ async def dashboard(request: Request):
 async def requests_page(request: Request):
     """
     Página para gestión de solicitudes de pagos.
+    """
+    return templates.TemplateResponse("requests/list.html", {
+        "request": request,
+        "title": "Solicitudes de Pagos"
+    })
+
+@router.get("/requests-list", response_class=HTMLResponse, summary="Lista de solicitudes")
+async def requests_list_page(request: Request):
+    """
+    Alias para la página de lista de solicitudes.
     """
     return templates.TemplateResponse("requests/list.html", {
         "request": request,

@@ -69,8 +69,18 @@ async function apiRequest(url, options = {}) {
         const response = await fetch(API_BASE_URL + url, config);
         
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.detail || 'Error en la petición');
+            // Si es error 401 (Unauthorized), limpiar sesión y redirigir
+            if (response.status === 401) {
+                console.log('Token inválido o expirado, limpiando sesión...');
+                if (typeof logout === 'function') {
+                    logout();
+                }
+                return;
+            }
+            
+            const errorData = await response.json().catch(() => ({ detail: 'Error desconocido' }));
+            console.error('Error details:', errorData);
+            throw new Error(JSON.stringify(errorData) || 'Error en la petición');
         }
         
         return await response.json();

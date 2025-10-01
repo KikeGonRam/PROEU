@@ -1,0 +1,800 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Solicitud Estándar - Sistema de Solicitudes de Pagos{% endblock %}
+
+{% block page_title %}Editar Solicitud Estándar{% endblock %}
+{% block page_description %}Modifica los campos de tu solicitud de pago{% endblock %}
+
+{% block header_actions %}
+<div class="flex space-x-3">
+    <button onclick="guardarCambios()" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+        <i class="fas fa-save mr-2"></i>
+        Guardar Cambios
+    </button>
+    <button onclick="volverListaSolicitudes()" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+        <i class="fas fa-arrow-left mr-2"></i>
+        Volver
+    </button>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Estado de la solicitud -->
+    <div id="solicitudInfo" class="mb-6 bg-white shadow rounded-lg p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-medium text-gray-900">Estado de la Solicitud</h3>
+                <p id="estadoTexto" class="text-sm text-gray-500">Cargando...</p>
+            </div>
+            <span id="estadoBadge" class="px-3 py-1 rounded-full text-sm font-medium">
+                <!-- Estado se llenará dinámicamente -->
+            </span>
+        </div>
+        <div class="mt-4 text-sm text-gray-600">
+            <p><strong>ID:</strong> <span id="solicitudId"></span></p>
+            <p><strong>Fecha de creación:</strong> <span id="fechaCreacion"></span></p>
+            <p><strong>Última actualización:</strong> <span id="fechaActualizacion"></span></p>
+        </div>
+    </div>
+
+    <form id="editarSolicitudForm" class="space-y-8">
+        <!-- Información General -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                    <i class="fas fa-info-circle text-blue-600 mr-3"></i>
+                    Información General
+                </h3>
+            </div>
+            <div class="p-6 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Departamento -->
+                    <div>
+                        <label for="departamento" class="block text-sm font-medium text-gray-700 mb-2">
+                            Departamento <span class="text-red-500">*</span>
+                        </label>
+                        <select id="departamento" name="departamento" required
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                            <option value="">Selecciona un departamento</option>
+                            <option value="Rectoría">Rectoría</option>
+                            <option value="Dirección Académica">Dirección Académica</option>
+                            <option value="Dirección Administrativa">Dirección Administrativa</option>
+                            <option value="Finanzas">Finanzas</option>
+                            <option value="Recursos Humanos">Recursos Humanos</option>
+                            <option value="Sistemas y TI">Sistemas y TI</option>
+                            <option value="Mantenimiento">Mantenimiento</option>
+                            <option value="Biblioteca">Biblioteca</option>
+                            <option value="Servicios Escolares">Servicios Escolares</option>
+                            <option value="Vinculación">Vinculación</option>
+                        </select>
+                    </div>
+
+                    <!-- Fecha Límite de Pago -->
+                    <div>
+                        <label for="fechaLimitePago" class="block text-sm font-medium text-gray-700 mb-2">
+                            Fecha Límite de Pago <span class="text-red-500">*</span>
+                        </label>
+                        <input type="date" id="fechaLimitePago" name="fechaLimitePago" required
+                               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                    </div>
+                </div>
+
+                <!-- Monto y Moneda -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="monto" class="block text-sm font-medium text-gray-700 mb-2">
+                            Monto <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-2 text-gray-500">$</span>
+                            <input type="number" id="monto" name="monto" step="0.01" min="0.01" required
+                                   class="block w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                                   placeholder="0.00">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="tipoMoneda" class="block text-sm font-medium text-gray-700 mb-2">
+                            Tipo de Moneda <span class="text-red-500">*</span>
+                        </label>
+                        <select id="tipoMoneda" name="tipoMoneda" required
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                            <option value="">Selecciona una moneda</option>
+                            <option value="Peso Mexicano (MXN)">Peso Mexicano (MXN)</option>
+                            <option value="Dólar Estadounidense (USD)">Dólar Estadounidense (USD)</option>
+                            <option value="Euro (EUR)">Euro (EUR)</option>
+                            <option value="Peso Argentino (ARS)">Peso Argentino (ARS)</option>
+                            <option value="Peso Colombiano (COP)">Peso Colombiano (COP)</option>
+                            <option value="Dólar Canadiense (CAD)">Dólar Canadiense (CAD)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información del Beneficiario -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                    <i class="fas fa-user text-green-600 mr-3"></i>
+                    Información del Beneficiario
+                </h3>
+            </div>
+            <div class="p-6 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="nombreBeneficiario" class="block text-sm font-medium text-gray-700 mb-2">
+                            Nombre del Beneficiario <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="nombreBeneficiario" name="nombreBeneficiario" required
+                               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                               placeholder="Nombre completo del beneficiario">
+                    </div>
+
+                    <div>
+                        <label for="nombreEmpresa" class="block text-sm font-medium text-gray-700 mb-2">
+                            Nombre de la Empresa <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="nombreEmpresa" name="nombreEmpresa" required
+                               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                               placeholder="Nombre de la empresa a pagar">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="segundoBeneficiario" class="block text-sm font-medium text-gray-700 mb-2">
+                        Segundo Beneficiario <span class="text-gray-500">(Opcional)</span>
+                    </label>
+                    <input type="text" id="segundoBeneficiario" name="segundoBeneficiario"
+                           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                           placeholder="Nombre del segundo beneficiario (si aplica)">
+                </div>
+            </div>
+        </div>
+
+        <!-- Información Bancaria -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                    <i class="fas fa-university text-purple-600 mr-3"></i>
+                    Información Bancaria
+                </h3>
+            </div>
+            <div class="p-6 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="bancoDestino" class="block text-sm font-medium text-gray-700 mb-2">
+                            Banco Destino <span class="text-red-500">*</span>
+                        </label>
+                        <select id="bancoDestino" name="bancoDestino" required
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                            <option value="">Selecciona un banco</option>
+                            <option value="BBVA México">BBVA México</option>
+                            <option value="Citibanamex">Citibanamex</option>
+                            <option value="Santander México">Santander México</option>
+                            <option value="Banorte">Banorte</option>
+                            <option value="HSBC México">HSBC México</option>
+                            <option value="Scotiabank">Scotiabank</option>
+                            <option value="Banco Inbursa">Banco Inbursa</option>
+                            <option value="Banco Azteca">Banco Azteca</option>
+                            <option value="Banco del Bajío">Banco del Bajío</option>
+                            <option value="Banco Afirme">Banco Afirme</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Tipo de Cuenta <span class="text-red-500">*</span>
+                        </label>
+                        <div class="space-y-2">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="esClabe" value="true" checked
+                                       class="form-radio h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300">
+                                <span class="ml-2 text-sm text-gray-700">CLABE (18 dígitos)</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="esClabe" value="false"
+                                       class="form-radio h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300">
+                                <span class="ml-2 text-sm text-gray-700">Cuenta tradicional (10-16 dígitos)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="cuentaDestino" class="block text-sm font-medium text-gray-700 mb-2">
+                        Cuenta Destino <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="cuentaDestino" name="cuentaDestino" required
+                           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                           placeholder="Número de cuenta o CLABE">
+                    <p id="cuentaHelp" class="mt-1 text-sm text-gray-500">
+                        Ingresa la CLABE de 18 dígitos
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tipo de Pago y Concepto -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                    <i class="fas fa-tags text-orange-600 mr-3"></i>
+                    Tipo de Pago y Concepto
+                </h3>
+            </div>
+            <div class="p-6 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="tipoPago" class="block text-sm font-medium text-gray-700 mb-2">
+                            Tipo de Pago <span class="text-red-500">*</span>
+                        </label>
+                        <select id="tipoPago" name="tipoPago" required
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                            <option value="">Selecciona el tipo de pago</option>
+                            <option value="Proveedores">Proveedores</option>
+                            <option value="Póliza - Seguro">Póliza - Seguro</option>
+                            <option value="Donativos">Donativos</option>
+                            <option value="Operativos">Operativos</option>
+                            <option value="Fiscales y Legales">Fiscales y Legales</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="conceptoPago" class="block text-sm font-medium text-gray-700 mb-2">
+                            Concepto de Pago <span class="text-red-500">*</span>
+                        </label>
+                        <select id="conceptoPago" name="conceptoPago" required onchange="toggleConceptoOtros()"
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                            <option value="">Selecciona el concepto</option>
+                            <option value="Pagos a Terceros">Pagos a Terceros</option>
+                            <option value="Donativos">Donativos</option>
+                            <option value="Otros">Otros</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="conceptoOtrosDiv" class="hidden">
+                    <label for="conceptoOtros" class="block text-sm font-medium text-gray-700 mb-2">
+                        Especifica el Concepto <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="conceptoOtros" name="conceptoOtros"
+                           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                           placeholder="Describe el concepto específico">
+                </div>
+
+                <div>
+                    <label for="descripcionTipoPago" class="block text-sm font-medium text-gray-700 mb-2">
+                        Descripción del Tipo de Pago <span class="text-red-500">*</span>
+                    </label>
+                    <textarea id="descripcionTipoPago" name="descripcionTipoPago" rows="4" required
+                              class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                              placeholder="Describe detalladamente el motivo del pago"></textarea>
+                    <div class="mt-1 text-sm text-gray-500">
+                        <span id="descripcionCount">0</span>/500 caracteres
+                    </div>
+                </div>
+
+                <div>
+                    <label for="comentariosSolicitante" class="block text-sm font-medium text-gray-700 mb-2">
+                        Comentarios Adicionales <span class="text-gray-500">(Opcional)</span>
+                    </label>
+                    <textarea id="comentariosSolicitante" name="comentariosSolicitante" rows="3"
+                              class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                              placeholder="Información adicional que consideres relevante"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Archivos Adjuntos (Solo mostrar, no editar) -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                    <i class="fas fa-paperclip text-red-600 mr-3"></i>
+                    Archivos Adjuntos
+                </h3>
+            </div>
+            <div class="p-6">
+                <div id="archivosExistentes" class="space-y-3">
+                    <!-- Se llenarán dinámicamente -->
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Los archivos no se pueden modificar durante la edición. Para cambiar archivos, elimina la solicitud y crea una nueva.
+                </p>
+            </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="flex justify-end space-x-4 pt-6">
+            <button type="button" onclick="volverListaSolicitudes()"
+                    class="px-6 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                Cancelar
+            </button>
+            <button type="submit"
+                    class="px-6 py-2 bg-primary-600 text-white text-sm font-medium rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                <i class="fas fa-save mr-2"></i>
+                Guardar Cambios
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Variables globales
+    let solicitudId = null;
+    let solicitudData = null;
+
+    // Inicializar página
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeEditForm();
+    });
+
+    /**
+     * Inicializar formulario de edición
+     */
+    function initializeEditForm() {
+        // Esperar a que la autenticación esté lista
+        setTimeout(() => {
+            // Verificar autenticación
+            if (!window.isAuthenticated) {
+                window.location.href = '/login';
+                return;
+            }
+
+            // Verificar que sea solicitante
+            if (window.currentUser && window.currentUser.role !== 'solicitante') {
+                redirectByRole(window.currentUser.role);
+                return;
+            }
+
+            // Obtener ID de la solicitud de la URL
+            const urlParams = new URLSearchParams(window.location.search);
+            solicitudId = urlParams.get('id');
+            
+            if (!solicitudId) {
+                showAlert('ID de solicitud no válido', 'error');
+                volverListaSolicitudes();
+                return;
+            }
+
+            setupFormElements();
+            cargarDatosSolicitud();
+        }, 100);
+    }
+
+    /**
+     * Configurar elementos del formulario
+     */
+    function setupFormElements() {
+        // Configurar fecha mínima
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('fechaLimitePago').min = today;
+
+        // Configurar contador de caracteres
+        const descripcion = document.getElementById('descripcionTipoPago');
+        const counter = document.getElementById('descripcionCount');
+        
+        descripcion.addEventListener('input', function() {
+            counter.textContent = this.value.length;
+            if (this.value.length < 10) {
+                counter.parentElement.classList.add('text-red-500');
+                counter.parentElement.classList.remove('text-gray-500');
+            } else {
+                counter.parentElement.classList.remove('text-red-500');
+                counter.parentElement.classList.add('text-gray-500');
+            }
+        });
+
+        // Configurar cambio de tipo de cuenta
+        const radioButtons = document.querySelectorAll('input[name="esClabe"]');
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', updateCuentaHelp);
+        });
+
+        // Configurar validación del formulario
+        document.getElementById('editarSolicitudForm').addEventListener('submit', handleSaveChanges);
+    }
+
+    /**
+     * Cargar datos de la solicitud
+     */
+    async function cargarDatosSolicitud() {
+        try {
+            showAlert('Cargando datos de la solicitud...', 'info');
+            
+            const response = await apiRequest(`/solicitudes/estandar/${solicitudId}`, {
+                method: 'GET'
+            });
+
+            if (response && response.solicitud) {
+                solicitudData = response.solicitud;
+                llenarFormulario(solicitudData);
+                mostrarInformacionSolicitud(solicitudData);
+                showAlert('Datos cargados exitosamente', 'success');
+            } else {
+                throw new Error('No se pudieron cargar los datos de la solicitud');
+            }
+            
+        } catch (error) {
+            console.error('Error cargando solicitud:', error);
+            showAlert('Error al cargar la solicitud: ' + error.message, 'error');
+            volverListaSolicitudes();
+        }
+    }
+
+    /**
+     * Llenar formulario con datos existentes
+     */
+    function llenarFormulario(data) {
+        // Información general
+        document.getElementById('departamento').value = data.departamento || '';
+        document.getElementById('monto').value = data.monto || '';
+        document.getElementById('tipoMoneda').value = data.tipo_moneda || '';
+        
+        // Fecha límite (convertir formato)
+        if (data.fecha_limite_pago) {
+            const fecha = new Date(data.fecha_limite_pago);
+            document.getElementById('fechaLimitePago').value = fecha.toISOString().split('T')[0];
+        }
+
+        // Información del beneficiario
+        document.getElementById('nombreBeneficiario').value = data.nombre_beneficiario || '';
+        document.getElementById('nombreEmpresa').value = data.nombre_empresa || '';
+        document.getElementById('segundoBeneficiario').value = data.segundo_beneficiario || '';
+
+        // Información bancaria
+        document.getElementById('bancoDestino').value = data.banco_destino || '';
+        document.getElementById('cuentaDestino').value = data.cuenta_destino || '';
+        
+        // Tipo de cuenta
+        const esClabe = data.es_clabe !== false; // Default true
+        document.querySelector(`input[name="esClabe"][value="${esClabe}"]`).checked = true;
+        updateCuentaHelp();
+
+        // Tipo de pago y concepto
+        document.getElementById('tipoPago').value = data.tipo_pago || '';
+        document.getElementById('conceptoPago').value = data.concepto_pago || '';
+        document.getElementById('conceptoOtros').value = data.concepto_otros || '';
+        
+        // Mostrar campo de concepto otros si es necesario
+        toggleConceptoOtros();
+
+        // Descripción y comentarios
+        document.getElementById('descripcionTipoPago').value = data.descripcion_tipo_pago || '';
+        document.getElementById('comentariosSolicitante').value = data.comentarios_solicitante || '';
+        
+        // Actualizar contador de caracteres
+        const descripcion = document.getElementById('descripcionTipoPago');
+        const counter = document.getElementById('descripcionCount');
+        counter.textContent = descripcion.value.length;
+
+        // Mostrar archivos existentes
+        mostrarArchivosExistentes(data.archivos_adjuntos || []);
+    }
+
+    /**
+     * Mostrar información de la solicitud
+     */
+    function mostrarInformacionSolicitud(data) {
+        document.getElementById('solicitudId').textContent = data.id || 'N/A';
+        document.getElementById('fechaCreacion').textContent = formatDate(data.fecha_creacion);
+        document.getElementById('fechaActualizacion').textContent = formatDate(data.fecha_actualizacion || data.fecha_creacion);
+        
+        // Estado
+        const estado = data.estado || 'borrador';
+        const estadoBadge = document.getElementById('estadoBadge');
+        const estadoTexto = document.getElementById('estadoTexto');
+        
+        estadoTexto.textContent = `Estado actual: ${estado}`;
+        
+        // Configurar badge según el estado
+        estadoBadge.textContent = estado.charAt(0).toUpperCase() + estado.slice(1);
+        estadoBadge.className = `px-3 py-1 rounded-full text-sm font-medium ${getStatusBadgeClass(estado)}`;
+        
+        // Deshabilitar formulario si no se puede editar
+        if (estado !== 'borrador' && estado !== 'pendiente') {
+            deshabilitarFormulario();
+            document.getElementById('estadoTexto').textContent += ' (Solo lectura)';
+        }
+    }
+
+    /**
+     * Mostrar archivos existentes
+     */
+    function mostrarArchivosExistentes(archivos) {
+        const container = document.getElementById('archivosExistentes');
+        
+        if (archivos.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-sm">No hay archivos adjuntos</p>';
+            return;
+        }
+        
+        const html = archivos.map(archivo => `
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-file-alt text-gray-600"></i>
+                    <div>
+                        <p class="text-sm font-medium text-gray-900">${archivo.nombre_archivo}</p>
+                        <p class="text-xs text-gray-500">${formatFileSize(archivo.tamaño)}</p>
+                    </div>
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="descargarArchivo('${archivo.ruta_archivo}', '${archivo.nombre_archivo}')" 
+                            class="text-blue-600 hover:text-blue-800 text-sm">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button onclick="previsualizarArchivo('${archivo.ruta_archivo}', '${archivo.nombre_archivo}', '${archivo.tipo_archivo}')" 
+                            class="text-green-600 hover:text-green-800 text-sm">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+        
+        container.innerHTML = html;
+    }
+
+    /**
+     * Obtener clase CSS para badge de estado
+     */
+    function getStatusBadgeClass(estado) {
+        const classes = {
+            'borrador': 'bg-gray-100 text-gray-800',
+            'pendiente': 'bg-yellow-100 text-yellow-800',
+            'aprobada': 'bg-green-100 text-green-800',
+            'rechazada': 'bg-red-100 text-red-800',
+            'pagada': 'bg-blue-100 text-blue-800'
+        };
+        return classes[estado] || 'bg-gray-100 text-gray-800';
+    }
+
+    /**
+     * Deshabilitar formulario para estados no editables
+     */
+    function deshabilitarFormulario() {
+        const inputs = document.querySelectorAll('#editarSolicitudForm input, #editarSolicitudForm select, #editarSolicitudForm textarea');
+        inputs.forEach(input => {
+            input.disabled = true;
+        });
+        
+        const submitBtn = document.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+    }
+
+    /**
+     * Actualizar ayuda de cuenta
+     */
+    function updateCuentaHelp() {
+        const esClabe = document.querySelector('input[name="esClabe"]:checked').value === 'true';
+        const helpText = document.getElementById('cuentaHelp');
+        const input = document.getElementById('cuentaDestino');
+        
+        if (esClabe) {
+            helpText.textContent = 'Ingresa la CLABE de 18 dígitos';
+            input.placeholder = 'Ejemplo: 012345678901234567';
+            input.maxLength = 18;
+            input.minLength = 18;
+        } else {
+            helpText.textContent = 'Ingresa el número de cuenta (10-16 dígitos)';
+            input.placeholder = 'Ejemplo: 1234567890';
+            input.maxLength = 16;
+            input.minLength = 10;
+        }
+    }
+
+    /**
+     * Mostrar/ocultar campo de concepto otros
+     */
+    function toggleConceptoOtros() {
+        const select = document.getElementById('conceptoPago');
+        const div = document.getElementById('conceptoOtrosDiv');
+        const input = document.getElementById('conceptoOtros');
+        
+        if (select.value === 'Otros') {
+            div.classList.remove('hidden');
+            input.required = true;
+        } else {
+            div.classList.add('hidden');
+            input.required = false;
+        }
+    }
+
+    /**
+     * Manejar guardado de cambios
+     */
+    async function handleSaveChanges(event) {
+        event.preventDefault();
+        
+        if (!validateForm()) {
+            return;
+        }
+        
+        const formData = collectFormData();
+        
+        try {
+            showAlert('Guardando cambios...', 'info');
+            
+            const updateData = buildUpdateData(formData);
+            
+            const response = await apiRequest(`/solicitudes/estandar/${solicitudId}`, {
+                method: 'PUT',
+                body: JSON.stringify(updateData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response && response.message) {
+                showAlert('Solicitud actualizada exitosamente', 'success');
+                setTimeout(() => {
+                    volverListaSolicitudes();
+                }, 2000);
+            } else {
+                throw new Error('Error en la respuesta del servidor');
+            }
+            
+        } catch (error) {
+            console.error('Error actualizando solicitud:', error);
+            showAlert('Error al actualizar la solicitud: ' + error.message, 'error');
+        }
+    }
+
+    /**
+     * Construir datos de actualización (solo campos modificados)
+     */
+    function buildUpdateData(formData) {
+        const updateData = {};
+        
+        // Comparar con datos originales y incluir solo cambios
+        const mappings = {
+            'departamento': 'departamento',
+            'monto': 'monto',
+            'tipoMoneda': 'tipo_moneda',
+            'bancoDestino': 'banco_destino',
+            'cuentaDestino': 'cuenta_destino',
+            'esClabe': 'es_clabe',
+            'nombreBeneficiario': 'nombre_beneficiario',
+            'nombreEmpresa': 'nombre_empresa',
+            'segundoBeneficiario': 'segundo_beneficiario',
+            'tipoPago': 'tipo_pago',
+            'conceptoPago': 'concepto_pago',
+            'conceptoOtros': 'concepto_otros',
+            'descripcionTipoPago': 'descripcion_tipo_pago',
+            'comentariosSolicitante': 'comentarios_solicitante'
+        };
+        
+        Object.entries(mappings).forEach(([formField, dataField]) => {
+            let newValue = formData[formField];
+            let oldValue = solicitudData[dataField];
+            
+            // Conversiones especiales
+            if (formField === 'monto') {
+                newValue = parseFloat(newValue);
+            } else if (formField === 'esClabe') {
+                newValue = newValue === 'true';
+            }
+            
+            // Solo incluir si hay cambio
+            if (newValue !== oldValue) {
+                updateData[dataField] = newValue;
+            }
+        });
+        
+        // Fecha límite (necesita conversión especial)
+        const nuevaFecha = new Date(formData.fechaLimitePago).toISOString();
+        const fechaOriginal = solicitudData.fecha_limite_pago;
+        if (nuevaFecha !== fechaOriginal) {
+            updateData.fecha_limite_pago = nuevaFecha;
+        }
+        
+        return updateData;
+    }
+
+    /**
+     * Validar formulario
+     */
+    function validateForm() {
+        const form = document.getElementById('editarSolicitudForm');
+        
+        // Validar campos requeridos
+        const requiredFields = form.querySelectorAll('[required]');
+        for (let field of requiredFields) {
+            if (!field.value.trim()) {
+                field.focus();
+                showAlert('Por favor completa todos los campos obligatorios', 'error');
+                return false;
+            }
+        }
+        
+        // Validar descripción mínima
+        const descripcion = document.getElementById('descripcionTipoPago').value;
+        if (descripcion.length < 10) {
+            document.getElementById('descripcionTipoPago').focus();
+            showAlert('La descripción debe tener al menos 10 caracteres', 'error');
+            return false;
+        }
+        
+        // Validar concepto otros
+        const conceptoPago = document.getElementById('conceptoPago').value;
+        const conceptoOtros = document.getElementById('conceptoOtros').value;
+        if (conceptoPago === 'Otros' && !conceptoOtros.trim()) {
+            document.getElementById('conceptoOtros').focus();
+            showAlert('Especifica el concepto cuando selecciones "Otros"', 'error');
+            return false;
+        }
+        
+        return true;
+    }
+
+    /**
+     * Recopilar datos del formulario
+     */
+    function collectFormData() {
+        const form = document.getElementById('editarSolicitudForm');
+        const formData = new FormData(form);
+        
+        const data = {};
+        for (let [key, value] of formData.entries()) {
+            data[key] = value;
+        }
+        
+        return data;
+    }
+
+    /**
+     * Función para guardar cambios (llamada desde botón)
+     */
+    function guardarCambios() {
+        document.getElementById('editarSolicitudForm').dispatchEvent(new Event('submit'));
+    }
+
+    /**
+     * Volver a la lista de solicitudes
+     */
+    function volverListaSolicitudes() {
+        window.location.href = '/requests-list';
+    }
+
+    /**
+     * Formatear tamaño de archivo
+     */
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    /**
+     * Funciones para archivos (reutilizadas de list.html)
+     */
+    function construirUrlArchivo(rutaArchivo) {
+        if (rutaArchivo.startsWith('uploads/solicitudes/')) {
+            return `/${encodeURIComponent(rutaArchivo)}`;
+        }
+        return `/uploads/solicitudes/${encodeURIComponent(rutaArchivo)}`;
+    }
+
+    function descargarArchivo(rutaArchivo, nombreArchivo) {
+        const link = document.createElement('a');
+        link.href = construirUrlArchivo(rutaArchivo);
+        link.download = nombreArchivo;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function previsualizarArchivo(rutaArchivo, nombreArchivo, tipoArchivo) {
+        // Implementar según necesidad o reutilizar código de list.html
+        alert('Función de previsualización pendiente de implementar');
+    }
+</script>
+{% endblock %}

@@ -72,6 +72,13 @@ async def get_current_user_profile(current_user: UserResponse = Depends(get_curr
     """
     return current_user
 
+@router.post("/refresh", response_model=Token, summary="Renovar token")
+async def refresh_token(current_user: UserResponse = Depends(get_current_user)):
+    """
+    Renovar el token JWT del usuario autenticado.
+    """
+    return await user_controller.refresh_token(current_user.email)
+
 # Rutas CRUD (solo para administradores)
 @router.post("/", response_model=UserResponse, summary="Crear usuario")
 async def create_user(
