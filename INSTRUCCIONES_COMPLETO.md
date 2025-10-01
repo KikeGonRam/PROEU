@@ -1,13 +1,26 @@
 # 🎉 SISTEMA DE SOLICITUDES DE PAGOS - COMPLETO
 
-## ✅ FUNCIONALIDADES IMPLEMENTADAS
+## ✅ FUNCIONALIDADES IMPLEMENT## 🔑 CREDENCIALES DE PRUEBA
 
-### 🔐 **AUTENTICACIÓN COMPLETA**
+### **👨‍💼 Administrador (Usuario Inicial)**
+- **Email:** admin@utvt.edu.mx
+- **Contraseña:** admin123
+- **Acceso:** Completo al sistema
+- **Departamento:** Tecnologías de la Información
+
+### **� Otros Usuarios**
+Los demás usuarios (Solicitantes, Aprobadores, Pagadores) se crean desde la interfaz web:
+- Ir a `/users` como administrador
+- Hacer clic en "Agregar Usuario"
+- Seleccionar el rol apropiado:
+  - **📝 Solicitante** - Puede crear solicitudes de pago
+  - **✅ Aprobador** - Puede aprobar/rechazar solicitudes
+  - **💰 Pagador** - Puede procesar pagos aprobadosAUTENTICACIÓN COMPLETA**
 - ✅ **Página de LOGIN** (`/login`) - Diseño moderno con validaciones
 - ✅ **Página de REGISTRO** (`/register`) - Formulario completo para nuevos usuarios  
 - ✅ **Sistema JWT** - Autenticación segura con tokens
 - ✅ **Gestión de sesiones** - LocalStorage para persistencia
-- ✅ **Roles y permisos** - Admin y Solicitante
+- ✅ **Roles y permisos** - Admin, Solicitante, Aprobador y Pagador
 
 ### 🏠 **PÁGINA PRINCIPAL (HOME/DASHBOARD)**
 - ✅ **Dashboard interactivo** (`/home`) - Estadísticas y métricas
@@ -86,10 +99,16 @@ python main.py
 - **Contraseña:** admin123
 - **Acceso:** Completo al sistema
 
-### **👤 Usuarios Regulares**
-- **Email:** director.ti@utvt.edu.mx / **Pass:** director123
-- **Email:** coord.academica@utvt.edu.mx / **Pass:** coord123
-- **Email:** recursos.humanos@utvt.edu.mx / **Pass:** rh123
+### **� Solicitantes**
+- **Email:** maria.contadora@utvt.edu.mx / **Pass:** maria123
+- **Email:** carlos.solicitante@utvt.edu.mx / **Pass:** carlos123
+
+### **✅ Aprobadores**
+- **Email:** director.aprobador@utvt.edu.mx / **Pass:** director123
+- **Email:** laura.aprobadora@utvt.edu.mx / **Pass:** laura123
+
+### **💰 Pagador**
+- **Email:** tesorero.pagador@utvt.edu.mx / **Pass:** tesorero123
 
 ## 🔄 FLUJO DE NAVEGACIÓN
 

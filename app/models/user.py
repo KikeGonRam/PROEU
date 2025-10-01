@@ -7,8 +7,8 @@ from bson import ObjectId
 class UserRole(str, Enum):
     ADMIN = "admin"
     SOLICITANTE = "solicitante"
-    SUPERVISOR = "supervisor"
-    CONTADOR = "contador"
+    APROBADOR = "aprobador"
+    PAGADOR = "pagador"
 
 class UserStatus(str, Enum):
     ACTIVE = "active"

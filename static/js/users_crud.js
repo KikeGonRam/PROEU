@@ -253,9 +253,9 @@ function getRoleIcon(role) {
 function getRoleLabel(role) {
     const labels = {
         'admin': 'Administrador',
-        'supervisor': 'Supervisor',
-        'contador': 'Contador',
-        'solicitante': 'Solicitante'
+        'solicitante': 'Solicitante',
+        'aprobador': 'Aprobador',
+        'pagador': 'Pagador'
     };
     return labels[role] || role;
 }
@@ -742,7 +742,9 @@ function editUserFromDetail() {
 function getRoleColor(role) {
     const colors = {
         'admin': 'text-red-600',
-        'solicitante': 'text-blue-600'
+        'solicitante': 'text-blue-600',
+        'aprobador': 'text-green-600',
+        'pagador': 'text-purple-600'
     };
     return colors[role] || 'text-gray-600';
 }
