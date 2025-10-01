@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Sistema de Solicitudes de Pagos</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-blue-100 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <!-- Contenedor principal -->
+    <div class="max-w-2xl w-full space-y-8">
+        <!-- Header -->
+        <div class="text-center">
+            <div class="mx-auto h-16 w-16 bg-green-600 rounded-full flex items-center justify-center mb-4">
+                <i class="fas fa-user-plus text-white text-2xl"></i>
+            </div>
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">
+                Crear Nueva Cuenta
+            </h2>
+            <p class="text-sm text-gray-600">
+                Únete al Sistema de Solicitudes de Pagos - UTVT
+            </p>
+        </div>
+
+        <!-- Formulario de Registro -->
+        <div class="bg-white py-8 px-6 shadow-xl rounded-lg">
+            <!-- Flash Messages -->
+            <div id="flash-messages" class="mb-6">
+                <!-- Messages will be inserted here -->
+            </div>
+
+            <form id="registerForm" class="space-y-6">
+                <!-- Información Personal -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Nombre -->
+                    <div>
+                        <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-user mr-2 text-gray-400"></i>
+                            Nombre *
+                        </label>
+                        <input id="firstName" 
+                               name="firstName" 
+                               type="text" 
+                               required 
+                               class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
+                               placeholder="Juan">
+                    </div>
+
+                    <!-- Apellido -->
+                    <div>
+                        <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-user mr-2 text-gray-400"></i>
+                            Apellido *
+                        </label>
+                        <input id="lastName" 
+                               name="lastName" 
+                               type="text" 
+                               required 
+                               class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
+                               placeholder="Pérez">
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-envelope mr-2 text-gray-400"></i>
+                        Correo Electrónico *
+                    </label>
+                    <input id="email" 
+                           name="email" 
+                           type="email" 
+                           required 
+                           class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
+                           placeholder="juan.perez@utvt.edu.mx">
+                    <p class="mt-1 text-xs text-gray-500">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Preferiblemente usar email institucional @utvt.edu.mx
+                    </p>
+                </div>
+
+                <!-- Departamento y Teléfono -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Departamento -->
+                    <div>
+                        <label for="department" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-building mr-2 text-gray-400"></i>
+                            Departamento *
+                        </label>
+                        <select id="department" 
+                                name="department" 
+                                required 
+                                class="appearance-none relative block w-full px-3 py-3 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm">
+                            <option value="">Selecciona tu departamento</option>
+                            <option value="Tecnologías de la Información">Tecnologías de la Información</option>
+                            <option value="Coordinación Académica">Coordinación Académica</option>
+                            <option value="Recursos Humanos">Recursos Humanos</option>
+                            <option value="Contabilidad">Contabilidad</option>
+                            <option value="Compras y Adquisiciones">Compras y Adquisiciones</option>
+                            <option value="Mantenimiento">Mantenimiento</option>
+                            <option value="Dirección General">Dirección General</option>
+                            <option value="Servicios Escolares">Servicios Escolares</option>
+                            <option value="Biblioteca">Biblioteca</option>
+                            <option value="Vinculación">Vinculación</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-phone mr-2 text-gray-400"></i>
+                            Teléfono
+                        </label>
+                        <input id="phone" 
+                               name="phone" 
+                               type="tel" 
+                               class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
+                               placeholder="+52 722 123 4567">
+                    </div>
+                </div>
+
+                <!-- Contraseñas -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Contraseña -->
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-lock mr-2 text-gray-400"></i>
+                            Contraseña *
+                        </label>
+                        <div class="relative">
+                            <input id="password" 
+                                   name="password" 
+                                   type="password" 
+                                   required 
+                                   minlength="6"
+                                   class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm pr-10"
+                                   placeholder="••••••••">
+                            <button type="button" 
+                                    onclick="togglePassword('password')" 
+                                    class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <i id="passwordToggle" class="fas fa-eye-slash text-gray-400 hover:text-gray-600"></i>
+                            </button>
+                        </div>
+                        <div id="passwordStrength" class="mt-1 text-xs">
+                            <!-- Password strength indicator -->
+                        </div>
+                    </div>
+
+                    <!-- Confirmar Contraseña -->
+                    <div>
+                        <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-lock mr-2 text-gray-400"></i>
+                            Confirmar Contraseña *
+                        </label>
+                        <div class="relative">
+                            <input id="confirmPassword" 
+                                   name="confirmPassword" 
+                                   type="password" 
+                                   required 
+                                   class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm pr-10"
+                                   placeholder="••••••••">
+                            <button type="button" 
+                                    onclick="togglePassword('confirmPassword')" 
+                                    class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <i id="confirmPasswordToggle" class="fas fa-eye-slash text-gray-400 hover:text-gray-600"></i>
+                            </button>
+                        </div>
+                        <div id="passwordMatch" class="mt-1 text-xs">
+                            <!-- Password match indicator -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Términos y condiciones -->
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input id="terms" 
+                               name="terms" 
+                               type="checkbox" 
+                               required
+                               class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded">
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label for="terms" class="text-gray-700">
+                            Acepto los 
+                            <a href="#" class="font-medium text-green-600 hover:text-green-500">términos y condiciones</a>
+                            y la 
+                            <a href="#" class="font-medium text-green-600 hover:text-green-500">política de privacidad</a>
+                            del sistema.
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit button -->
+                <div>
+                    <button type="submit" 
+                            id="registerButton"
+                            class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-200 ease-in-out">
+                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                            <i class="fas fa-user-plus text-green-500 group-hover:text-green-400"></i>
+                        </span>
+                        <span id="registerButtonText">Crear Cuenta</span>
+                    </button>
+                </div>
+
+                <!-- Divider -->
+                <div class="mt-6">
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white text-gray-500">¿Ya tienes cuenta?</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Login link -->
+                <div class="text-center">
+                    <a href="/login" 
+                       class="font-medium text-green-600 hover:text-green-500 text-sm">
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        Iniciar sesión
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-sm text-gray-500">
+            <p>&copy; 2025 Universidad Tecnológica del Valle de Toluca</p>
+            <p class="mt-1">Sistema de Solicitudes de Pagos</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', path='/js/main.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/auth.js') }}"></script>
+
+    <script>
+        // Toggle password visibility
+        function togglePassword(fieldId) {
+            const passwordInput = document.getElementById(fieldId);
+            const toggleId = fieldId === 'password' ? 'passwordToggle' : 'confirmPasswordToggle';
+            const passwordToggle = document.getElementById(toggleId);
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordToggle.classList.remove('fa-eye-slash');
+                passwordToggle.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                passwordToggle.classList.remove('fa-eye');
+                passwordToggle.classList.add('fa-eye-slash');
+            }
+        }
+
+        // Password strength checker
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthDiv = document.getElementById('passwordStrength');
+            
+            if (password.length === 0) {
+                strengthDiv.innerHTML = '';
+                return;
+            }
+            
+            let strength = 0;
+            let message = '';
+            let color = '';
+            
+            if (password.length >= 6) strength++;
+            if (password.match(/[a-z]/)) strength++;
+            if (password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+            
+            switch (strength) {
+                case 0:
+                case 1:
+                    message = 'Muy débil';
+                    color = 'text-red-500';
+                    break;
+                case 2:
+                    message = 'Débil';
+                    color = 'text-orange-500';
+                    break;
+                case 3:
+                    message = 'Moderada';
+                    color = 'text-yellow-500';
+                    break;
+                case 4:
+                    message = 'Fuerte';
+                    color = 'text-green-500';
+                    break;
+                case 5:
+                    message = 'Muy fuerte';
+                    color = 'text-green-600';
+                    break;
+            }
+            
+            strengthDiv.innerHTML = `<span class="${color}"><i class="fas fa-shield-alt mr-1"></i>${message}</span>`;
+        });
+
+        // Password match checker
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            const matchDiv = document.getElementById('passwordMatch');
+            
+            if (confirmPassword.length === 0) {
+                matchDiv.innerHTML = '';
+                return;
+            }
+            
+            if (password === confirmPassword) {
+                matchDiv.innerHTML = '<span class="text-green-500"><i class="fas fa-check mr-1"></i>Las contraseñas coinciden</span>';
+            } else {
+                matchDiv.innerHTML = '<span class="text-red-500"><i class="fas fa-times mr-1"></i>Las contraseñas no coinciden</span>';
+            }
+        });
+    </script>
+</body>
+</html>

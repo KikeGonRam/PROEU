@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema de Solicitudes de Pagos{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/custom.css') }}">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">
+                            <i class="fas fa-money-check-alt text-primary-600 mr-2"></i>
+                            Sistema de Solicitudes de Pagos
+                        </h1>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="/home" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium auth-only">
+                            <i class="fas fa-home mr-2"></i>Inicio
+                        </a>
+                        <a href="/users" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium admin-only">
+                            <i class="fas fa-users mr-2"></i>Usuarios
+                        </a>
+                        <a href="/requests" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium auth-only">
+                            <i class="fas fa-file-invoice-dollar mr-2"></i>Solicitudes
+                        </a>
+                        <!-- Navegación para usuarios no autenticados -->
+                        <a href="/login" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium unauth-only">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Iniciar Sesión
+                        </a>
+                        <a href="/register" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium unauth-only">
+                            <i class="fas fa-user-plus mr-2"></i>Registro
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- User Menu para usuarios autenticados -->
+                    <div class="relative auth-only">
+                        <button class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" id="user-menu">
+                            <span class="sr-only">Abrir menú de usuario</span>
+                            <div class="h-8 w-8 rounded-full bg-primary-600 flex items-center justify-center">
+                                <i class="fas fa-user text-white text-sm"></i>
+                            </div>
+                        </button>
+                        <!-- Dropdown menu (hidden by default) -->
+                        <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                            <div class="px-4 py-2 text-sm text-gray-700 border-b">
+                                <div class="font-medium user-name">Cargando...</div>
+                                <div class="text-xs text-gray-500 user-email">Cargando...</div>
+                            </div>
+                            <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-user-cog mr-2"></i>Mi Perfil
+                            </a>
+                            <a href="/settings" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-cog mr-2"></i>Configuración
+                            </a>
+                            <div class="border-t border-gray-100"></div>
+                            <button onclick="logout()" class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Botones para usuarios no autenticados -->
+                    <div class="flex space-x-2 unauth-only">
+                        <a href="/login" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-primary-600 bg-primary-50 hover:bg-primary-100">
+                            <i class="fas fa-sign-in-alt mr-2"></i>
+                            Iniciar Sesión
+                        </a>
+                        <a href="/register" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
+                            <i class="fas fa-user-plus mr-2"></i>
+                            Registro
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Flash Messages -->
+        {% block flash_messages %}
+        <div id="flash-messages" class="mb-6">
+            <!-- Messages will be inserted here via JavaScript -->
+        </div>
+        {% endblock %}
+
+        <!-- Page Header -->
+        {% block header %}
+        <div class="md:flex md:items-center md:justify-between mb-6">
+            <div class="flex-1 min-w-0">
+                <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                    {% block page_title %}Panel de Control{% endblock %}
+                </h2>
+                <p class="mt-1 text-sm text-gray-500">
+                    {% block page_description %}Gestiona tu sistema de solicitudes de pagos{% endblock %}
+                </p>
+            </div>
+            <div class="mt-4 flex md:mt-0 md:ml-4">
+                {% block header_actions %}{% endblock %}
+            </div>
+        </div>
+        {% endblock %}
+
+        <!-- Page Content -->
+        <div class="bg-white shadow-sm rounded-lg">
+            {% block content %}
+            <div class="p-6">
+                <div class="text-center">
+                    <div class="w-24 h-24 mx-auto bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-money-check-alt text-primary-600 text-3xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">
+                        Bienvenido al Sistema de Solicitudes de Pagos
+                    </h3>
+                    <p class="text-gray-500 mb-6">
+                        Optimiza las solicitudes de pagos departamentales de tu empresa
+                    </p>
+                    <div class="flex justify-center space-x-4">
+                        <a href="/users" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                            <i class="fas fa-users mr-2"></i>
+                            Gestionar Usuarios
+                        </a>
+                        <a href="/requests" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                            <i class="fas fa-file-invoice-dollar mr-2"></i>
+                            Ver Solicitudes
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-12">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="text-center text-sm text-gray-500">
+                <p>&copy; 2025 Sistema de Solicitudes de Pagos - Proyecto UTVT</p>
+                <p class="mt-1">Desarrollado para la materia de Experiencia de Usuario</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', path='/js/main.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/auth.js') }}"></script>
+    {% block scripts %}{% endblock %}
+    
+    <script>
+        // Toggle user dropdown menu
+        document.addEventListener('DOMContentLoaded', function() {
+            const userMenuButton = document.getElementById('user-menu');
+            const userDropdown = document.getElementById('user-dropdown');
+            
+            if (userMenuButton && userDropdown) {
+                userMenuButton.addEventListener('click', function() {
+                    userDropdown.classList.toggle('hidden');
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!userMenuButton.contains(event.target) && !userDropdown.contains(event.target)) {
+                        userDropdown.classList.add('hidden');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

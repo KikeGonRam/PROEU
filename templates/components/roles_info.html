@@ -1,0 +1,77 @@
+<!-- Componente para mostrar información de roles y permisos -->
+<div class="bg-white shadow rounded-lg p-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+        <i class="fas fa-shield-alt mr-2 text-blue-600"></i>
+        Roles y Permisos del Sistema
+    </h3>
+    
+    <div class="space-y-4">
+        <!-- Administrador -->
+        <div class="border border-purple-200 rounded-lg p-4 bg-purple-50">
+            <div class="flex items-center mb-2">
+                <i class="fas fa-crown text-purple-600 mr-2"></i>
+                <h4 class="font-medium text-purple-800">Administrador</h4>
+                <span class="ml-auto text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">Nivel 4</span>
+            </div>
+            <p class="text-sm text-purple-700 mb-2">Acceso completo al sistema</p>
+            <div class="text-xs text-purple-600">
+                <span class="inline-block bg-purple-100 px-2 py-1 rounded mr-1 mb-1">Gestión usuarios</span>
+                <span class="inline-block bg-purple-100 px-2 py-1 rounded mr-1 mb-1">Solicitudes</span>
+                <span class="inline-block bg-purple-100 px-2 py-1 rounded mr-1 mb-1">Reportes</span>
+                <span class="inline-block bg-purple-100 px-2 py-1 rounded mr-1 mb-1">Configuración</span>
+            </div>
+        </div>
+        
+        <!-- Supervisor -->
+        <div class="border border-green-200 rounded-lg p-4 bg-green-50">
+            <div class="flex items-center mb-2">
+                <i class="fas fa-user-tie text-green-600 mr-2"></i>
+                <h4 class="font-medium text-green-800">Supervisor</h4>
+                <span class="ml-auto text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Nivel 3</span>
+            </div>
+            <p class="text-sm text-green-700 mb-2">Aprobación y supervisión de solicitudes</p>
+            <div class="text-xs text-green-600">
+                <span class="inline-block bg-green-100 px-2 py-1 rounded mr-1 mb-1">Aprobar solicitudes</span>
+                <span class="inline-block bg-green-100 px-2 py-1 rounded mr-1 mb-1">Ver reportes</span>
+                <span class="inline-block bg-green-100 px-2 py-1 rounded mr-1 mb-1">Gestionar solicitudes</span>
+            </div>
+        </div>
+        
+        <!-- Contador -->
+        <div class="border border-yellow-200 rounded-lg p-4 bg-yellow-50">
+            <div class="flex items-center mb-2">
+                <i class="fas fa-calculator text-yellow-600 mr-2"></i>
+                <h4 class="font-medium text-yellow-800">Contador</h4>
+                <span class="ml-auto text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">Nivel 2</span>
+            </div>
+            <p class="text-sm text-yellow-700 mb-2">Gestión financiera y reportes contables</p>
+            <div class="text-xs text-yellow-600">
+                <span class="inline-block bg-yellow-100 px-2 py-1 rounded mr-1 mb-1">Reportes financieros</span>
+                <span class="inline-block bg-yellow-100 px-2 py-1 rounded mr-1 mb-1">Exportar datos</span>
+                <span class="inline-block bg-yellow-100 px-2 py-1 rounded mr-1 mb-1">Ver solicitudes</span>
+            </div>
+        </div>
+        
+        <!-- Solicitante -->
+        <div class="border border-blue-200 rounded-lg p-4 bg-blue-50">
+            <div class="flex items-center mb-2">
+                <i class="fas fa-user text-blue-600 mr-2"></i>
+                <h4 class="font-medium text-blue-800">Solicitante</h4>
+                <span class="ml-auto text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Nivel 1</span>
+            </div>
+            <p class="text-sm text-blue-700 mb-2">Creación y gestión de solicitudes propias</p>
+            <div class="text-xs text-blue-600">
+                <span class="inline-block bg-blue-100 px-2 py-1 rounded mr-1 mb-1">Crear solicitudes</span>
+                <span class="inline-block bg-blue-100 px-2 py-1 rounded mr-1 mb-1">Ver mis solicitudes</span>
+                <span class="inline-block bg-blue-100 px-2 py-1 rounded mr-1 mb-1">Actualizar perfil</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+        <p class="text-xs text-gray-600">
+            <i class="fas fa-info-circle mr-1"></i>
+            Los usuarios con niveles superiores pueden gestionar usuarios de niveles inferiores.
+        </p>
+    </div>
+</div>

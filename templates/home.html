@@ -1,0 +1,369 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Sistema de Solicitudes de Pagos{% endblock %}
+
+{% block page_title %}Dashboard Principal{% endblock %}
+{% block page_description %}Bienvenido al Sistema de Solicitudes de Pagos - UTVT{% endblock %}
+
+{% block header_actions %}
+<div class="flex space-x-3">
+    <button onclick="refreshDashboard()" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+        <i class="fas fa-sync-alt mr-2"></i>
+        Actualizar
+    </button>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Saludo personalizado -->
+    <div class="bg-gradient-to-r from-primary-600 to-blue-600 rounded-lg shadow-lg p-6 text-white">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 id="welcomeMessage" class="text-2xl font-bold mb-2">
+                    ¡Bienvenido al Sistema de Solicitudes de Pagos!
+                </h3>
+                <p class="text-primary-100">
+                    <i class="fas fa-calendar-alt mr-2"></i>
+                    <span id="currentDate"></span>
+                </p>
+                <p class="text-primary-100 text-sm mt-2">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Sistema inicializado y listo para usar
+                </p>
+            </div>
+            <div class="hidden md:block">
+                <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-money-check-alt text-4xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas disponibles -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Total de Usuarios -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-users text-purple-600"></i>
+                    </div>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                    <dl>
+                        <dt class="text-sm font-medium text-gray-500 truncate">Total Usuarios</dt>
+                        <dd class="text-lg font-medium text-gray-900" id="totalUsers">-</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estado del Sistema -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-server text-green-600"></i>
+                    </div>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                    <dl>
+                        <dt class="text-sm font-medium text-gray-500 truncate">Estado del Sistema</dt>
+                        <dd class="text-lg font-medium text-green-600">
+                            <i class="fas fa-circle text-xs mr-1"></i>
+                            Activo
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Base de Datos -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-database text-blue-600"></i>
+                    </div>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                    <dl>
+                        <dt class="text-sm font-medium text-gray-500 truncate">Base de Datos</dt>
+                        <dd class="text-lg font-medium text-blue-600">
+                            <i class="fas fa-circle text-xs mr-1"></i>
+                            Conectada
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+        <!-- Columna principal -->
+        <div class="lg:col-span-8">
+            <!-- Información del sistema -->
+            <div class="bg-white shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                        <i class="fas fa-info-circle mr-2 text-blue-600"></i>
+                        Estado del Sistema
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-green-50 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-600 mr-3"></i>
+                                <span class="text-sm font-medium text-green-800">Autenticación</span>
+                            </div>
+                            <span class="text-sm text-green-600 font-medium">Funcionando</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 bg-green-50 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="fas fa-database text-green-600 mr-3"></i>
+                                <span class="text-sm font-medium text-green-800">Base de Datos MongoDB</span>
+                            </div>
+                            <span class="text-sm text-green-600 font-medium">Conectada</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 bg-green-50 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="fas fa-shield-alt text-green-600 mr-3"></i>
+                                <span class="text-sm font-medium text-green-800">Seguridad</span>
+                            </div>
+                            <span class="text-sm text-green-600 font-medium">JWT Activo</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="fas fa-cogs text-blue-600 mr-3"></i>
+                                <span class="text-sm font-medium text-blue-800">API REST</span>
+                            </div>
+                            <span class="text-sm text-blue-600 font-medium">Disponible</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Próximas funcionalidades -->
+            <div class="bg-white shadow rounded-lg mt-6">
+                <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                        <i class="fas fa-road mr-2 text-purple-600"></i>
+                        Próximas Funcionalidades
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-file-invoice-dollar text-gray-400"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-gray-700 font-medium">Sistema de Solicitudes de Pagos</p>
+                                <p class="text-xs text-gray-500">Crear, gestionar y aprobar solicitudes</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-chart-bar text-gray-400"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-gray-700 font-medium">Reportes y Estadísticas</p>
+                                <p class="text-xs text-gray-500">Dashboard avanzado con métricas</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-bell text-gray-400"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-gray-700 font-medium">Notificaciones</p>
+                                <p class="text-xs text-gray-500">Alertas automáticas por email</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="mt-6 lg:mt-0 lg:col-span-4">
+            <!-- Información del usuario -->
+            <div class="bg-white shadow rounded-lg mb-6">
+                <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                        <i class="fas fa-user-circle mr-2 text-blue-500"></i>
+                        Mi Perfil
+                    </h3>
+                    <div id="userProfile" class="space-y-3">
+                        <!-- User info will be loaded here -->
+                        <div class="text-center py-4 text-gray-500">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>
+                            Cargando perfil...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Funciones disponibles -->
+            <div class="bg-white shadow rounded-lg mb-6">
+                <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                        <i class="fas fa-tools mr-2 text-green-500"></i>
+                        Funciones Disponibles
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center p-3 bg-green-50 rounded-lg">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-users text-green-600"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-green-800">Gestión de Usuarios</p>
+                                <p class="text-xs text-green-600">Sistema completo de autenticación</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-3 bg-green-50 rounded-lg">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-key text-green-600"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-green-800">Autenticación JWT</p>
+                                <p class="text-xs text-green-600">Login/logout seguro</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-3 bg-green-50 rounded-lg">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-database text-green-600"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-green-800">Base de Datos</p>
+                                <p class="text-xs text-green-600">MongoDB configurada</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información de desarrollo -->
+            <div class="bg-white shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                        <i class="fas fa-code mr-2 text-purple-500"></i>
+                        Información Técnica
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Framework:</span>
+                            <span class="font-medium">FastAPI</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Base de Datos:</span>
+                            <span class="font-medium">MongoDB</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Frontend:</span>
+                            <span class="font-medium">HTML5 + TailwindCSS</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Autenticación:</span>
+                            <span class="font-medium">JWT + bcrypt</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">API Docs:</span>
+                            <a href="/docs" class="text-primary-600 hover:text-primary-500 font-medium">
+                                /docs
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Inicializar dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set current date
+        const currentDate = new Date().toLocaleDateString('es-ES', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        document.getElementById('currentDate').textContent = currentDate;
+        
+        // Cargar datos del usuario
+        loadUserProfile();
+        
+        // Cargar estadísticas básicas
+        loadUserCount();
+    });
+
+    // Cargar perfil del usuario
+    async function loadUserProfile() {
+        try {
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('userProfile').innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Nombre:</span>
+                            <span class="font-medium">${user.first_name} ${user.last_name}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Email:</span>
+                            <span class="font-medium">${user.email}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Departamento:</span>
+                            <span class="font-medium">${user.department}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Rol:</span>
+                            <span class="font-medium">${user.role === 'admin' ? 'Administrador' : 'Usuario'}</span>
+                        </div>
+                    </div>
+                `;
+                
+                // Actualizar mensaje de bienvenida
+                document.getElementById('welcomeMessage').textContent = 
+                    `¡Bienvenido, ${user.first_name}!`;
+            }
+        } catch (error) {
+            console.error('Error cargando perfil:', error);
+            document.getElementById('userProfile').innerHTML = `
+                <div class="text-center py-4 text-red-500">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    Error cargando perfil
+                </div>
+            `;
+        }
+    }
+
+    // Cargar número de usuarios
+    async function loadUserCount() {
+        try {
+            const response = await apiRequest('/users/stats');
+            document.getElementById('totalUsers').textContent = response.total_users || '1';
+        } catch (error) {
+            console.error('Error cargando estadísticas:', error);
+            document.getElementById('totalUsers').textContent = '1';
+        }
+    }
+
+    // Función para actualizar dashboard
+    function refreshDashboard() {
+        loadUserProfile();
+        loadUserCount();
+        showAlert('Dashboard actualizado', 'success');
+    }
+</script>
+{% endblock %}
