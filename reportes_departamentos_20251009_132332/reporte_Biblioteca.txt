@@ -1,0 +1,28 @@
+
+REPORTE DEPARTAMENTAL - BIBLIOTECA
+============================================================
+
+📊 RESUMEN
+• Total usuarios: 25,084
+• Usuarios activos: 25,084 (100.0%)
+• Usuarios inactivos: 0
+
+📋 DISTRIBUCIÓN POR ROLES
+• Admin: 483.0 usuarios (1.9%) - 0.0 logins promedio
+• Aprobador: 4736.0 usuarios (18.9%) - 0.0 logins promedio
+• Pagador: 1982.0 usuarios (7.9%) - 0.0 logins promedio
+• Solicitante: 17883.0 usuarios (71.3%) - 0.0 logins promedio
+
+🏆 TOP 10 USUARIOS MÁS ACTIVOS
+ 1. Adela Espinosa (solicitante) - 0 logins
+ 2. Rufino del Valle (solicitante) - 0 logins
+ 3. Lucas Zayas (solicitante) - 0 logins
+ 4. Sergio Yáñez (solicitante) - 0 logins
+ 5. Rocío Curiel (solicitante) - 0 logins
+ 6. Lucía Ramos (solicitante) - 0 logins
+ 7. Abel Aguilera (solicitante) - 0 logins
+ 8. Mariano Villalpando (solicitante) - 0 logins
+ 9. Patricia Villaseñor (solicitante) - 0 logins
+10. Silvano Olivárez (solicitante) - 0 logins
+
+============================================================

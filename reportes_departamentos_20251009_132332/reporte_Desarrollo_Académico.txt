@@ -1,0 +1,28 @@
+
+REPORTE DEPARTAMENTAL - DESARROLLO ACADÉMICO
+============================================================
+
+📊 RESUMEN
+• Total usuarios: 25,283
+• Usuarios activos: 25,283 (100.0%)
+• Usuarios inactivos: 0
+
+📋 DISTRIBUCIÓN POR ROLES
+• Admin: 503.0 usuarios (2.0%) - 0.0 logins promedio
+• Aprobador: 4845.0 usuarios (19.2%) - 0.0 logins promedio
+• Pagador: 1993.0 usuarios (7.9%) - 0.0 logins promedio
+• Solicitante: 17942.0 usuarios (71.0%) - 0.0 logins promedio
+
+🏆 TOP 10 USUARIOS MÁS ACTIVOS
+ 1. Samuel Delgadillo (solicitante) - 0 logins
+ 2. Diana Ojeda (solicitante) - 0 logins
+ 3. Susana Valdez (solicitante) - 0 logins
+ 4. Martín Ulibarri (solicitante) - 0 logins
+ 5. Juana Razo (solicitante) - 0 logins
+ 6. Pablo Cepeda (solicitante) - 0 logins
+ 7. Aurora Aguilar (solicitante) - 0 logins
+ 8. Camila Batista (solicitante) - 0 logins
+ 9. Andrea Rascón (solicitante) - 0 logins
+10. Violeta Benavides (solicitante) - 0 logins
+
+============================================================

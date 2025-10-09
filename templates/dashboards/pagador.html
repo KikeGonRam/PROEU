@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Pagador - Sistema EU-UTVT{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/pagador.css">
+{% endblock %}
+
+{% block content %}
+<div class="pagador-dashboard">
+    <!-- Header del Dashboard -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="title-section">
+                <h1 class="dashboard-title">
+                    <i class="fas fa-money-check-alt"></i>
+                    Dashboard de Pagador
+                </h1>
+                <p class="dashboard-subtitle">Gestión de Pagos y Comprobantes</p>
+            </div>
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <div>
+                    <div><strong><span id="user-name">Pagador</span></strong></div>
+                    <div class="user-role">Pagador</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tarjetas de Estadísticas -->
+    <section class="stats-container">
+        <div class="stat-card stat-pendientes">
+            <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value" id="stat-pendientes">0</div>
+                <div class="stat-label">Pendientes de Pago</div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-pagadas">
+            <div class="stat-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value" id="stat-pagadas">0</div>
+                <div class="stat-label">Pagadas este Mes</div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-comprobantes">
+            <div class="stat-icon">
+                <i class="fas fa-file-invoice"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value" id="stat-comprobantes">0</div>
+                <div class="stat-label">Comprobantes Pendientes</div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-monto">
+            <div class="stat-icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value" id="stat-monto">$0.00</div>
+                <div class="stat-label">Monto Pagado este Mes</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filtros -->
+    <section class="filters-section">
+        <div class="filters-container">
+            <div class="filter-group">
+                <label for="filtro-departamento">
+                    <i class="fas fa-building"></i>
+                    Departamento
+                </label>
+                <select id="filtro-departamento" class="filter-select">
+                    <option value="">Todos los departamentos</option>
+                    <option value="Rectoría">Rectoría</option>
+                    <option value="Dirección Académica">Dirección Académica</option>
+                    <option value="Dirección Administrativa">Dirección Administrativa</option>
+                    <option value="Finanzas">Finanzas</option>
+                    <option value="Recursos Humanos">Recursos Humanos</option>
+                    <option value="Sistemas y TI">Sistemas y TI</option>
+                    <option value="Mantenimiento">Mantenimiento</option>
+                    <option value="Biblioteca">Biblioteca</option>
+                    <option value="Servicios Escolares">Servicios Escolares</option>
+                    <option value="Vinculación">Vinculación</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="filtro-tipo-pago">
+                    <i class="fas fa-tags"></i>
+                    Tipo de Pago
+                </label>
+                <select id="filtro-tipo-pago" class="filter-select">
+                    <option value="">Todos los tipos</option>
+                    <option value="Proveedores">Proveedores</option>
+                    <option value="Póliza - Seguro">Póliza - Seguro</option>
+                    <option value="Donativos">Donativos</option>
+                    <option value="Operativos">Operativos</option>
+                    <option value="Fiscales y Legales">Fiscales y Legales</option>
+                </select>
+            </div>
+
+            <div class="filter-group ml-auto">
+                <label>&nbsp;</label>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" id="btn-aplicar-filtros">
+                        <i class="fas fa-filter"></i> Aplicar
+                    </button>
+                    <button class="btn btn-secondary" id="btn-limpiar-filtros">
+                        <i class="fas fa-times"></i> Limpiar
+                    </button>
+                    <button class="btn btn-refresh" id="btn-refrescar">
+                        <i class="fas fa-sync-alt"></i> Refrescar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tabla de Solicitudes -->
+    <section class="table-section">
+        <div class="table-header">
+            <h2 class="table-title">
+                <i class="fas fa-list"></i>
+                Solicitudes Aprobadas
+            </h2>
+            <span class="table-info" id="total-solicitudes">0 solicitudes</span>
+        </div>
+
+        <div class="table-container" id="tabla-solicitudes-container">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Cargando solicitudes...</p>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Modal: Marcar como Pagada -->
+<div id="modal-pagar" class="modal">
+    <div class="modal-content">
+        <div class="modal-header modal-success">
+            <h2 class="modal-title">
+                <i class="fas fa-money-check-alt"></i>
+                Marcar como Pagada
+            </h2>
+            <button class="modal-close" data-modal="modal-pagar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="pagar-solicitud-id">
+            
+            <div class="solicitud-info mb-2" id="pagar-info-solicitud"></div>
+            
+            <div class="form-group">
+                <label for="pagar-referencia">
+                    <i class="fas fa-hashtag"></i>
+                    Referencia de Pago
+                </label>
+                <input 
+                    type="text" 
+                    id="pagar-referencia" 
+                    class="form-control" 
+                    placeholder="Ej: TRX-20231215-001234"
+                    maxlength="100">
+                <small class="form-text">Opcional: Número de transacción o referencia bancaria</small>
+            </div>
+
+            <div class="form-group">
+                <label for="pagar-comentarios">
+                    <i class="fas fa-comment"></i>
+                    Comentarios
+                </label>
+                <textarea 
+                    id="pagar-comentarios" 
+                    class="form-control" 
+                    rows="3" 
+                    placeholder="Comentarios adicionales sobre el pago (opcional)"
+                    maxlength="500"></textarea>
+                <small class="form-text">Opcional: Máximo 500 caracteres</small>
+            </div>
+
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                <strong>Importante:</strong> Al marcar como pagada, tendrás <strong>3 días hábiles</strong> para subir los comprobantes de pago.
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" data-modal="modal-pagar" onclick="cerrarModal('modal-pagar')">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+            <button class="btn btn-success" id="btn-confirmar-pagar">
+                <i class="fas fa-check"></i> Marcar como Pagada
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Subir Comprobantes -->
+<div id="modal-comprobantes" class="modal">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <i class="fas fa-file-upload"></i>
+                Subir Comprobantes de Pago
+            </h2>
+            <button class="modal-close" data-modal="modal-comprobantes">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="comprobantes-solicitud-id">
+            
+            <div class="solicitud-info mb-2" id="comprobantes-info-solicitud"></div>
+
+            <div class="upload-section">
+                <div class="upload-area" id="upload-area">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Arrastra archivos aquí o haz clic para seleccionar</h3>
+                    <p>Sin límite de archivos ni tamaño</p>
+                    <p class="upload-formats">Formatos: PDF, JPG, PNG, XLSX, DOCX, etc.</p>
+                    <input 
+                        type="file" 
+                        id="comprobantes-archivos" 
+                        multiple 
+                        style="display: none;">
+                </div>
+
+                <div class="archivos-seleccionados" id="archivos-seleccionados" style="display: none;">
+                    <h4><i class="fas fa-file-alt"></i> Archivos Seleccionados</h4>
+                    <div class="archivos-lista" id="archivos-lista"></div>
+                </div>
+            </div>
+
+            <div class="comprobantes-existentes" id="comprobantes-existentes" style="display: none;">
+                <h4><i class="fas fa-check-circle"></i> Comprobantes Ya Subidos</h4>
+                <div class="comprobantes-grid" id="comprobantes-grid"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="cerrarModal('modal-comprobantes')">
+                <i class="fas fa-times"></i> Cerrar
+            </button>
+            <button class="btn btn-primary" id="btn-subir-comprobantes" disabled>
+                <i class="fas fa-upload"></i> Subir Comprobantes
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Ver Detalles -->
+<div id="modal-detalles" class="modal">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <i class="fas fa-info-circle"></i>
+                Detalles de la Solicitud
+            </h2>
+            <button class="modal-close" data-modal="modal-detalles">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body" id="detalles-content">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Cargando detalles...</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="cerrarModal('modal-detalles')">
+                <i class="fas fa-times"></i> Cerrar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container" class="toast-container"></div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/pagador.js"></script>
+{% endblock %}

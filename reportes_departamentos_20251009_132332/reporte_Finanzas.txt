@@ -1,0 +1,28 @@
+
+REPORTE DEPARTAMENTAL - FINANZAS
+============================================================
+
+📊 RESUMEN
+• Total usuarios: 25,001
+• Usuarios activos: 25,001 (100.0%)
+• Usuarios inactivos: 0
+
+📋 DISTRIBUCIÓN POR ROLES
+• Admin: 518.0 usuarios (2.1%) - 0.0 logins promedio
+• Aprobador: 4942.0 usuarios (19.8%) - 0.0 logins promedio
+• Pagador: 1951.0 usuarios (7.8%) - 0.0 logins promedio
+• Solicitante: 17590.0 usuarios (70.4%) - 0.0 logins promedio
+
+🏆 TOP 10 USUARIOS MÁS ACTIVOS
+ 1. Tania Leyva (solicitante) - 0 logins
+ 2. Esperanza Cervántez (solicitante) - 0 logins
+ 3. Gabriel Jaramillo (solicitante) - 0 logins
+ 4. César Vigil (solicitante) - 0 logins
+ 5. María Luisa Solano (solicitante) - 0 logins
+ 6. María Cristina de León (solicitante) - 0 logins
+ 7. Gustavo Oquendo (solicitante) - 0 logins
+ 8. Genaro Mascareñas (solicitante) - 0 logins
+ 9. Eugenia Uribe (solicitante) - 0 logins
+10. María José Guillen (solicitante) - 0 logins
+
+============================================================

@@ -1,0 +1,28 @@
+
+REPORTE DEPARTAMENTAL - TRANSPORTE
+============================================================
+
+📊 RESUMEN
+• Total usuarios: 24,792
+• Usuarios activos: 24,792 (100.0%)
+• Usuarios inactivos: 0
+
+📋 DISTRIBUCIÓN POR ROLES
+• Admin: 515.0 usuarios (2.1%) - 0.0 logins promedio
+• Aprobador: 4776.0 usuarios (19.3%) - 0.0 logins promedio
+• Pagador: 1875.0 usuarios (7.6%) - 0.0 logins promedio
+• Solicitante: 17626.0 usuarios (71.1%) - 0.0 logins promedio
+
+🏆 TOP 10 USUARIOS MÁS ACTIVOS
+ 1. Santiago Fonseca (solicitante) - 0 logins
+ 2. Amador Montaño (solicitante) - 0 logins
+ 3. Natividad Almaraz (solicitante) - 0 logins
+ 4. Jonás Medina (solicitante) - 0 logins
+ 5. Óscar Cazares (solicitante) - 0 logins
+ 6. Adán Magaña (solicitante) - 0 logins
+ 7. Isabela Matos (solicitante) - 0 logins
+ 8. Dulce Jaimes (solicitante) - 0 logins
+ 9. Cornelio Marrero (solicitante) - 0 logins
+10. Horacio Solano (solicitante) - 0 logins
+
+============================================================

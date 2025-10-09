@@ -69,6 +69,26 @@ async def dashboard_solicitante(request: Request):
         "title": "Dashboard Solicitante - Sistema de Solicitudes de Pagos"
     })
 
+@router.get("/dashboard-aprobador", response_class=HTMLResponse, summary="Dashboard del aprobador")
+async def dashboard_aprobador(request: Request):
+    """
+    Dashboard específico para usuarios con rol de aprobador.
+    """
+    return templates.TemplateResponse("dashboards/aprobador.html", {
+        "request": request,
+        "title": "Dashboard Aprobador - Sistema de Solicitudes de Pagos"
+    })
+
+@router.get("/dashboard-pagador", response_class=HTMLResponse, summary="Dashboard del pagador")
+async def dashboard_pagador(request: Request):
+    """
+    Dashboard específico para usuarios con rol de pagador.
+    """
+    return templates.TemplateResponse("dashboards/pagador.html", {
+        "request": request,
+        "title": "Dashboard Pagador - Sistema de Solicitudes de Pagos"
+    })
+
 @router.get("/solicitud-estandar/nueva", response_class=HTMLResponse, summary="Nueva solicitud estándar")
 async def nueva_solicitud_estandar(request: Request):
     """

@@ -1,0 +1,42 @@
+
+        
+═══════════════════════════════════════════════════════
+                    REPORTE EJECUTIVO EU-UTVT
+                   Análisis de Base de Usuarios
+═══════════════════════════════════════════════════════
+
+📊 MÉTRICAS PRINCIPALES
+• Total de usuarios: 500,000
+• Usuarios activos: 500,000 (100.0%)
+• Usuarios inactivos: 0 (0.0%)
+
+📋 DISTRIBUCIÓN POR ROLES
+• Solicitante: 356,000.0 usuarios (71.2%) - 356,000.0 activos
+• Aprobador: 96,000.0 usuarios (19.2%) - 96,000.0 activos
+• Pagador: 38,400.0 usuarios (7.7%) - 38,400.0 activos
+• Admin: 9,600.0 usuarios (1.9%) - 9,600.0 activos
+
+🏢 TOP 10 DEPARTAMENTOS
+• Desarrollo Académico: 25,283.0 usuarios (5.1%) - 0.0 logins promedio
+• Rectoría: 25,257.0 usuarios (5.1%) - 0.0 logins promedio
+• Investigación: 25,153.0 usuarios (5.0%) - 0.0 logins promedio
+• Servicios Escolares: 25,133.0 usuarios (5.0%) - 0.0 logins promedio
+• Compras: 25,126.0 usuarios (5.0%) - 0.0 logins promedio
+• Vinculación: 25,086.0 usuarios (5.0%) - 0.0 logins promedio
+• Biblioteca: 25,084.0 usuarios (5.0%) - 0.0 logins promedio
+• Mantenimiento: 25,047.0 usuarios (5.0%) - 0.0 logins promedio
+• Planeación: 25,036.0 usuarios (5.0%) - 0.0 logins promedio
+• Dirección Académica: 25,030.0 usuarios (5.0%) - 0.0 logins promedio
+
+📈 INSIGHTS CLAVE
+• Departamento más activo: Desarrollo Académico (0.0 logins promedio)
+• Departamento con más usuarios: Desarrollo Académico (25,283.0 usuarios)
+• Nuevos usuarios últimos 30 días: 30,792
+
+💰 ACTIVIDAD POR RANGO SALARIAL
+
+═══════════════════════════════════════════════════════
+Generado: 2025-10-09 13:12:13
+Sistema: EU-UTVT Analytics con MongoDB + Pandas
+Datos analizados: 500,000 usuarios
+═══════════════════════════════════════════════════════

@@ -1,0 +1,28 @@
+
+REPORTE DEPARTAMENTAL - SERVICIOS ESCOLARES
+============================================================
+
+📊 RESUMEN
+• Total usuarios: 25,133
+• Usuarios activos: 25,133 (100.0%)
+• Usuarios inactivos: 0
+
+📋 DISTRIBUCIÓN POR ROLES
+• Admin: 512.0 usuarios (2.0%) - 0.0 logins promedio
+• Aprobador: 4829.0 usuarios (19.2%) - 0.0 logins promedio
+• Pagador: 1954.0 usuarios (7.8%) - 0.0 logins promedio
+• Solicitante: 17838.0 usuarios (71.0%) - 0.0 logins promedio
+
+🏆 TOP 10 USUARIOS MÁS ACTIVOS
+ 1. Angélica Villa (solicitante) - 0 logins
+ 2. Hernán Polanco (solicitante) - 0 logins
+ 3. Abraham Prieto (solicitante) - 0 logins
+ 4. Francisco Javier Longoria (solicitante) - 0 logins
+ 5. Leonardo Serrato (solicitante) - 0 logins
+ 6. Luisa Valdivia (solicitante) - 0 logins
+ 7. Martín Llamas (solicitante) - 0 logins
+ 8. María Teresa Benavides (solicitante) - 0 logins
+ 9. Iván Grijalva (solicitante) - 0 logins
+10. Frida Ybarra (solicitante) - 0 logins
+
+============================================================

@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes import user_routes, web_routes, solicitud_routes
+from app.routes import aprobador, pagador
 from app.config.database import connect_to_mongo, close_mongo_connection
 
 @asynccontextmanager
@@ -43,6 +44,10 @@ templates = Jinja2Templates(directory="templates")
 # Incluir rutas de API
 app.include_router(user_routes.router, prefix="/api/users", tags=["Usuarios"])
 app.include_router(solicitud_routes.router, prefix="/api/solicitudes", tags=["Solicitudes"])
+
+# Incluir rutas del aprobador y pagador
+app.include_router(aprobador.router, tags=["Aprobador"])
+app.include_router(pagador.router, tags=["Pagador"])
 
 # Incluir rutas web
 app.include_router(web_routes.router, tags=["Web"])

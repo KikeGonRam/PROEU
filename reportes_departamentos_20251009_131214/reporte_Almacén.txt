@@ -1,0 +1,28 @@
+
+REPORTE DEPARTAMENTAL - ALMACÉN
+============================================================
+
+📊 RESUMEN
+• Total usuarios: 24,949
+• Usuarios activos: 24,949 (100.0%)
+• Usuarios inactivos: 0
+
+📋 DISTRIBUCIÓN POR ROLES
+• Admin: 471.0 usuarios (1.9%) - 0.0 logins promedio
+• Aprobador: 4869.0 usuarios (19.5%) - 0.0 logins promedio
+• Pagador: 1893.0 usuarios (7.6%) - 0.0 logins promedio
+• Solicitante: 17716.0 usuarios (71.0%) - 0.0 logins promedio
+
+🏆 TOP 10 USUARIOS MÁS ACTIVOS
+ 1. Araceli Salazar (solicitante) - 0 logins
+ 2. Helena Cortez (solicitante) - 0 logins
+ 3. Susana Villalpando (solicitante) - 0 logins
+ 4. Jaqueline Mota (solicitante) - 0 logins
+ 5. Débora Espinal (solicitante) - 0 logins
+ 6. Dolores Marroquín (solicitante) - 0 logins
+ 7. Adalberto Zarate (solicitante) - 0 logins
+ 8. Esther Olivo (solicitante) - 0 logins
+ 9. Rodolfo Narváez (solicitante) - 0 logins
+10. Lourdes Sepúlveda (solicitante) - 0 logins
+
+============================================================

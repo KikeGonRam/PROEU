@@ -1,0 +1,28 @@
+
+REPORTE DEPARTAMENTAL - DIRECCIÓN ADMINISTRATIVA
+============================================================
+
+📊 RESUMEN
+• Total usuarios: 24,906
+• Usuarios activos: 24,906 (100.0%)
+• Usuarios inactivos: 0
+
+📋 DISTRIBUCIÓN POR ROLES
+• Admin: 458.0 usuarios (1.8%) - 0.0 logins promedio
+• Aprobador: 4851.0 usuarios (19.5%) - 0.0 logins promedio
+• Pagador: 1863.0 usuarios (7.5%) - 0.0 logins promedio
+• Solicitante: 17734.0 usuarios (71.2%) - 0.0 logins promedio
+
+🏆 TOP 10 USUARIOS MÁS ACTIVOS
+ 1. Rodrigo Rincón (solicitante) - 0 logins
+ 2. Horacio Valadez (solicitante) - 0 logins
+ 3. Isabela Balderas (solicitante) - 0 logins
+ 4. Juan Carlos Castañeda (solicitante) - 0 logins
+ 5. Alvaro Lemus (solicitante) - 0 logins
+ 6. Roberto Mendoza (solicitante) - 0 logins
+ 7. María Cristina de la Garza (solicitante) - 0 logins
+ 8. Helena Quintana (solicitante) - 0 logins
+ 9. Cristal Beltrán (solicitante) - 0 logins
+10. Berta Valadez (solicitante) - 0 logins
+
+============================================================

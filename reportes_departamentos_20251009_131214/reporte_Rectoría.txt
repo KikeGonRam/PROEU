@@ -1,0 +1,28 @@
+
+REPORTE DEPARTAMENTAL - RECTORÍA
+============================================================
+
+📊 RESUMEN
+• Total usuarios: 25,257
+• Usuarios activos: 25,257 (100.0%)
+• Usuarios inactivos: 0
+
+📋 DISTRIBUCIÓN POR ROLES
+• Admin: 494.0 usuarios (2.0%) - 0.0 logins promedio
+• Aprobador: 4907.0 usuarios (19.4%) - 0.0 logins promedio
+• Pagador: 1928.0 usuarios (7.6%) - 0.0 logins promedio
+• Solicitante: 17928.0 usuarios (71.0%) - 0.0 logins promedio
+
+🏆 TOP 10 USUARIOS MÁS ACTIVOS
+ 1. Wilfrido Salcido (solicitante) - 0 logins
+ 2. Amalia Urías (solicitante) - 0 logins
+ 3. Porfirio Ruelas (solicitante) - 0 logins
+ 4. María del Carmen Moreno (solicitante) - 0 logins
+ 5. Aurora Lugo (solicitante) - 0 logins
+ 6. Horacio Tamayo (solicitante) - 0 logins
+ 7. Elisa Pineda (solicitante) - 0 logins
+ 8. Ramiro Acevedo (solicitante) - 0 logins
+ 9. Carmen Maestas (solicitante) - 0 logins
+10. Ernesto Guajardo (solicitante) - 0 logins
+
+============================================================

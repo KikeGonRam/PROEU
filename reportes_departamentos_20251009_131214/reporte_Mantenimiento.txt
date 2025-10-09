@@ -1,0 +1,28 @@
+
+REPORTE DEPARTAMENTAL - MANTENIMIENTO
+============================================================
+
+📊 RESUMEN
+• Total usuarios: 25,047
+• Usuarios activos: 25,047 (100.0%)
+• Usuarios inactivos: 0
+
+📋 DISTRIBUCIÓN POR ROLES
+• Admin: 488.0 usuarios (1.9%) - 0.0 logins promedio
+• Aprobador: 4780.0 usuarios (19.1%) - 0.0 logins promedio
+• Pagador: 1974.0 usuarios (7.9%) - 0.0 logins promedio
+• Solicitante: 17805.0 usuarios (71.1%) - 0.0 logins promedio
+
+🏆 TOP 10 USUARIOS MÁS ACTIVOS
+ 1. César Zamudio (solicitante) - 0 logins
+ 2. Isabela Cardenas (solicitante) - 0 logins
+ 3. Leonor Carbajal (solicitante) - 0 logins
+ 4. Héctor Palomino (solicitante) - 0 logins
+ 5. Marco Antonio Valladares (solicitante) - 0 logins
+ 6. Jerónimo Altamirano (solicitante) - 0 logins
+ 7. Ignacio Leal (solicitante) - 0 logins
+ 8. Omar Vallejo (solicitante) - 0 logins
+ 9. Susana Nieves (solicitante) - 0 logins
+10. Alejandra Ramírez (solicitante) - 0 logins
+
+============================================================

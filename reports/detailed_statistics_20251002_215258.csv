@@ -1,0 +1,81 @@
+department,role,user_id,is_active,login_count
+Almacén,admin,67,67,0.0
+Almacén,aprobador,816,816,0.0
+Almacén,pagador,333,333,0.0
+Almacén,solicitante,3772,3772,0.0
+Biblioteca,admin,85,85,0.0
+Biblioteca,aprobador,831,831,0.0
+Biblioteca,pagador,328,328,0.0
+Biblioteca,solicitante,3708,3708,0.0
+Calidad,admin,83,83,0.0
+Calidad,aprobador,790,790,0.0
+Calidad,pagador,300,300,0.0
+Calidad,solicitante,3738,3738,0.0
+Compras,admin,93,93,0.0
+Compras,aprobador,778,778,0.0
+Compras,pagador,301,301,0.0
+Compras,solicitante,3796,3796,0.0
+Comunicación,admin,83,83,0.0
+Comunicación,aprobador,776,776,0.0
+Comunicación,pagador,309,309,0.0
+Comunicación,solicitante,3808,3808,0.0
+Desarrollo Académico,admin,72,72,0.0
+Desarrollo Académico,aprobador,863,863,0.0
+Desarrollo Académico,pagador,349,349,0.0
+Desarrollo Académico,solicitante,3848,3848,0.0
+Dirección Académica,admin,74,74,0.0
+Dirección Académica,aprobador,804,804,0.0
+Dirección Académica,pagador,321,321,0.0
+Dirección Académica,solicitante,3890,3890,0.0
+Dirección Administrativa,admin,84,84,0.0
+Dirección Administrativa,aprobador,810,810,0.0
+Dirección Administrativa,pagador,297,297,0.0
+Dirección Administrativa,solicitante,3839,3839,0.0
+Finanzas,admin,86,86,0.0
+Finanzas,aprobador,820,820,0.0
+Finanzas,pagador,323,323,0.0
+Finanzas,solicitante,3672,3672,0.0
+Investigación,admin,74,74,0.0
+Investigación,aprobador,788,788,0.0
+Investigación,pagador,345,345,0.0
+Investigación,solicitante,3752,3752,0.0
+Jurídico,admin,69,69,0.0
+Jurídico,aprobador,785,785,0.0
+Jurídico,pagador,324,324,0.0
+Jurídico,solicitante,3824,3824,0.0
+Mantenimiento,admin,85,85,0.0
+Mantenimiento,aprobador,822,822,0.0
+Mantenimiento,pagador,325,325,0.0
+Mantenimiento,solicitante,3831,3831,0.0
+Planeación,admin,64,64,0.0
+Planeación,aprobador,760,760,0.0
+Planeación,pagador,300,300,0.0
+Planeación,solicitante,3826,3826,0.0
+Rectoría,admin,71,71,0.0
+Rectoría,aprobador,838,838,0.0
+Rectoría,pagador,330,330,0.0
+Rectoría,solicitante,3787,3787,0.0
+Recursos Humanos,admin,78,78,0.0
+Recursos Humanos,aprobador,766,766,0.0
+Recursos Humanos,pagador,320,320,0.0
+Recursos Humanos,solicitante,3861,3861,0.0
+Seguridad,admin,75,75,0.0
+Seguridad,aprobador,831,831,0.0
+Seguridad,pagador,328,328,0.0
+Seguridad,solicitante,3885,3885,0.0
+Servicios Escolares,admin,80,80,0.0
+Servicios Escolares,aprobador,815,815,0.0
+Servicios Escolares,pagador,307,307,0.0
+Servicios Escolares,solicitante,3764,3764,0.0
+Sistemas y TI,admin,96,96,0.0
+Sistemas y TI,aprobador,755,755,0.0
+Sistemas y TI,pagador,317,317,0.0
+Sistemas y TI,solicitante,3836,3836,0.0
+Transporte,admin,80,80,0.0
+Transporte,aprobador,775,775,0.0
+Transporte,pagador,318,318,0.0
+Transporte,solicitante,3775,3775,0.0
+Vinculación,admin,101,101,0.0
+Vinculación,aprobador,777,777,0.0
+Vinculación,pagador,325,325,0.0
+Vinculación,solicitante,3788,3788,0.0

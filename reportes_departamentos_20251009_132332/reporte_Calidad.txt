@@ -1,0 +1,28 @@
+
+REPORTE DEPARTAMENTAL - CALIDAD
+============================================================
+
+📊 RESUMEN
+• Total usuarios: 24,699
+• Usuarios activos: 24,699 (100.0%)
+• Usuarios inactivos: 0
+
+📋 DISTRIBUCIÓN POR ROLES
+• Admin: 463.0 usuarios (1.9%) - 0.0 logins promedio
+• Aprobador: 4803.0 usuarios (19.4%) - 0.0 logins promedio
+• Pagador: 1840.0 usuarios (7.4%) - 0.0 logins promedio
+• Solicitante: 17593.0 usuarios (71.2%) - 0.0 logins promedio
+
+🏆 TOP 10 USUARIOS MÁS ACTIVOS
+ 1. Gabriela Meléndez (solicitante) - 0 logins
+ 2. Lucía Frías (solicitante) - 0 logins
+ 3. Pedro León (solicitante) - 0 logins
+ 4. Pablo Padrón (solicitante) - 0 logins
+ 5. Amanda Hernández (solicitante) - 0 logins
+ 6. Enrique Razo (solicitante) - 0 logins
+ 7. Raquel Robles (solicitante) - 0 logins
+ 8. Jacobo Gastélum (solicitante) - 0 logins
+ 9. Roberto Girón (solicitante) - 0 logins
+10. Dolores Ocasio (solicitante) - 0 logins
+
+============================================================

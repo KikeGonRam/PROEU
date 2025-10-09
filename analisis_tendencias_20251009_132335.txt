@@ -1,0 +1,27 @@
+
+ANÁLISIS DE TENDENCIAS DE ACTIVIDAD
+============================================================
+
+📅 REGISTROS POR MES (Últimos 12 meses)
+• 2024-10: 40,874 nuevos usuarios (Acumulado: 40,874)
+• 2024-11: 41,053 nuevos usuarios (Acumulado: 81,927)
+• 2024-12: 42,667 nuevos usuarios (Acumulado: 124,594)
+• 2025-01: 42,296 nuevos usuarios (Acumulado: 166,890)
+• 2025-02: 38,626 nuevos usuarios (Acumulado: 205,516)
+• 2025-03: 42,677 nuevos usuarios (Acumulado: 248,193)
+• 2025-04: 40,855 nuevos usuarios (Acumulado: 289,048)
+• 2025-05: 42,475 nuevos usuarios (Acumulado: 331,523)
+• 2025-06: 41,174 nuevos usuarios (Acumulado: 372,697)
+• 2025-07: 42,027 nuevos usuarios (Acumulado: 414,724)
+• 2025-08: 42,500 nuevos usuarios (Acumulado: 457,224)
+• 2025-09: 41,032 nuevos usuarios (Acumulado: 498,256)
+• 2025-10: 1,435 nuevos usuarios (Acumulado: 499,691)
+
+⏰ ANÁLISIS DE RETENCIÓN
+• Última semana: 0 usuarios (0.0%)
+• Último mes: 0 usuarios (0.0%)
+• Últimos 3 meses: 0 usuarios (0.0%)
+• Último año: 0 usuarios (0.0%)
+• Nunca: 500,000 usuarios (100.0%)
+
+============================================================

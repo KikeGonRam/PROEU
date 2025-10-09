@@ -1,0 +1,28 @@
+
+REPORTE DEPARTAMENTAL - RECURSOS HUMANOS
+============================================================
+
+📊 RESUMEN
+• Total usuarios: 24,940
+• Usuarios activos: 24,940 (100.0%)
+• Usuarios inactivos: 0
+
+📋 DISTRIBUCIÓN POR ROLES
+• Admin: 492.0 usuarios (2.0%) - 0.0 logins promedio
+• Aprobador: 4713.0 usuarios (18.9%) - 0.0 logins promedio
+• Pagador: 1907.0 usuarios (7.6%) - 0.0 logins promedio
+• Solicitante: 17828.0 usuarios (71.5%) - 0.0 logins promedio
+
+🏆 TOP 10 USUARIOS MÁS ACTIVOS
+ 1. Rafaél Santana (solicitante) - 0 logins
+ 2. Laura Roybal (solicitante) - 0 logins
+ 3. Fernando Mascareñas (solicitante) - 0 logins
+ 4. Reina Mascareñas (solicitante) - 0 logins
+ 5. Cristian Peralta (solicitante) - 0 logins
+ 6. Nayeli Granado (solicitante) - 0 logins
+ 7. Hilda Jurado (solicitante) - 0 logins
+ 8. Vanesa Flórez (solicitante) - 0 logins
+ 9. Antonio Salcedo (solicitante) - 0 logins
+10. Hermelinda Matos (solicitante) - 0 logins
+
+============================================================

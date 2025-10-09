@@ -1,0 +1,29 @@
+
+REPORTE DE RENDIMIENTO DEL SISTEMA
+============================================================
+
+⚙️ CONFIGURACIÓN DEL SISTEMA
+• Motor de análisis: MongoDB + Pandas
+• Total registros: 500,000
+• Uso de memoria: 328.56 MB
+• Columnas analizadas: 15
+
+🚀 PRUEBAS DE RENDIMIENTO
+• Test 1 - Filtrado multi-condición: 0.118s (74,732 resultados)
+• Test 2 - Agregación compleja: 0.283s (80 grupos)
+• Test 3 - Ordenamiento masivo: 0.859s (500,000 registros)
+• Test 4 - Búsqueda de patrones: 0.480s (71,709 matches)
+
+📊 MÉTRICAS DE RENDIMIENTO
+• Velocidad de filtrado: 633282 registros/s
+• Velocidad de agregación: 283 grupos/s
+• Velocidad de ordenamiento: 582069 registros/s
+• Velocidad de búsqueda: 1041676 registros/s
+
+💡 ANÁLISIS DE EFICIENCIA
+• 🟡 Filtrado: Buen rendimiento
+• ✅ Agregación: Excelente rendimiento
+• 📈 Sistema optimizado para datasets de 500,000 registros
+• 🚀 Escalable hasta 10M+ registros con configuración actual
+
+============================================================

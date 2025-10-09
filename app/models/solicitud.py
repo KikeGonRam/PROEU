@@ -145,3 +145,90 @@ class SolicitudEstandarUpdate(BaseModel):
     descripcion_tipo_pago: Optional[str] = Field(None, min_length=10, max_length=500)
     comentarios_solicitante: Optional[str] = None
     estado: Optional[EstadoSolicitud] = None
+
+class SolicitudAprobacion(BaseModel):
+    """Modelo para aprobar una solicitud"""
+    solicitud_id: str = Field(..., description="ID de la solicitud a aprobar")
+    comentarios_aprobador: Optional[str] = Field(
+        None, 
+        max_length=500,
+        description="Comentarios opcionales del aprobador"
+    )
+    aprobador_email: Optional[str] = Field(
+        None, 
+        description="Email del aprobador (se obtiene automáticamente del token)"
+    )
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "solicitud_id": "507f1f77bcf86cd799439011",
+                "comentarios_aprobador": "Solicitud aprobada. Proceder con el pago."
+            }
+        }
+
+class SolicitudRechazo(BaseModel):
+    """Modelo para rechazar una solicitud"""
+    solicitud_id: str = Field(..., description="ID de la solicitud a rechazar")
+    comentarios_aprobador: str = Field(
+        ..., 
+        min_length=10,
+        max_length=500,
+        description="Comentarios OBLIGATORIOS explicando el motivo del rechazo"
+    )
+    aprobador_email: Optional[str] = Field(
+        None, 
+        description="Email del aprobador (se obtiene automáticamente del token)"
+    )
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "solicitud_id": "507f1f77bcf86cd799439011",
+                "comentarios_aprobador": "Rechazada por falta de documentación. Favor de adjuntar factura original."
+            }
+        }
+
+class SolicitudPago(BaseModel):
+    """Modelo para marcar una solicitud como pagada"""
+    solicitud_id: str = Field(..., description="ID de la solicitud a marcar como pagada")
+    fecha_pago: Optional[datetime] = Field(
+        None, 
+        description="Fecha del pago (se asigna automáticamente si no se proporciona)"
+    )
+    referencia_pago: Optional[str] = Field(
+        None,
+        max_length=100,
+        description="Referencia o número de transacción del pago"
+    )
+    comentarios_pagador: Optional[str] = Field(
+        None,
+        max_length=500,
+        description="Comentarios opcionales del pagador"
+    )
+    pagador_email: Optional[str] = Field(
+        None, 
+        description="Email del pagador (se obtiene automáticamente del token)"
+    )
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "solicitud_id": "507f1f77bcf86cd799439011",
+                "referencia_pago": "TRX-20231215-001234",
+                "comentarios_pagador": "Pago realizado exitosamente vía transferencia bancaria"
+            }
+        }
+
+class SolicitudComprobantesPago(BaseModel):
+    """Modelo para registrar comprobantes de pago subidos"""
+    solicitud_id: str = Field(..., description="ID de la solicitud")
+    # Los archivos se manejarán como UploadFile en el endpoint
+    # Este modelo solo valida el solicitud_id
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "solicitud_id": "507f1f77bcf86cd799439011"
+            }
+        }

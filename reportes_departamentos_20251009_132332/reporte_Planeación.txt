@@ -1,0 +1,28 @@
+
+REPORTE DEPARTAMENTAL - PLANEACIÓN
+============================================================
+
+📊 RESUMEN
+• Total usuarios: 25,036
+• Usuarios activos: 25,036 (100.0%)
+• Usuarios inactivos: 0
+
+📋 DISTRIBUCIÓN POR ROLES
+• Admin: 432.0 usuarios (1.7%) - 0.0 logins promedio
+• Aprobador: 4734.0 usuarios (18.9%) - 0.0 logins promedio
+• Pagador: 1893.0 usuarios (7.6%) - 0.0 logins promedio
+• Solicitante: 17977.0 usuarios (71.8%) - 0.0 logins promedio
+
+🏆 TOP 10 USUARIOS MÁS ACTIVOS
+ 1. Genaro Farías (solicitante) - 0 logins
+ 2. Ofelia Pichardo (solicitante) - 0 logins
+ 3. Leticia Zarate (solicitante) - 0 logins
+ 4. Eloy Rivas (solicitante) - 0 logins
+ 5. Sofía de la Garza (solicitante) - 0 logins
+ 6. Manuel Gálvez (solicitante) - 0 logins
+ 7. Frida Muñiz (solicitante) - 0 logins
+ 8. Yeni Alonso (solicitante) - 0 logins
+ 9. Emiliano Chacón (solicitante) - 0 logins
+10. Juan Salazar (solicitante) - 0 logins
+
+============================================================
