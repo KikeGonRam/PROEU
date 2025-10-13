@@ -1067,3 +1067,90 @@ body {
         height: 150px;
     }
 }
+
+/* ========================================
+   Pestañas de Navegación
+   ======================================== */
+.tabs-navigation {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0;
+}
+
+.tab-button {
+    background: transparent;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    bottom: -2px;
+}
+
+.tab-button:hover {
+    color: var(--primary-color);
+    background: rgba(37, 99, 235, 0.05);
+}
+
+.tab-button.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+    background: rgba(37, 99, 235, 0.08);
+}
+
+.tab-button i {
+    font-size: 1.2rem;
+}
+
+/* Ocultar/mostrar secciones según tab activo */
+.table-section {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilos específicos para tabla de historial */
+#tabla-historial thead {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+}
+
+#tabla-historial .badge-aprobada {
+    background: var(--success-color);
+    color: white;
+}
+
+#tabla-historial .badge-rechazada {
+    background: white;
+    color: #ef4444;
+    border: 2px solid #ef4444;
+    font-weight: 700;
+}
+
+#tabla-historial .badge-pagada {
+    background: #8b5cf6;
+    color: white;
+}
+
+/* Botones de historial - sin aprobar/rechazar */
+#tabla-historial .action-buttons .btn-success,
+#tabla-historial .action-buttons .btn-danger {
+    display: none;
+}

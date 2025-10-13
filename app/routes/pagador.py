@@ -129,7 +129,127 @@ async def get_estadisticas(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )
+
+
+@router.get("/api/historial")
+async def get_historial_pagador(
+    filtro_estado: Optional[str] = None,
+    filtro_departamento: Optional[str] = None,
+    filtro_tipo_pago: Optional[str] = None,
+    current_user: dict = Depends(require_role("pagador"))
+):
+    """
+    Obtener historial de solicitudes pagadas por el pagador
+    
+    Query params:
+        - filtro_estado: Filtrar por estado (opcional)
+        - filtro_departamento: Filtrar por departamento (opcional)
+        - filtro_tipo_pago: Filtrar por tipo de pago (opcional)
+    
+    Requiere rol: pagador
+    """
+    try:
+        resultado = pagador_controller.get_historial_pagador(
+            pagador_email=current_user["email"],
+            filtro_estado=filtro_estado,
+            filtro_departamento=filtro_departamento,
+            filtro_tipo_pago=filtro_tipo_pago
+        )
+        
+        # Convertir a JSON con el encoder personalizado
+        json_content = json.loads(
+            json.dumps(resultado, cls=DateTimeEncoder)
+        )
+        
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=json_content
+        )
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )
+
+
+@router.get("/api/pendientes-comprobante")
+async def get_pendientes_comprobante(
+    filtro_departamento: Optional[str] = None,
+    filtro_tipo_pago: Optional[str] = None,
+    current_user: dict = Depends(require_role("pagador"))
+):
+    """
+    Obtener solicitudes pagadas que necesitan comprobantes
+    
+    Query params:
+        - filtro_departamento: Filtrar por departamento (opcional)
+        - filtro_tipo_pago: Filtrar por tipo de pago (opcional)
+    
+    Requiere rol: pagador
+    """
+    try:
+        resultado = pagador_controller.get_solicitudes_pendientes_comprobante(
+            pagador_email=current_user["email"],
+            filtro_departamento=filtro_departamento,
+            filtro_tipo_pago=filtro_tipo_pago
+        )
+        
+        # Convertir a JSON con el encoder personalizado
+        json_content = json.loads(
+            json.dumps(resultado, cls=DateTimeEncoder)
+        )
+        
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=json_content
+        )
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error al obtener estadísticas: {str(e)}"
+        )
+
+
+@router.get("/api/con-comprobantes")
+async def get_con_comprobantes(
+    filtro_departamento: Optional[str] = None,
+    filtro_tipo_pago: Optional[str] = None,
+    current_user: dict = Depends(require_role("pagador"))
+):
+    """
+    Obtener solicitudes que ya tienen comprobantes subidos
+    
+    Query params:
+        - filtro_departamento: Filtrar por departamento (opcional)
+        - filtro_tipo_pago: Filtrar por tipo de pago (opcional)
+    
+    Requiere rol: pagador
+    """
+    try:
+        resultado = pagador_controller.get_solicitudes_con_comprobantes(
+            pagador_email=current_user["email"],
+            filtro_departamento=filtro_departamento,
+            filtro_tipo_pago=filtro_tipo_pago
+        )
+        
+        # Convertir a JSON con el encoder personalizado
+        json_content = json.loads(
+            json.dumps(resultado, cls=DateTimeEncoder)
+        )
+        
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=json_content
+        )
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
         )
 
 

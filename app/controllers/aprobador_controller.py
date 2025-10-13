@@ -400,6 +400,147 @@ class AprobadorController:
                 detail=f"Error al obtener estadísticas: {str(e)}"
             )
     
+    def get_historial_aprobador(
+        self,
+        aprobador_email: str,
+        filtro_estado: Optional[str] = None,
+        filtro_departamento: Optional[str] = None,
+        filtro_tipo_pago: Optional[str] = None,
+        limite: int = 100
+    ) -> List[Dict]:
+        """
+        Obtener el historial de solicitudes aprobadas y rechazadas por el aprobador
+        
+        Args:
+            aprobador_email: Email del aprobador
+            filtro_estado: Filtrar por estado específico (aprobada/rechazada)
+            filtro_departamento: Filtrar por departamento
+            filtro_tipo_pago: Filtrar por tipo de pago
+            limite: Número máximo de solicitudes a retornar
+            
+        Returns:
+            Lista de solicitudes procesadas por el aprobador
+        """
+        try:
+            print(f"\n{'='*80}")
+            print(f"📋 HISTORIAL DEL APROBADOR: {aprobador_email}")
+            print(f"{'='*80}")
+            
+            # Construir query
+            query = {
+                "aprobador_email": aprobador_email,
+                "estado": {"$in": ["aprobada", "rechazada", "pagada"]}  # Incluir pagada para ver el ciclo completo
+            }
+            
+            if filtro_estado:
+                query["estado"] = filtro_estado
+                print(f"🔍 Filtro estado: {filtro_estado}")
+            
+            if filtro_departamento:
+                query["departamento"] = filtro_departamento
+                print(f"🔍 Filtro departamento: {filtro_departamento}")
+            
+            if filtro_tipo_pago:
+                query["tipo_pago"] = filtro_tipo_pago
+                print(f"🔍 Filtro tipo pago: {filtro_tipo_pago}")
+            
+            print(f"🔎 Query: {query}")
+            
+            # Buscar solicitudes ordenadas por fecha de aprobación (más recientes primero)
+            solicitudes = list(
+                self.solicitudes_collection
+                .find(query)
+                .sort("fecha_aprobacion", -1)
+                .limit(limite)
+            )
+            
+            print(f"📊 Solicitudes encontradas en historial: {len(solicitudes)}")
+            
+            resultado = []
+            
+            for solicitud in solicitudes:
+                try:
+                    print(f"   📄 Procesando solicitud ID: {solicitud.get('_id')}")
+                    
+                    # Obtener información del solicitante
+                    solicitante_email = solicitud.get("solicitante_email", "N/A")
+                    solicitante = None
+                    if solicitante_email != "N/A":
+                        solicitante = self.users_collection.find_one({"email": solicitante_email})
+                    
+                    # Construir nombre del solicitante
+                    if solicitante:
+                        nombre_completo = f"{solicitante.get('first_name', '')} {solicitante.get('last_name', '')}".strip() or "N/A"
+                    else:
+                        nombre_completo = "N/A"
+                    
+                    # Función auxiliar para convertir fechas a string
+                    def fecha_a_string(fecha):
+                        if fecha is None:
+                            return None
+                        if isinstance(fecha, datetime):
+                            return fecha.isoformat()
+                        return str(fecha)
+                    
+                    # Generar folio si no existe
+                    folio = solicitud.get("folio", f"SOL-{str(solicitud['_id'])[:8].upper()}")
+                    
+                    solicitud_dict = {
+                        "id": str(solicitud["_id"]),
+                        "folio": folio,
+                        "departamento": solicitud.get("departamento", "N/A"),
+                        "monto": solicitud.get("monto", 0),
+                        "tipo_moneda": solicitud.get("tipo_moneda", "N/A"),
+                        "banco_destino": solicitud.get("banco_destino", "N/A"),
+                        "cuenta_destino": solicitud.get("cuenta_destino", "N/A"),
+                        "es_clabe": solicitud.get("es_clabe", False),
+                        "nombre_beneficiario": solicitud.get("nombre_beneficiario", "N/A"),
+                        "segundo_beneficiario": solicitud.get("segundo_beneficiario"),
+                        "nombre_empresa": solicitud.get("nombre_empresa"),
+                        "tipo_pago": solicitud.get("tipo_pago", "N/A"),
+                        "concepto_pago": solicitud.get("concepto_pago", "N/A"),
+                        "concepto_otros": solicitud.get("concepto_otros"),
+                        "fecha_limite_pago": fecha_a_string(solicitud.get("fecha_limite_pago")),
+                        "descripcion_tipo_pago": solicitud.get("descripcion_tipo_pago", ""),
+                        "estado": solicitud.get("estado", "N/A"),
+                        "fecha_creacion": fecha_a_string(solicitud.get("fecha_creacion")),
+                        "fecha_actualizacion": fecha_a_string(solicitud.get("fecha_actualizacion")),
+                        "fecha_aprobacion": fecha_a_string(solicitud.get("fecha_aprobacion")),
+                        "fecha_pago": fecha_a_string(solicitud.get("fecha_pago")),
+                        "comentarios_solicitante": solicitud.get("comentarios_solicitante", ""),
+                        "comentarios_aprobador": solicitud.get("comentarios_aprobador", ""),
+                        "comentarios_pagador": solicitud.get("comentarios_pagador", ""),
+                        "aprobador_email": solicitud.get("aprobador_email", "N/A"),
+                        "pagador_email": solicitud.get("pagador_email"),
+                        "referencia_pago": solicitud.get("referencia_pago"),
+                        "archivos_adjuntos": solicitud.get("archivos_adjuntos", []),
+                        "comprobantes_pago": solicitud.get("comprobantes_pago", []),
+                        
+                        # Información del solicitante
+                        "solicitante": {
+                            "email": solicitante_email,
+                            "nombre": nombre_completo,
+                            "department": solicitante.get("department", "N/A") if solicitante else "N/A"
+                        }
+                    }
+                    
+                    resultado.append(solicitud_dict)
+                    print(f"      ✅ Solicitud procesada: {folio} - Estado: {solicitud_dict['estado']}")
+                    
+                except Exception as e:
+                    print(f"      ❌ Error procesando solicitud {solicitud.get('_id')}: {str(e)}")
+                    continue
+            
+            print(f"✅ Total solicitudes en historial: {len(resultado)}\n")
+            return resultado
+            
+        except Exception as e:
+            print(f"❌ ERROR en get_historial_aprobador: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Error al obtener historial: {str(e)}"
+            )
+    
     def __del__(self):
         """Cerrar conexión al destruir el objeto"""
         if hasattr(self, 'mongo_client'):

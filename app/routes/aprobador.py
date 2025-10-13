@@ -129,6 +129,61 @@ async def get_estadisticas(
         )
 
 
+@router.get("/api/historial")
+async def get_historial(
+    filtro_estado: Optional[str] = Query(None, description="Filtrar por estado: aprobada, rechazada, pagada"),
+    filtro_departamento: Optional[str] = Query(None, description="Filtrar por departamento"),
+    filtro_tipo_pago: Optional[str] = Query(None, description="Filtrar por tipo de pago"),
+    limite: int = Query(100, description="Límite de solicitudes"),
+    current_user: dict = Depends(require_role("aprobador"))
+):
+    """
+    Obtener historial de solicitudes aprobadas y rechazadas por el aprobador
+    
+    Requiere rol: aprobador
+    
+    Query params:
+    - filtro_estado: Filtrar por estado específico (aprobada/rechazada/pagada)
+    - filtro_departamento: Filtrar por departamento
+    - filtro_tipo_pago: Filtrar por tipo de pago
+    - limite: Número máximo de solicitudes (default 100)
+    """
+    try:
+        print(f"\n🔍 GET /aprobador/api/historial")
+        print(f"   Usuario: {current_user['email']}")
+        print(f"   Filtros: estado={filtro_estado}, depto={filtro_departamento}, tipo={filtro_tipo_pago}")
+        
+        solicitudes = aprobador_controller.get_historial_aprobador(
+            aprobador_email=current_user["email"],
+            filtro_estado=filtro_estado,
+            filtro_departamento=filtro_departamento,
+            filtro_tipo_pago=filtro_tipo_pago,
+            limite=limite
+        )
+        
+        # Usar el encoder personalizado para manejar fechas
+        json_content = json.dumps({
+            "success": True,
+            "total": len(solicitudes),
+            "solicitudes": solicitudes
+        }, cls=DateTimeEncoder, ensure_ascii=False)
+        
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=json.loads(json_content)
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"❌ Error en get_historial: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error al obtener historial: {str(e)}"
+        )
+
+
 @router.post("/api/aprobar")
 async def aprobar_solicitud(
     aprobacion: SolicitudAprobacion,

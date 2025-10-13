@@ -394,6 +394,254 @@ class PagadorController:
         except Exception as e:
             print(f"❌ ERROR en get_estadisticas_pagador: {str(e)}")
             raise
+    
+    def get_historial_pagador(
+        self,
+        pagador_email: str,
+        filtro_estado: Optional[str] = None,
+        filtro_departamento: Optional[str] = None,
+        filtro_tipo_pago: Optional[str] = None
+    ) -> dict:
+        """
+        Obtener el historial de solicitudes procesadas por el pagador (pagadas)
+        
+        Args:
+            pagador_email: Email del pagador actual
+            filtro_estado: Filtro opcional por estado (solo 'pagada' aplica)
+            filtro_departamento: Filtro opcional por departamento
+            filtro_tipo_pago: Filtro opcional por tipo de pago
+            
+        Returns:
+            Diccionario con solicitudes procesadas y metadatos
+        """
+        print(f"\n{'='*60}")
+        print(f"📜 Obteniendo historial del pagador: {pagador_email}")
+        print(f"{'='*60}")
+        
+        try:
+            # Construir query - solo solicitudes pagadas
+            query = {
+                "pagador_email": pagador_email,
+                "estado": "pagada"
+            }
+            
+            # Aplicar filtros opcionales
+            if filtro_departamento and filtro_departamento != "todos":
+                query["departamento"] = filtro_departamento
+                print(f"🏢 Filtro departamento: {filtro_departamento}")
+            
+            if filtro_tipo_pago and filtro_tipo_pago != "todos":
+                query["tipo_pago"] = filtro_tipo_pago
+                print(f"💳 Filtro tipo de pago: {filtro_tipo_pago}")
+            
+            print(f"🔎 Query: {query}")
+            
+            # Obtener solicitudes ordenadas por fecha de pago (más reciente primero)
+            cursor = self.solicitudes_collection.find(query).sort("fecha_pago", -1)
+            solicitudes = list(cursor)
+            
+            print(f"📊 Total de solicitudes en historial: {len(solicitudes)}")
+            
+            # Procesar solicitudes
+            solicitudes_procesadas = []
+            for sol in solicitudes:
+                try:
+                    # Convertir ObjectId a string
+                    sol['id'] = str(sol['_id'])
+                    
+                    # Calcular días desde el pago
+                    if sol.get('fecha_pago'):
+                        dias_desde_pago = (datetime.utcnow() - sol['fecha_pago']).days
+                        sol['dias_desde_pago'] = dias_desde_pago
+                    
+                    solicitudes_procesadas.append(sol)
+                    
+                except Exception as e:
+                    print(f"⚠️ Error procesando solicitud {sol.get('_id')}: {str(e)}")
+                    continue
+            
+            resultado = {
+                "success": True,
+                "total": len(solicitudes_procesadas),
+                "solicitudes": solicitudes_procesadas
+            }
+            
+            print(f"✅ Historial obtenido exitosamente: {len(solicitudes_procesadas)} solicitudes")
+            return resultado
+            
+        except Exception as e:
+            print(f"❌ ERROR en get_historial_pagador: {str(e)}")
+            raise
+    
+    def get_solicitudes_pendientes_comprobante(
+        self,
+        pagador_email: str,
+        filtro_departamento: Optional[str] = None,
+        filtro_tipo_pago: Optional[str] = None
+    ) -> dict:
+        """
+        Obtener solicitudes pagadas que necesitan comprobantes de pago
+        
+        Args:
+            pagador_email: Email del pagador actual
+            filtro_departamento: Filtro opcional por departamento
+            filtro_tipo_pago: Filtro opcional por tipo de pago
+            
+        Returns:
+            Diccionario con solicitudes pendientes de comprobante
+        """
+        print(f"\n{'='*60}")
+        print(f"📎 Obteniendo solicitudes pendientes de comprobante para: {pagador_email}")
+        print(f"{'='*60}")
+        
+        try:
+            # Construir query - solicitudes pagadas sin comprobantes o con comprobantes incompletos
+            query = {
+                "pagador_email": pagador_email,
+                "estado": "pagada",
+                "$or": [
+                    {"comprobantes_pago": {"$exists": False}},
+                    {"comprobantes_pago": {"$size": 0}},
+                    {"comprobantes_pago": None}
+                ]
+            }
+            
+            # Aplicar filtros opcionales
+            if filtro_departamento and filtro_departamento != "todos":
+                query["departamento"] = filtro_departamento
+                print(f"🏢 Filtro departamento: {filtro_departamento}")
+            
+            if filtro_tipo_pago and filtro_tipo_pago != "todos":
+                query["tipo_pago"] = filtro_tipo_pago
+                print(f"💳 Filtro tipo de pago: {filtro_tipo_pago}")
+            
+            print(f"🔎 Query: {query}")
+            
+            # Obtener solicitudes ordenadas por fecha de pago
+            cursor = self.solicitudes_collection.find(query).sort("fecha_pago", -1)
+            solicitudes = list(cursor)
+            
+            print(f"📊 Total de solicitudes pendientes de comprobante: {len(solicitudes)}")
+            
+            # Procesar solicitudes
+            solicitudes_procesadas = []
+            for sol in solicitudes:
+                try:
+                    # Convertir ObjectId a string
+                    sol['id'] = str(sol['_id'])
+                    
+                    # Calcular días desde el pago y días restantes
+                    if sol.get('fecha_pago'):
+                        fecha_pago = sol['fecha_pago']
+                        dias_desde_pago = (datetime.utcnow() - fecha_pago).days
+                        sol['dias_desde_pago'] = dias_desde_pago
+                        
+                        # Calcular días restantes (3 días hábiles)
+                        dias_restantes = 3 - dias_desde_pago
+                        sol['dias_restantes_comprobante'] = max(0, dias_restantes)
+                        
+                        # Marcar si está vencido
+                        sol['comprobante_vencido'] = dias_restantes < 0
+                    
+                    solicitudes_procesadas.append(sol)
+                    
+                except Exception as e:
+                    print(f"⚠️ Error procesando solicitud {sol.get('_id')}: {str(e)}")
+                    continue
+            
+            resultado = {
+                "success": True,
+                "total": len(solicitudes_procesadas),
+                "solicitudes": solicitudes_procesadas
+            }
+            
+            print(f"✅ Solicitudes pendientes obtenidas: {len(solicitudes_procesadas)}")
+            return resultado
+            
+        except Exception as e:
+            print(f"❌ ERROR en get_solicitudes_pendientes_comprobante: {str(e)}")
+            raise
+    
+    def get_solicitudes_con_comprobantes(
+        self,
+        pagador_email: str,
+        filtro_departamento: Optional[str] = None,
+        filtro_tipo_pago: Optional[str] = None
+    ) -> dict:
+        """
+        Obtener solicitudes pagadas que ya tienen comprobantes subidos
+        
+        Args:
+            pagador_email: Email del pagador actual
+            filtro_departamento: Filtro opcional por departamento
+            filtro_tipo_pago: Filtro opcional por tipo de pago
+            
+        Returns:
+            Diccionario con solicitudes que tienen comprobantes
+        """
+        print(f"\n{'='*60}")
+        print(f"📄 Obteniendo solicitudes con comprobantes para: {pagador_email}")
+        print(f"{'='*60}")
+        
+        try:
+            # Construir query - solicitudes pagadas con comprobantes
+            query = {
+                "pagador_email": pagador_email,
+                "estado": "pagada",
+                "comprobantes_pago": {"$exists": True, "$ne": [], "$ne": None}
+            }
+            
+            # Aplicar filtros opcionales
+            if filtro_departamento and filtro_departamento != "todos":
+                query["departamento"] = filtro_departamento
+                print(f"🏢 Filtro departamento: {filtro_departamento}")
+            
+            if filtro_tipo_pago and filtro_tipo_pago != "todos":
+                query["tipo_pago"] = filtro_tipo_pago
+                print(f"💳 Filtro tipo de pago: {filtro_tipo_pago}")
+            
+            print(f"🔎 Query: {query}")
+            
+            # Obtener solicitudes ordenadas por fecha de subida de comprobante
+            cursor = self.solicitudes_collection.find(query).sort("fecha_pago", -1)
+            solicitudes = list(cursor)
+            
+            print(f"📊 Total de solicitudes con comprobantes: {len(solicitudes)}")
+            
+            # Procesar solicitudes
+            solicitudes_procesadas = []
+            for sol in solicitudes:
+                try:
+                    # Convertir ObjectId a string
+                    sol['id'] = str(sol['_id'])
+                    
+                    # Contar comprobantes
+                    num_comprobantes = len(sol.get('comprobantes_pago', []))
+                    sol['num_comprobantes'] = num_comprobantes
+                    
+                    # Calcular días desde el pago
+                    if sol.get('fecha_pago'):
+                        dias_desde_pago = (datetime.utcnow() - sol['fecha_pago']).days
+                        sol['dias_desde_pago'] = dias_desde_pago
+                    
+                    solicitudes_procesadas.append(sol)
+                    
+                except Exception as e:
+                    print(f"⚠️ Error procesando solicitud {sol.get('_id')}: {str(e)}")
+                    continue
+            
+            resultado = {
+                "success": True,
+                "total": len(solicitudes_procesadas),
+                "solicitudes": solicitudes_procesadas
+            }
+            
+            print(f"✅ Solicitudes con comprobantes obtenidas: {len(solicitudes_procesadas)}")
+            return resultado
+            
+        except Exception as e:
+            print(f"❌ ERROR en get_solicitudes_con_comprobantes: {str(e)}")
+            raise
 
 
 # Instancia global del controlador

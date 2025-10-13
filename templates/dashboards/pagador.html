@@ -3,7 +3,7 @@
 {% block title %}Dashboard Pagador - Sistema EU-UTVT{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="/static/css/pagador.css">
+<link rel="stylesheet" href="/static/css/pagador.css?v=2.7">
 {% endblock %}
 
 {% block content %}
@@ -71,8 +71,24 @@
         </div>
     </section>
 
-    <!-- Filtros -->
-    <section class="filters-section">
+    <!-- Navegación por Tabs -->
+    <section class="tabs-navigation">
+        <button class="tab-button active" onclick="cambiarVista('aprobadas')">
+            <i class="fas fa-clock"></i> Solicitudes Aprobadas
+        </button>
+        <button class="tab-button" onclick="cambiarVista('comprobantes')">
+            <i class="fas fa-file-invoice"></i> Subir Comprobantes
+        </button>
+        <button class="tab-button" onclick="cambiarVista('ver-comprobantes')">
+            <i class="fas fa-check-circle"></i> Ver Comprobantes
+        </button>
+        <button class="tab-button" onclick="cambiarVista('historial')">
+            <i class="fas fa-history"></i> Mi Historial
+        </button>
+    </section>
+
+    <!-- Filtros para Solicitudes Aprobadas -->
+    <section class="filters-section" id="filtros-aprobadas">
         <div class="filters-container">
             <div class="filter-group">
                 <label for="filtro-departamento">
@@ -126,8 +142,164 @@
         </div>
     </section>
 
-    <!-- Tabla de Solicitudes -->
-    <section class="table-section">
+    <!-- Filtros para Historial (inicialmente ocultos) -->
+    <section class="filters-section" id="filtros-historial" style="display: none;">
+        <div class="filters-container">
+            <div class="filter-group">
+                <label for="filtro-historial-departamento">
+                    <i class="fas fa-building"></i>
+                    Departamento
+                </label>
+                <select id="filtro-historial-departamento" class="filter-select">
+                    <option value="">Todos los departamentos</option>
+                    <option value="Rectoría">Rectoría</option>
+                    <option value="Dirección Académica">Dirección Académica</option>
+                    <option value="Dirección Administrativa">Dirección Administrativa</option>
+                    <option value="Finanzas">Finanzas</option>
+                    <option value="Recursos Humanos">Recursos Humanos</option>
+                    <option value="Sistemas y TI">Sistemas y TI</option>
+                    <option value="Mantenimiento">Mantenimiento</option>
+                    <option value="Biblioteca">Biblioteca</option>
+                    <option value="Servicios Escolares">Servicios Escolares</option>
+                    <option value="Vinculación">Vinculación</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="filtro-historial-tipo-pago">
+                    <i class="fas fa-tags"></i>
+                    Tipo de Pago
+                </label>
+                <select id="filtro-historial-tipo-pago" class="filter-select">
+                    <option value="">Todos los tipos</option>
+                    <option value="Proveedores">Proveedores</option>
+                    <option value="Póliza - Seguro">Póliza - Seguro</option>
+                    <option value="Donativos">Donativos</option>
+                    <option value="Operativos">Operativos</option>
+                    <option value="Fiscales y Legales">Fiscales y Legales</option>
+                </select>
+            </div>
+
+            <div class="filter-group ml-auto">
+                <label>&nbsp;</label>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" id="btn-aplicar-filtros-historial">
+                        <i class="fas fa-filter"></i> Aplicar
+                    </button>
+                    <button class="btn btn-secondary" id="btn-limpiar-filtros-historial">
+                        <i class="fas fa-times"></i> Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filtros para Comprobantes (inicialmente ocultos) -->
+    <section class="filters-section" id="filtros-comprobantes" style="display: none;">
+        <div class="filters-container">
+            <div class="filter-group">
+                <label for="filtro-comprobantes-departamento">
+                    <i class="fas fa-building"></i>
+                    Departamento
+                </label>
+                <select id="filtro-comprobantes-departamento" class="filter-select">
+                    <option value="">Todos los departamentos</option>
+                    <option value="Rectoría">Rectoría</option>
+                    <option value="Dirección Académica">Dirección Académica</option>
+                    <option value="Dirección Administrativa">Dirección Administrativa</option>
+                    <option value="Finanzas">Finanzas</option>
+                    <option value="Recursos Humanos">Recursos Humanos</option>
+                    <option value="Sistemas y TI">Sistemas y TI</option>
+                    <option value="Mantenimiento">Mantenimiento</option>
+                    <option value="Biblioteca">Biblioteca</option>
+                    <option value="Servicios Escolares">Servicios Escolares</option>
+                    <option value="Vinculación">Vinculación</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="filtro-comprobantes-tipo-pago">
+                    <i class="fas fa-tags"></i>
+                    Tipo de Pago
+                </label>
+                <select id="filtro-comprobantes-tipo-pago" class="filter-select">
+                    <option value="">Todos los tipos</option>
+                    <option value="Proveedores">Proveedores</option>
+                    <option value="Póliza - Seguro">Póliza - Seguro</option>
+                    <option value="Donativos">Donativos</option>
+                    <option value="Operativos">Operativos</option>
+                    <option value="Fiscales y Legales">Fiscales y Legales</option>
+                </select>
+            </div>
+
+            <div class="filter-group ml-auto">
+                <label>&nbsp;</label>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" id="btn-aplicar-filtros-comprobantes">
+                        <i class="fas fa-filter"></i> Aplicar
+                    </button>
+                    <button class="btn btn-secondary" id="btn-limpiar-filtros-comprobantes">
+                        <i class="fas fa-times"></i> Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filtros para Ver Comprobantes (inicialmente ocultos) -->
+    <section class="filters-section" id="filtros-ver-comprobantes" style="display: none;">
+        <div class="filters-container">
+            <div class="filter-group">
+                <label for="filtro-ver-comprobantes-departamento">
+                    <i class="fas fa-building"></i>
+                    Departamento
+                </label>
+                <select id="filtro-ver-comprobantes-departamento" class="filter-select">
+                    <option value="">Todos los departamentos</option>
+                    <option value="Rectoría">Rectoría</option>
+                    <option value="Dirección Académica">Dirección Académica</option>
+                    <option value="Dirección Administrativa">Dirección Administrativa</option>
+                    <option value="Finanzas">Finanzas</option>
+                    <option value="Recursos Humanos">Recursos Humanos</option>
+                    <option value="Sistemas y TI">Sistemas y TI</option>
+                    <option value="Mantenimiento">Mantenimiento</option>
+                    <option value="Biblioteca">Biblioteca</option>
+                    <option value="Servicios Escolares">Servicios Escolares</option>
+                    <option value="Vinculación">Vinculación</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="filtro-ver-comprobantes-tipo-pago">
+                    <i class="fas fa-tags"></i>
+                    Tipo de Pago
+                </label>
+                <select id="filtro-ver-comprobantes-tipo-pago" class="filter-select">
+                    <option value="">Todos los tipos</option>
+                    <option value="Proveedores">Proveedores</option>
+                    <option value="Póliza - Seguro">Póliza - Seguro</option>
+                    <option value="Donativos">Donativos</option>
+                    <option value="Operativos">Operativos</option>
+                    <option value="Fiscales y Legales">Fiscales y Legales</option>
+                </select>
+            </div>
+
+            <div class="filter-group ml-auto">
+                <label>&nbsp;</label>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" id="btn-aplicar-filtros-ver-comprobantes">
+                        <i class="fas fa-filter"></i> Aplicar
+                    </button>
+                    <button class="btn btn-secondary" id="btn-limpiar-filtros-ver-comprobantes">
+                        <i class="fas fa-times"></i> Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tabla de Solicitudes Aprobadas -->
+    <section class="table-section" id="seccion-aprobadas">
         <div class="table-header">
             <h2 class="table-title">
                 <i class="fas fa-list"></i>
@@ -137,6 +309,60 @@
         </div>
 
         <div class="table-container" id="tabla-solicitudes-container">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Cargando solicitudes...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tabla de Historial (inicialmente oculta) -->
+    <section class="table-section" id="seccion-historial" style="display: none;">
+        <div class="table-header">
+            <h2 class="table-title">
+                <i class="fas fa-history"></i>
+                Mi Historial - Solicitudes Pagadas
+            </h2>
+            <span class="table-info" id="total-historial">0 solicitudes</span>
+        </div>
+
+        <div class="table-container" id="tabla-historial-container">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Cargando historial...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tabla de Comprobantes Pendientes (inicialmente oculta) -->
+    <section class="table-section" id="seccion-comprobantes" style="display: none;">
+        <div class="table-header">
+            <h2 class="table-title">
+                <i class="fas fa-file-invoice"></i>
+                Solicitudes Pendientes de Comprobante
+            </h2>
+            <span class="table-info" id="total-comprobantes">0 solicitudes</span>
+        </div>
+
+        <div class="table-container" id="tabla-comprobantes-container">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Cargando solicitudes...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tabla de Ver Comprobantes (inicialmente oculta) -->
+    <section class="table-section" id="seccion-ver-comprobantes" style="display: none;">
+        <div class="table-header">
+            <h2 class="table-title">
+                <i class="fas fa-check-circle"></i>
+                Solicitudes con Comprobantes Subidos
+            </h2>
+            <span class="table-info" id="total-ver-comprobantes">0 solicitudes</span>
+        </div>
+
+        <div class="table-container" id="tabla-ver-comprobantes-container">
             <div class="loading-spinner">
                 <i class="fas fa-spinner fa-spin"></i>
                 <p>Cargando solicitudes...</p>
@@ -290,5 +516,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/js/pagador.js"></script>
+<script src="/static/js/pagador.js?v=5.5"></script>
 {% endblock %}

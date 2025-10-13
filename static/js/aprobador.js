@@ -1,25 +1,39 @@
 /**
  * Dashboard de Aprobador - JavaScript Interactivo
  * Sistema EU-UTVT
+ * VERSIÓN: 2.0 - Con soporte para Historial
  */
+
+console.log('📄 Archivo aprobador.js cargado - Versión 2.0');
 
 // Variables globales
 let solicitudesPendientes = [];
+let solicitudesHistorial = [];
 let filtrosAplicados = {
     departamento: '',
     tipo_pago: ''
 };
+let filtrosHistorial = {
+    estado: '',
+    departamento: '',
+    tipo_pago: ''
+};
+let vistaActual = 'pendientes'; // 'pendientes' o 'historial'
 
 // ========================================
 // Inicialización
 // ========================================
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Iniciando Dashboard de Aprobador');
+    console.log('🚀 Iniciando Dashboard de Aprobador - DOMContentLoaded disparado');
     
     // Cargar información del usuario
     cargarInfoUsuario();
     
+    // Inicializar eventos inmediatamente
+    console.log('⚡ Llamando a inicializarEventos() AHORA...');
     inicializarEventos();
+    
+    // Luego cargar datos
     cargarEstadisticas();
     cargarSolicitudesPendientes();
     
@@ -28,6 +42,8 @@ document.addEventListener('DOMContentLoaded', function() {
         cargarEstadisticas();
         cargarSolicitudesPendientes();
     }, 120000);
+    
+    console.log('✅ Inicialización completada');
 });
 
 // ========================================
@@ -52,10 +68,64 @@ function cargarInfoUsuario() {
 // Event Listeners
 // ========================================
 function inicializarEventos() {
-    // Botones de filtros
-    document.getElementById('btn-aplicar-filtros')?.addEventListener('click', aplicarFiltros);
+    console.log('🎯 === INICIALIZANDO EVENTOS ===');
+    
+    // Pestañas de navegación
+    const tabButtons = document.querySelectorAll('.tab-button');
+    console.log('🔘 Botones de pestañas encontrados:', tabButtons.length);
+    
+    if (tabButtons.length === 0) {
+        console.error('❌ NO SE ENCONTRARON BOTONES DE PESTAÑAS!');
+        console.log('🔍 Intentando buscar por ID...');
+        
+        // Buscar todo el contenedor de tabs
+        const tabsNav = document.querySelector('.tabs-navigation');
+        console.log('📦 Contenedor tabs-navigation:', tabsNav);
+        
+        if (tabsNav) {
+            console.log('📝 HTML del contenedor:', tabsNav.innerHTML.substring(0, 200));
+        }
+    }
+    
+    tabButtons.forEach((btn, index) => {
+        const tabName = btn.getAttribute('data-tab');
+        console.log(`  📌 Botón ${index + 1}: data-tab="${tabName}", texto="${btn.textContent.trim()}"`);
+        
+        // Método 1: addEventListener
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const tab = this.getAttribute('data-tab');
+            console.log('🖱️ CLICK MÉTODO 1 detectado en pestaña:', tab);
+            cambiarVista(tab);
+        });
+        
+        // Método 2: onclick directo (backup)
+        btn.onclick = function(e) {
+            e.preventDefault();
+            const tab = this.getAttribute('data-tab');
+            console.log('🖱️ CLICK MÉTODO 2 detectado en pestaña:', tab);
+            cambiarVista(tab);
+        };
+    });
+    
+    console.log('✅ Event listeners de pestañas registrados');
+    
+    // Botones de filtros - Pendientes
+    const btnAplicar = document.getElementById('btn-aplicar-filtros');
+    console.log('🔍 btn-aplicar-filtros encontrado:', !!btnAplicar);
+    btnAplicar?.addEventListener('click', aplicarFiltros);
+    
     document.getElementById('btn-limpiar-filtros')?.addEventListener('click', limpiarFiltros);
     document.getElementById('btn-refrescar')?.addEventListener('click', refrescar);
+    
+    // Botones de filtros - Historial
+    const btnAplicarHist = document.getElementById('btn-aplicar-filtros-historial');
+    console.log('🔍 btn-aplicar-filtros-historial encontrado:', !!btnAplicarHist);
+    btnAplicarHist?.addEventListener('click', aplicarFiltrosHistorial);
+    
+    document.getElementById('btn-limpiar-filtros-historial')?.addEventListener('click', limpiarFiltrosHistorial);
+    document.getElementById('btn-refrescar-historial')?.addEventListener('click', () => cargarHistorial());
     
     // Modales - Cerrar
     document.querySelectorAll('.modal-close').forEach(btn => {
@@ -349,7 +419,19 @@ async function verDetalles(solicitudId) {
                         <h3><i class="fas fa-paperclip"></i> Archivos Adjuntos (${solicitud.archivos_adjuntos.length})</h3>
                         <div class="archivos-grid">
                             ${solicitud.archivos_adjuntos.map(archivo => {
-                                const extension = archivo.nombre_archivo.split('.').pop().toLowerCase();
+                                // Construir la ruta completa del archivo
+                                let rutaCompleta = '';
+                                if (archivo.ruta) {
+                                    rutaCompleta = archivo.ruta;
+                                } else if (archivo.ruta_archivo) {
+                                    // Si solo tiene el nombre del archivo, construir la ruta
+                                    rutaCompleta = `/uploads/solicitudes/${archivo.ruta_archivo}`;
+                                } else {
+                                    rutaCompleta = '#';
+                                }
+                                
+                                const nombreArchivo = archivo.nombre_archivo || archivo.nombre || 'Archivo sin nombre';
+                                const extension = nombreArchivo.split('.').pop().toLowerCase();
                                 const esImagen = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(extension);
                                 const esPDF = extension === 'pdf';
                                 const esExcel = ['xls', 'xlsx', 'csv'].includes(extension);
@@ -372,11 +454,13 @@ async function verDetalles(solicitudId) {
                                     colorIcono = '#3b82f6';
                                 }
                                 
+                                console.log('📎 Archivo:', {nombre: nombreArchivo, ruta: rutaCompleta, extension});
+                                
                                 return `
-                                    <div class="archivo-card" onclick="previewArchivo('${archivo.ruta || '#'}', '${archivo.nombre_archivo}', '${extension}')">
+                                    <div class="archivo-card" style="cursor: pointer;" data-ruta="${rutaCompleta}" data-nombre="${nombreArchivo}" data-ext="${extension}">
                                         <div class="archivo-preview">
-                                            ${esImagen && archivo.ruta ? 
-                                                `<img src="${archivo.ruta}" alt="${archivo.nombre_archivo}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                            ${esImagen && rutaCompleta !== '#' ? 
+                                                `<img src="${rutaCompleta}" alt="${nombreArchivo}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                                 <div class="archivo-icon" style="display:none;">
                                                     <i class="fas ${icono}" style="color: ${colorIcono};"></i>
                                                 </div>` :
@@ -386,14 +470,14 @@ async function verDetalles(solicitudId) {
                                             }
                                         </div>
                                         <div class="archivo-info">
-                                            <div class="archivo-nombre" title="${archivo.nombre_archivo}">${archivo.nombre_archivo}</div>
+                                            <div class="archivo-nombre" title="${nombreArchivo}">${nombreArchivo}</div>
                                             <div class="archivo-detalles">
                                                 <span class="archivo-extension">${extension.toUpperCase()}</span>
                                                 ${archivo.tamaño ? `<span class="archivo-tamaño">${formatearTamaño(archivo.tamaño)}</span>` : ''}
                                             </div>
                                         </div>
                                         <div class="archivo-acciones">
-                                            <button class="btn-archivo" onclick="event.stopPropagation(); descargarArchivo('${archivo.ruta || '#'}', '${archivo.nombre_archivo}')" title="Descargar">
+                                            <button class="btn-archivo btn-descargar-archivo" data-ruta="${rutaCompleta}" data-nombre="${nombreArchivo}" title="Descargar">
                                                 <i class="fas fa-download"></i>
                                             </button>
                                         </div>
@@ -465,6 +549,32 @@ async function verDetalles(solicitudId) {
         `;
         
         document.getElementById('detalles-content').innerHTML = detallesHTML;
+        
+        // Agregar event listeners para las tarjetas de archivos
+        setTimeout(() => {
+            // Listeners para las tarjetas (previsualizar)
+            document.querySelectorAll('.archivo-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const ruta = this.getAttribute('data-ruta');
+                    const nombre = this.getAttribute('data-nombre');
+                    const ext = this.getAttribute('data-ext');
+                    console.log('🖱️ Click en archivo:', {ruta, nombre, ext});
+                    previewArchivo(ruta, nombre, ext);
+                });
+            });
+            
+            // Listeners para los botones de descarga
+            document.querySelectorAll('.btn-descargar-archivo').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const ruta = this.getAttribute('data-ruta');
+                    const nombre = this.getAttribute('data-nombre');
+                    console.log('📥 Click en descargar:', {ruta, nombre});
+                    descargarArchivo(ruta, nombre);
+                });
+            });
+        }, 100);
+        
         abrirModal('modal-detalles');
         
     } catch (error) {
@@ -804,6 +914,225 @@ function actualizarContadorSolicitudes(total) {
     }
 }
 
+function actualizarContadorHistorial(total) {
+    const elemento = document.getElementById('total-historial');
+    if (elemento) {
+        elemento.textContent = `${total} solicitud${total !== 1 ? 'es' : ''}`;
+    }
+}
+
+// ========================================
+// Navegación entre Vistas
+// ========================================
+function cambiarVista(vista) {
+    console.log('🔀 Cambiando vista a:', vista);
+    vistaActual = vista;
+    
+    // Actualizar pestañas activas
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        const btnTab = btn.getAttribute('data-tab');
+        if (btnTab === vista) {
+            btn.classList.add('active');
+            console.log('✅ Tab activo:', btnTab);
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    
+    // Obtener elementos
+    const filtrosPendientes = document.getElementById('filtros-pendientes');
+    const filtrosHistorial = document.getElementById('filtros-historial');
+    const seccionPendientes = document.getElementById('seccion-pendientes');
+    const seccionHistorial = document.getElementById('seccion-historial');
+    
+    console.log('📋 Elementos encontrados:', {
+        filtrosPendientes: !!filtrosPendientes,
+        filtrosHistorial: !!filtrosHistorial,
+        seccionPendientes: !!seccionPendientes,
+        seccionHistorial: !!seccionHistorial
+    });
+    
+    // Mostrar/ocultar según la vista
+    if (vista === 'pendientes') {
+        console.log('👁️ Mostrando vista PENDIENTES');
+        if (filtrosPendientes) filtrosPendientes.style.display = 'flex';
+        if (filtrosHistorial) filtrosHistorial.style.display = 'none';
+        if (seccionPendientes) seccionPendientes.style.display = 'block';
+        if (seccionHistorial) seccionHistorial.style.display = 'none';
+    } else if (vista === 'historial') {
+        console.log('👁️ Mostrando vista HISTORIAL');
+        if (filtrosPendientes) filtrosPendientes.style.display = 'none';
+        if (filtrosHistorial) filtrosHistorial.style.display = 'flex';
+        if (seccionPendientes) seccionPendientes.style.display = 'none';
+        if (seccionHistorial) seccionHistorial.style.display = 'block';
+        
+        // Cargar historial si no está cargado
+        console.log('📊 Solicitudes en historial:', solicitudesHistorial.length);
+        if (solicitudesHistorial.length === 0) {
+            console.log('🔄 Cargando historial por primera vez...');
+            cargarHistorial();
+        }
+    }
+}
+
+// ========================================
+// Cargar Historial
+// ========================================
+async function cargarHistorial() {
+    try {
+        console.log('📜 Cargando historial...');
+        
+        const tbody = document.getElementById('tbody-historial');
+        tbody.innerHTML = `
+            <tr class="loading-row">
+                <td colspan="9" class="text-center">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        Cargando historial...
+                    </div>
+                </td>
+            </tr>
+        `;
+        
+        // Construir URL con filtros
+        let url = '/aprobador/api/historial?';
+        if (filtrosHistorial.estado) {
+            url += `filtro_estado=${encodeURIComponent(filtrosHistorial.estado)}&`;
+        }
+        if (filtrosHistorial.departamento) {
+            url += `filtro_departamento=${encodeURIComponent(filtrosHistorial.departamento)}&`;
+        }
+        if (filtrosHistorial.tipo_pago) {
+            url += `filtro_tipo_pago=${encodeURIComponent(filtrosHistorial.tipo_pago)}&`;
+        }
+        
+        console.log('🔍 URL:', url);
+        
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+        
+        if (!response.ok) throw new Error('Error al cargar historial');
+        
+        const data = await response.json();
+        console.log('📊 Historial recibido:', data);
+        
+        solicitudesHistorial = data.solicitudes || [];
+        renderizarTablaHistorial(solicitudesHistorial);
+        actualizarContadorHistorial(solicitudesHistorial.length);
+        
+    } catch (error) {
+        console.error('❌ Error al cargar historial:', error);
+        mostrarToast('Error al cargar historial', 'error');
+        const tbody = document.getElementById('tbody-historial');
+        tbody.innerHTML = `
+            <tr class="error-row">
+                <td colspan="9" class="text-center">
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Error al cargar historial
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+}
+
+// ========================================
+// Renderizar Tabla Historial
+// ========================================
+function renderizarTablaHistorial(solicitudes) {
+    const tbody = document.getElementById('tbody-historial');
+    
+    if (!solicitudes || solicitudes.length === 0) {
+        tbody.innerHTML = `
+            <tr class="empty-row">
+                <td colspan="9" class="text-center">
+                    <div class="empty-message">
+                        <i class="fas fa-inbox"></i>
+                        No hay solicitudes en el historial
+                    </div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    tbody.innerHTML = '';
+    
+    solicitudes.forEach(sol => {
+        const estadoClass = obtenerClaseEstado(sol.estado);
+        const estadoTexto = sol.estado.charAt(0).toUpperCase() + sol.estado.slice(1).replace('_', ' ');
+        const fechaProcesada = sol.fecha_aprobacion ? formatearFecha(sol.fecha_aprobacion) : 'N/A';
+        const solicitanteNombre = sol.solicitante?.nombre || 'N/A';
+        const solicitanteEmail = sol.solicitante?.email || 'N/A';
+        
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><strong>${sol.folio || 'N/A'}</strong></td>
+            <td>${fechaProcesada}</td>
+            <td>
+                <div>${solicitanteNombre}</div>
+                <small style="color: #64748b;">${solicitanteEmail}</small>
+            </td>
+            <td>${sol.departamento || 'N/A'}</td>
+            <td>
+                <div>${sol.nombre_beneficiario || 'N/A'}</div>
+                <small style="color: #64748b;">${sol.banco_destino || 'N/A'}</small>
+            </td>
+            <td>
+                <strong>${formatearMoneda(sol.monto || 0)}</strong>
+                <br><small style="color: #64748b;">${sol.tipo_moneda || 'MXN'}</small>
+            </td>
+            <td>${sol.tipo_pago || 'N/A'}</td>
+            <td>
+                <span class="badge badge-${estadoClass}">${estadoTexto}</span>
+                ${sol.estado === 'pagada' ? '<br><small style="color: #8b5cf6;">✓ Pagada</small>' : ''}
+            </td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn btn-sm btn-info" onclick="verDetalles('${sol.id}')">
+                        <i class="fas fa-eye"></i> Ver
+                    </button>
+                </div>
+            </td>
+        `;
+        
+        tbody.appendChild(tr);
+    });
+}
+
+// ========================================
+// Filtros de Historial
+// ========================================
+function aplicarFiltrosHistorial() {
+    filtrosHistorial = {
+        estado: document.getElementById('filter-historial-estado').value,
+        departamento: document.getElementById('filter-historial-departamento').value,
+        tipo_pago: document.getElementById('filter-historial-tipo-pago').value
+    };
+    
+    console.log('🔍 Aplicando filtros al historial:', filtrosHistorial);
+    cargarHistorial();
+}
+
+function limpiarFiltrosHistorial() {
+    document.getElementById('filter-historial-estado').value = '';
+    document.getElementById('filter-historial-departamento').value = '';
+    document.getElementById('filter-historial-tipo-pago').value = '';
+    
+    filtrosHistorial = {
+        estado: '',
+        departamento: '',
+        tipo_pago: ''
+    };
+    
+    console.log('🧹 Filtros de historial limpiados');
+    cargarHistorial();
+}
+
 // ========================================
 // Toast Notifications
 // ========================================
@@ -837,4 +1166,15 @@ function mostrarToast(mensaje, tipo = 'info') {
     }, 5000);
 }
 
-console.log('✅ Dashboard de Aprobador cargado correctamente');
+// ========================================
+// Exponer funciones globalmente para onclick
+// ========================================
+window.cambiarVista = cambiarVista;
+window.verDetalles = verDetalles;
+window.abrirModalAprobar = abrirModalAprobar;
+window.abrirModalRechazar = abrirModalRechazar;
+window.previewArchivo = previewArchivo;
+window.descargarArchivo = descargarArchivo;
+window.cerrarPreview = cerrarPreview;
+
+console.log('✅ Dashboard de Aprobador cargado correctamente - Versión 2.0 con Historial');
