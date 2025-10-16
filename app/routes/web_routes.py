@@ -2,6 +2,7 @@ from fastapi import APIRouter, Request, HTTPException, Depends
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from app.routes.user_routes import get_current_admin_user
+from app.middleware.auth_middleware import get_current_user, get_optional_current_user
 from app.models.user import UserResponse
 
 # Configurar router y templates
@@ -137,4 +138,33 @@ async def requests_list_page(request: Request):
     return templates.TemplateResponse("requests/list.html", {
         "request": request,
         "title": "Solicitudes de Pagos"
+    })
+
+
+@router.get("/profile", response_class=HTMLResponse, summary="Perfil de usuario")
+async def profile_page(request: Request, current_user: dict | None = Depends(get_optional_current_user)):
+    """
+    Página de perfil del usuario. Si el visitante está autenticado, se inyecta
+    `user` con la información; si no, `user` será None y la plantilla mostrará
+    el contenido público / mensaje de inicio de sesión.
+    """
+    return templates.TemplateResponse("profile.html", {
+        "request": request,
+        "title": "Mi Perfil",
+        "user": current_user
+    })
+
+
+@router.get("/settings", response_class=HTMLResponse, summary="Configuración del usuario")
+async def settings_page(request: Request, current_user: dict | None = Depends(get_optional_current_user)):
+    """
+    Página de configuración del usuario. Si el visitante está autenticado, se
+    inyecta `user` para que el cliente muestre las opciones por rol; si no,
+    la página sigue siendo accesible y mostrará un mensaje o invitación a iniciar
+    sesión en el cliente.
+    """
+    return templates.TemplateResponse("settings.html", {
+        "request": request,
+        "title": "Configuración",
+        "user": current_user
     })

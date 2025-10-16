@@ -1,7 +1,7 @@
 """
 Middleware de autenticación y autorización
 """
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Callable
 
@@ -49,6 +49,48 @@ async def get_current_user(
         "first_name": user.first_name,
         "last_name": user.last_name,
         "nombre": f"{user.first_name} {user.last_name}",  # Nombre completo para compatibilidad
+        "role": user.role,
+        "department": user.department,
+        "is_active": user.status == "active"
+    }
+
+
+async def get_optional_current_user(request: Request) -> dict | None:
+    """
+    Optional current user dependency. Returns None if no Authorization header is provided
+    or the token is invalid. Useful for pages that are public but can show user info
+    when the visitor is authenticated.
+    """
+    # If there's no credentials (no Authorization header) the HTTPBearer dependency
+    # will raise automatically. To allow optional, we must catch that case by
+    # inspecting the incoming header via a try/except usage of the security dependency.
+    # Read Authorization header manually — if missing, return None (public page)
+    auth_header = request.headers.get("authorization") or request.headers.get("Authorization")
+    if not auth_header:
+        return None
+
+    # Use HTTPBearer to parse/validate the header and obtain credentials
+    try:
+        credentials = await security(request)
+    except Exception:
+        # invalid or malformed header
+        return None
+
+    # If credentials present, verify token
+    email = user_controller.verify_token(credentials.credentials)
+    if email is None:
+        return None
+
+    user = await user_controller.get_user_by_email(email)
+    if user is None:
+        return None
+
+    return {
+        "id": str(user.id),
+        "email": user.email,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "nombre": f"{user.first_name} {user.last_name}",
         "role": user.role,
         "department": user.department,
         "is_active": user.status == "active"

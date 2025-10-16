@@ -57,8 +57,16 @@ function isTokenExpired(token) {
             return false;
         }
         
-        // Si el token expira en los próximos 5 minutos, considerarlo expirado para renovarlo
-        return payload.exp < (currentTime + 300); // 5 minutos de buffer
+        // Si el token ya expiró, devolver true.
+        if (payload.exp < currentTime) return true;
+        // Si el token expira en menos de 60 segundos, avisar pero no cerrar sesión automáticamente
+        if (payload.exp < (currentTime + 60)) {
+            console.warn('Token a punto de expirar en menos de 60s');
+            // No forzar logout desde aquí; la función devuelve false para permitir usar la app
+            // y dejar que acciones sensibles manejen la expiración con llamadas API.
+            return false;
+        }
+        return false;
     } catch (error) {
         console.error('Error verificando expiración del token:', error);
         return true; // Si hay error, considerar expirado

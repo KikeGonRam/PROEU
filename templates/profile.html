@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil - Sistema EU-UTVT{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/profile.css?v=1.0">
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-8 px-4">
+    <h2 class="text-2xl font-bold mb-4">Mi Perfil</h2>
+
+    <div id="profile-root">
+        <!-- Contenido dinámico según rol -->
+
+        <div id="profile-solicitante" class="role-section" style="display:none;">
+            <h3 class="text-xl font-semibold">Información del Solicitante</h3>
+            {% if user %}
+            <table class="w-full text-sm">
+                <tr><th class="text-left">ID</th><td>{{ user.id }}</td></tr>
+                <tr><th class="text-left">Nombre</th><td>{{ user.first_name }} {{ user.last_name }}</td></tr>
+                <tr><th class="text-left">Email</th><td>{{ user.email }}</td></tr>
+                <tr><th class="text-left">Departamento</th><td>{{ user.department }}</td></tr>
+                <tr><th class="text-left">Teléfono</th><td>{{ user.phone or 'N/A' }}</td></tr>
+                <tr><th class="text-left">Rol</th><td>{{ user.role }}</td></tr>
+                <tr><th class="text-left">Estado</th><td>{{ user.status }}</td></tr>
+                <tr><th class="text-left">Creado</th><td>{{ user.created_at }}</td></tr>
+                <tr><th class="text-left">Actualizado</th><td>{{ user.updated_at }}</td></tr>
+                <tr><th class="text-left">Último login</th><td>{{ user.last_login or 'Nunca' }}</td></tr>
+            </table>
+            {% else %}
+            <p id="solicitante-name"></p>
+            <p id="solicitante-email"></p>
+            {% endif %}
+            <div id="solicitante-actions" class="mt-4"></div>
+        </div>
+
+        <div id="profile-aprobador" class="role-section" style="display:none;">
+            <h3 class="text-xl font-semibold">Panel del Aprobador</h3>
+            {% if user %}
+            <table class="w-full text-sm">
+                <tr><th class="text-left">Nombre</th><td>{{ user.first_name }} {{ user.last_name }}</td></tr>
+                <tr><th class="text-left">Email</th><td>{{ user.email }}</td></tr>
+                <tr><th class="text-left">Departamento</th><td>{{ user.department }}</td></tr>
+            </table>
+            {% else %}
+            <p id="aprobador-name"></p>
+            <p id="aprobador-email"></p>
+            {% endif %}
+            <div id="aprobador-actions" class="mt-4"></div>
+        </div>
+
+        <div id="profile-pagador" class="role-section" style="display:none;">
+            <h3 class="text-xl font-semibold">Panel del Pagador</h3>
+            {% if user %}
+            <table class="w-full text-sm">
+                <tr><th class="text-left">Nombre</th><td>{{ user.first_name }} {{ user.last_name }}</td></tr>
+                <tr><th class="text-left">Email</th><td>{{ user.email }}</td></tr>
+                <tr><th class="text-left">Departamento</th><td>{{ user.department }}</td></tr>
+            </table>
+            {% else %}
+            <p id="pagador-name"></p>
+            <p id="pagador-email"></p>
+            {% endif %}
+            <div id="pagador-actions" class="mt-4"></div>
+        </div>
+
+        <div id="profile-admin" class="role-section" style="display:none;">
+            <h3 class="text-xl font-semibold">Panel del Administrador</h3>
+            {% if user %}
+            <table class="w-full text-sm">
+                <tr><th class="text-left">Nombre</th><td>{{ user.first_name }} {{ user.last_name }}</td></tr>
+                <tr><th class="text-left">Email</th><td>{{ user.email }}</td></tr>
+                <tr><th class="text-left">Departamento</th><td>{{ user.department }}</td></tr>
+                <tr><th class="text-left">Rol</th><td>{{ user.role }}</td></tr>
+                <tr><th class="text-left">Estado</th><td>{{ user.status }}</td></tr>
+            </table>
+            {% else %}
+            <p id="admin-name"></p>
+            <p id="admin-email"></p>
+            {% endif %}
+            <div id="admin-actions" class="mt-4"></div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/profile.js?v=1.0"></script>
+{% if user %}
+<script>
+    // Inyectar usuario del servidor para que el JS lo consuma
+    window.serverUser = {{ user | tojson | safe }};
+</script>
+{% endif %}
+{% endblock %}
