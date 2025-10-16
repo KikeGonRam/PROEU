@@ -5,6 +5,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes import user_routes, web_routes, solicitud_routes
 from app.routes import aprobador, pagador
+from app.routes import chat_routes
 from app.config.database import connect_to_mongo, close_mongo_connection
 
 @asynccontextmanager
@@ -51,6 +52,7 @@ app.include_router(pagador.router, tags=["Pagador"])
 
 # Incluir rutas web
 app.include_router(web_routes.router, tags=["Web"])
+app.include_router(chat_routes.router, tags=["Chat"])
 
 # Ruta principal
 @app.get("/")
