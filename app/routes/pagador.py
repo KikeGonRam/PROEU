@@ -9,7 +9,7 @@ import json
 from datetime import datetime
 from bson import ObjectId
 
-from app.middleware.auth_middleware import require_role
+from app.middleware.auth_middleware import require_role, require_any_role
 from app.controllers.pagador_controller import pagador_controller
 from app.models.solicitud import SolicitudPago, SolicitudComprobantesPago
 import os
@@ -37,7 +37,7 @@ class DateTimeEncoder(json.JSONEncoder):
 
 @router.get("/dashboard")
 async def dashboard_pagador(
-    current_user: dict = Depends(require_role("pagador"))
+    current_user: dict = Depends(require_any_role("pagador", "admin"))
 ):
     """
     Página principal del dashboard del pagador
@@ -63,7 +63,7 @@ async def dashboard_pagador(
 async def get_solicitudes_aprobadas(
     filtro_departamento: Optional[str] = None,
     filtro_tipo_pago: Optional[str] = None,
-    current_user: dict = Depends(require_role("pagador"))
+    current_user: dict = Depends(require_any_role("pagador", "admin"))
 ):
     """
     Obtener todas las solicitudes aprobadas (pendientes de pago)
@@ -107,7 +107,7 @@ async def get_solicitudes_aprobadas(
 
 @router.get("/api/estadisticas")
 async def get_estadisticas(
-    current_user: dict = Depends(require_role("pagador"))
+    current_user: dict = Depends(require_any_role("pagador", "admin"))
 ):
     """
     Obtener estadísticas del dashboard
@@ -138,7 +138,7 @@ async def get_historial_pagador(
     filtro_estado: Optional[str] = None,
     filtro_departamento: Optional[str] = None,
     filtro_tipo_pago: Optional[str] = None,
-    current_user: dict = Depends(require_role("pagador"))
+    current_user: dict = Depends(require_any_role("pagador", "admin"))
 ):
     """
     Obtener historial de solicitudes pagadas por el pagador
@@ -179,7 +179,7 @@ async def get_historial_pagador(
 async def get_pendientes_comprobante(
     filtro_departamento: Optional[str] = None,
     filtro_tipo_pago: Optional[str] = None,
-    current_user: dict = Depends(require_role("pagador"))
+    current_user: dict = Depends(require_any_role("pagador", "admin"))
 ):
     """
     Obtener solicitudes pagadas que necesitan comprobantes
@@ -218,7 +218,7 @@ async def get_pendientes_comprobante(
 async def get_con_comprobantes(
     filtro_departamento: Optional[str] = None,
     filtro_tipo_pago: Optional[str] = None,
-    current_user: dict = Depends(require_role("pagador"))
+    current_user: dict = Depends(require_any_role("pagador", "admin"))
 ):
     """
     Obtener solicitudes que ya tienen comprobantes subidos
@@ -256,7 +256,7 @@ async def get_con_comprobantes(
 @router.post("/api/marcar-pagada")
 async def marcar_solicitud_pagada(
     pago: SolicitudPago,
-    current_user: dict = Depends(require_role("pagador"))
+    current_user: dict = Depends(require_any_role("pagador", "admin"))
 ):
     """
     Marcar una solicitud como pagada
@@ -303,7 +303,7 @@ async def marcar_solicitud_pagada(
 async def subir_comprobantes(
     solicitud_id: str = Form(...),
     archivos: List[UploadFile] = File(...),
-    current_user: dict = Depends(require_role("pagador"))
+    current_user: dict = Depends(require_any_role("pagador", "admin"))
 ):
     """
     Subir comprobantes de pago (sin límite de archivos ni tamaño)

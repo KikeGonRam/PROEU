@@ -345,8 +345,8 @@
                 return;
             }
 
-            // Verificar que sea solicitante
-            if (window.currentUser && window.currentUser.role !== 'solicitante') {
+            // Verificar que sea solicitante o administrador
+            if (window.currentUser && window.currentUser.role !== 'solicitante' && window.currentUser.role !== 'admin') {
                 redirectByRole(window.currentUser.role);
                 return;
             }

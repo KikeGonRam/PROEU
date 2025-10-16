@@ -7,6 +7,9 @@ let totalUsers = 0;
 let totalPages = 0;
 let currentFilters = {};
 let editingUserId = null;
+// Compatibilidad: alias usados en otras partes del código
+let currentLimit = pageSize;
+let currentTotal = totalUsers;
 
 // Estado del modal
 let isModalOpen = false;
@@ -48,59 +51,153 @@ function setupEventListeners() {
     });
 
     // Cerrar modal al hacer clic fuera
-    document.getElementById('userModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeUserModal();
-        }
-    });
+    const userModalEl = document.getElementById('userModal');
+    if (userModalEl) {
+        userModalEl.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeUserModal();
+            }
+        });
+    }
 
-    document.getElementById('deleteModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeDeleteModal();
-        }
-    });
+    const deleteModalEl = document.getElementById('deleteModal');
+    if (deleteModalEl) {
+        deleteModalEl.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDeleteModal();
+            }
+        });
+    }
 }
 
 /**
  * Cargar lista de usuarios
  */
-async function loadUsers() {
+async function loadUsers(page = currentPage, limit = currentLimit, filters = currentFilters) {
     try {
-        showLoading();
-        
+        // Mostrar estado de carga en la UI
+        const loadingEl = document.getElementById('loadingUsers');
+        const usersContainer = document.getElementById('usersTableContainer');
+        const emptyState = document.getElementById('emptyState');
+        if (loadingEl) loadingEl.classList.remove('hidden');
+        if (usersContainer) usersContainer.classList.add('hidden');
+        if (emptyState) emptyState.classList.add('hidden');
+
         // Construir parámetros de consulta
         const params = new URLSearchParams({
-            page: currentPage,
-            limit: pageSize,
-            ...currentFilters
+            page: page,
+            limit: limit,
+            ... (filters || {})
         });
-        
-        const data = await apiRequest(`/users?${params}`);
-        
-        currentPage = data.page;
-        currentLimit = data.limit;
-        currentFilters = filters;
-        
-        renderUsersTable(data.users);
-        renderPagination(data);
-        
+
+    const url = `/users?${params}`;
+    console.log('loadUsers requesting URL:', url);
+    const data = await apiRequest(url);
+        // Debug: mostrar en consola los datos recibidos y los roles de los usuarios
+        try {
+            console.log('loadUsers params:', { page, limit, filters });
+            console.log('loadUsers response:', data);
+            console.log('loadUsers users roles:', (data && data.users) ? data.users.map(u => u.role) : []);
+            if (data && data.users && data.users.length > 0) {
+                console.log('loadUsers example user:', data.users[0]);
+            }
+        } catch (e) {
+            console.warn('Error logging loadUsers debug info:', e);
+        }
+
+        // Actualizar estado local con seguridad
+        currentPage = data.page || page;
+        currentLimit = data.limit || limit;
+        currentFilters = filters || {};
+        // data.total puede venir como total o calcularse a partir de pages*limit
+        currentTotal = data.total || (data.total_pages ? data.total_pages * currentLimit : currentTotal);
+
+        // Renderizar tabla y paginación con comprobaciones DOM
+        // Validar que la respuesta tenga la forma esperada
+        const tbody = document.getElementById('usersTableBody');
+        if (!data || !Array.isArray(data.users)) {
+            console.warn('loadUsers: respuesta inesperada, se esperaba data.users array:', data);
+            if (tbody) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                            No se pudieron obtener usuarios (respuesta inválida)
+                        </td>
+                    </tr>
+                `;
+            }
+        } else {
+            if (tbody) {
+                renderUsersTable(data.users);
+            } else {
+                console.warn('users-table-body no encontrado en el DOM');
+            }
+        }
+
+    const paginationContainer = document.getElementById('paginationNav');
+        if (paginationContainer) {
+            renderPagination(data);
+        } else {
+            console.warn('Contenedor de paginación no encontrado en el DOM');
+        }
+
+        // Mostrar resultados o estado vacío
+        if (loadingEl) loadingEl.classList.add('hidden');
+        if (data.users && data.users.length > 0) {
+            if (usersContainer) usersContainer.classList.remove('hidden');
+            if (emptyState) emptyState.classList.add('hidden');
+        } else {
+            if (usersContainer) usersContainer.classList.add('hidden');
+            if (emptyState) emptyState.classList.remove('hidden');
+        }
+
     } catch (error) {
         console.error('Error loading users:', error);
-        showAlert('Error al cargar usuarios: ' + error.message, 'error');
-        document.getElementById('users-table-body').innerHTML = `
-            <tr>
-                <td colspan="6" class="px-6 py-4 text-center text-red-500">
-                    <i class="fas fa-exclamation-triangle mr-2"></i>
-                    Error al cargar usuarios
-                </td>
-            </tr>
-        `;
+        showAlert('Error al cargar usuarios: ' + (error && error.message ? error.message : error), 'error');
+        // Ocultar cargando y mostrar mensaje vacío/error
+        const loadingEl = document.getElementById('loadingUsers');
+        const usersContainer = document.getElementById('usersTableContainer');
+        const emptyState = document.getElementById('emptyState');
+        if (loadingEl) loadingEl.classList.add('hidden');
+        if (usersContainer) usersContainer.classList.add('hidden');
+        const tbody = document.getElementById('usersTableBody');
+        if (tbody) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="px-6 py-4 text-center text-red-500">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        Error al cargar usuarios
+                    </td>
+                </tr>
+            `;
+        } else {
+            console.warn('No se pudo mostrar el mensaje de error: users-table-body no existe');
+        }
     }
 }
 
 // Renderizar tabla de usuarios
+// Helper global: resolver badge de rol usando getRoleBadge y fallback local
+function resolveRoleBadge(role) {
+    try {
+        let badge = (typeof getRoleBadge === 'function') ? getRoleBadge(role) : null;
+        if (badge && !badge.includes('Desconocido')) return badge;
+        const r = (role || '').toString().trim().toLowerCase();
+        const local = {
+            'pagador': '<span class="badge badge-teal"><i class="fas fa-money-bill-wave mr-1"></i>Pagador</span>',
+            'aprobador': '<span class="badge badge-primary"><i class="fas fa-user-check mr-1"></i>Aprobador</span>',
+            'admin': '<span class="badge badge-info"><i class="fas fa-crown mr-1"></i>Administrador</span>',
+            'solicitante': '<span class="badge badge-secondary"><i class="fas fa-user mr-1"></i>Solicitante</span>'
+        };
+        return local[r] || badge || '<span class="badge badge-secondary">Desconocido</span>';
+    } catch (e) {
+        console.warn('resolveRoleBadge error:', e);
+        return '<span class="badge badge-secondary">Desconocido</span>';
+    }
+}
+
 function renderUsersTable(users) {
-    const tbody = document.getElementById('users-table-body');
+    const tbody = document.getElementById('usersTableBody');
     
     if (users.length === 0) {
         tbody.innerHTML = `
@@ -137,7 +234,7 @@ function renderUsersTable(users) {
                 ${user.department}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-                ${getRoleBadge(user.role)}
+                ${resolveRoleBadge(user.role)}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
                 ${getStatusBadge(user.status)}
@@ -147,13 +244,13 @@ function renderUsersTable(users) {
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div class="flex space-x-2">
-                    <button onclick="editUser('${user.id}')" class="text-primary-600 hover:text-primary-900" title="Editar">
+                    <button onclick="editUser('${user.id || user._id}')" class="text-primary-600 hover:text-primary-900" title="Editar">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button onclick="deleteUser('${user.id}', '${user.first_name} ${user.last_name}')" class="text-red-600 hover:text-red-900" title="Eliminar">
+                    <button onclick="deleteUser('${user.id || user._id}', '${user.first_name} ${user.last_name}')" class="text-red-600 hover:text-red-900" title="Eliminar">
                         <i class="fas fa-trash"></i>
                     </button>
-                    <button onclick="toggleUserStatus('${user.id}', '${user.status}')" class="text-yellow-600 hover:text-yellow-900" title="Cambiar estado">
+                    <button onclick="toggleUserStatus('${user.id || user._id}', '${user.status}')" class="text-yellow-600 hover:text-yellow-900" title="Cambiar estado">
                         <i class="fas fa-toggle-${user.status === 'active' ? 'on' : 'off'}"></i>
                     </button>
                 </div>
@@ -164,14 +261,21 @@ function renderUsersTable(users) {
 
 // Renderizar paginación
 function renderPagination(data) {
-    const paginationContainer = document.getElementById('pagination');
-    paginationContainer.innerHTML = generatePagination(data.page, data.total_pages, 'changePage');
+    const paginationContainer = document.getElementById('paginationNav');
+    if (paginationContainer) {
+        paginationContainer.innerHTML = generatePagination(data.page, data.total_pages, 'changePage');
+    } else {
+        console.warn('Contenedor de paginación no encontrado');
+    }
 }
 
 // Cambiar página
 function changePage(page) {
-    if (page >= 1 && page <= Math.ceil(currentTotal / currentLimit)) {
+    const maxPage = currentLimit > 0 ? Math.ceil(currentTotal / currentLimit) : Infinity;
+    if (page >= 1 && page <= maxPage) {
         loadUsers(page, currentLimit, currentFilters);
+    } else {
+        console.warn(`Página inválida solicitada: ${page} (max ${maxPage})`);
     }
 }
 
@@ -179,16 +283,26 @@ function changePage(page) {
 function applyFilters() {
     const filters = {};
     
-    const search = document.getElementById('search').value.trim();
+    const searchEl = document.getElementById('searchInput');
+    const search = searchEl ? searchEl.value.trim() : '';
     if (search) filters.search = search;
     
-    const role = document.getElementById('role-filter').value;
-    if (role) filters.role = role;
+    const roleEl = document.getElementById('roleFilter');
+    const role = roleEl ? roleEl.value : '';
+    // Normalizar role
+    if (role) filters.role = role.toString().trim().toLowerCase();
     
-    const status = document.getElementById('status-filter').value;
-    if (status) filters.status = status;
+    const statusEl = document.getElementById('statusFilter');
+    const status = statusEl ? statusEl.value : '';
+    if (status) filters.status = status.toString().trim().toLowerCase();
     
     currentPage = 1; // Reset to first page when filtering
+    // Eliminar claves vacías (por si acaso)
+    Object.keys(filters).forEach(k => {
+        const v = filters[k];
+        if (v === null || v === undefined || (typeof v === 'string' && v.trim() === '')) delete filters[k];
+    });
+    console.log('applyFilters built filters:', filters);
     loadUsers(currentPage, currentLimit, filters);
 }
 
@@ -208,6 +322,12 @@ function openCreateModal() {
     clearForm('userForm');
     const userModal = document.getElementById('userModal');
     if (userModal) userModal.classList.remove('hidden');
+    // Mostrar passwordBlock enfatizado para creación
+    const passwordBlock = document.getElementById('passwordBlock');
+    if (passwordBlock) {
+        passwordBlock.classList.remove('bg-gray-50','border-gray-200');
+        passwordBlock.classList.add('bg-yellow-100','border-yellow-400');
+    }
 }
 
 // Abrir modal para editar usuario
@@ -227,8 +347,8 @@ async function editUser(userId) {
         // Cargar datos del usuario
         const user = await apiRequest(`/users/${userId}`);
         // Llenar formulario
-        const userIdInput = document.getElementById('userId');
-        if (userIdInput) userIdInput.value = user.id;
+    const userIdInput = document.getElementById('userId');
+    if (userIdInput) userIdInput.value = user.id || user._id;
         const firstNameInput = document.getElementById('firstName');
         if (firstNameInput) firstNameInput.value = user.first_name;
         const lastNameInput = document.getElementById('lastName');
@@ -236,6 +356,8 @@ async function editUser(userId) {
         const emailInput = document.getElementById('email');
         if (emailInput) emailInput.value = user.email;
         const departmentInput = document.getElementById('department');
+
+    
         if (departmentInput) departmentInput.value = user.department;
         const phoneInput = document.getElementById('phone');
         if (phoneInput) phoneInput.value = user.phone || '';
@@ -246,6 +368,12 @@ async function editUser(userId) {
         if (passwordInput) passwordInput.value = '';
         const userModal = document.getElementById('userModal');
         if (userModal) userModal.classList.remove('hidden');
+        // Mostrar passwordBlock neutral para edición
+        const passwordBlock = document.getElementById('passwordBlock');
+        if (passwordBlock) {
+            passwordBlock.classList.remove('bg-yellow-100','border-yellow-400');
+            passwordBlock.classList.add('bg-gray-50','border-gray-200');
+        }
     } catch (error) {
         console.error('Error loading user:', error);
         showAlert('Error al cargar usuario: ' + error.message, 'error');
@@ -288,6 +416,10 @@ async function handleUserSubmit(event) {
         let response;
         if (isEditMode) {
             const userId = formData.get('userId');
+            if (!userId) {
+                showAlert('ID de usuario no proporcionado', 'error');
+                return;
+            }
             response = await apiRequest(`/users/${userId}`, {
                 method: 'PUT',
                 body: JSON.stringify(userData)
@@ -352,4 +484,18 @@ async function toggleUserStatus(userId, currentStatus) {
 // Exportar usuarios (función futura)
 function exportUsers() {
     showAlert('Función de exportación en desarrollo', 'info');
+}
+
+// -----------------------------
+// Compatibilidad con nombres antiguos usados en plantillas
+// Algunas plantillas llaman a `openAddUserModal` y `closeUserModal`.
+// Mantener wrappers para evitar errores ReferenceError.
+function openAddUserModal() {
+    if (typeof openCreateModal === 'function') return openCreateModal();
+    console.warn('openCreateModal no está disponible');
+}
+
+function closeUserModal() {
+    if (typeof closeModal === 'function') return closeModal();
+    console.warn('closeModal no está disponible');
 }

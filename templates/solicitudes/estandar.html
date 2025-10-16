@@ -354,9 +354,9 @@
                 return;
             }
 
-            // Verificar que sea solicitante
-            if (window.currentUser && window.currentUser.role !== 'solicitante') {
-                console.log('Usuario no es solicitante, redirigiendo...');
+            // Verificar que sea solicitante o administrador
+            if (window.currentUser && window.currentUser.role !== 'solicitante' && window.currentUser.role !== 'admin') {
+                console.log('Usuario no es solicitante ni admin, redirigiendo...');
                 redirectByRole(window.currentUser.role);
                 return;
             }

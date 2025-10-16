@@ -11,7 +11,7 @@ from bson import ObjectId
 
 from app.controllers.aprobador_controller import AprobadorController
 from app.models.solicitud import SolicitudAprobacion, SolicitudRechazo
-from app.middleware.auth_middleware import get_current_user, require_role
+from app.middleware.auth_middleware import get_current_user, require_role, require_any_role
 
 router = APIRouter(prefix="/aprobador", tags=["Aprobador"])
 
@@ -32,7 +32,7 @@ class DateTimeEncoder(json.JSONEncoder):
 @router.get("/dashboard", response_class=HTMLResponse)
 async def dashboard_aprobador(
     request: Request,
-    current_user: dict = Depends(require_role("aprobador"))
+    current_user: dict = Depends(require_any_role("aprobador", "admin"))
 ):
     """
     Página principal del dashboard del aprobador
@@ -55,7 +55,7 @@ async def get_solicitudes_pendientes(
     filtro_departamento: Optional[str] = Query(None, description="Filtrar por departamento"),
     filtro_tipo_pago: Optional[str] = Query(None, description="Filtrar por tipo de pago"),
     limite: int = Query(100, ge=1, le=500, description="Límite de resultados"),
-    current_user: dict = Depends(require_role("aprobador"))
+    current_user: dict = Depends(require_any_role("aprobador", "admin"))
 ):
     """
     Obtener todas las solicitudes pendientes de aprobación
@@ -101,7 +101,7 @@ async def get_solicitudes_pendientes(
 
 @router.get("/api/estadisticas")
 async def get_estadisticas(
-    current_user: dict = Depends(require_role("aprobador"))
+    current_user: dict = Depends(require_any_role("aprobador", "admin"))
 ):
     """
     Obtener estadísticas del dashboard
@@ -135,7 +135,7 @@ async def get_historial(
     filtro_departamento: Optional[str] = Query(None, description="Filtrar por departamento"),
     filtro_tipo_pago: Optional[str] = Query(None, description="Filtrar por tipo de pago"),
     limite: int = Query(100, description="Límite de solicitudes"),
-    current_user: dict = Depends(require_role("aprobador"))
+    current_user: dict = Depends(require_any_role("aprobador", "admin"))
 ):
     """
     Obtener historial de solicitudes aprobadas y rechazadas por el aprobador
@@ -187,7 +187,7 @@ async def get_historial(
 @router.post("/api/aprobar")
 async def aprobar_solicitud(
     aprobacion: SolicitudAprobacion,
-    current_user: dict = Depends(require_role("aprobador"))
+    current_user: dict = Depends(require_any_role("aprobador", "admin"))
 ):
     """
     Aprobar una solicitud
@@ -220,7 +220,7 @@ async def aprobar_solicitud(
 @router.post("/api/rechazar")
 async def rechazar_solicitud(
     rechazo: SolicitudRechazo,
-    current_user: dict = Depends(require_role("aprobador"))
+    current_user: dict = Depends(require_any_role("aprobador", "admin"))
 ):
     """
     Rechazar una solicitud (requiere comentarios obligatorios)
@@ -253,7 +253,7 @@ async def rechazar_solicitud(
 @router.get("/api/solicitud/{solicitud_id}")
 async def get_solicitud_detalle(
     solicitud_id: str,
-    current_user: dict = Depends(require_role("aprobador"))
+    current_user: dict = Depends(require_any_role("aprobador", "admin"))
 ):
     """
     Obtener detalles de una solicitud específica

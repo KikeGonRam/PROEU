@@ -195,8 +195,8 @@
             return;
         }
 
-        // Verificar que sea solicitante
-        if (currentUser && currentUser.role !== 'solicitante') {
+        // Verificar que sea solicitante o administrador
+        if (currentUser && currentUser.role !== 'solicitante' && currentUser.role !== 'admin') {
             redirectByRole(currentUser.role);
             return;
         }
@@ -295,7 +295,7 @@
                         </button>
                         
                         <!-- Botones para solicitante -->
-                        ${getUserRole() === 'solicitante' ? `
+                        ${getUserRole() === 'solicitante' || getUserRole() === 'admin' ? `
                             ${(solicitud.estado === 'borrador' || solicitud.estado === 'pendiente') ? `
                                 <button onclick="editarSolicitud('${solicitud.id}')" 
                                         class="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-xs rounded hover:bg-green-200 transition-colors">

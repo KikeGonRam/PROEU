@@ -115,11 +115,22 @@ function getStatusBadge(status) {
 
 // Función para obtener badge de rol
 function getRoleBadge(role) {
+    // Normalizar entrada para evitar problemas con mayúsculas/espacios
+    const r = (role || '').toString().trim().toLowerCase();
     const badges = {
         'admin': '<span class="badge badge-info"><i class="fas fa-crown mr-1"></i>Administrador</span>',
-        'solicitante': '<span class="badge badge-secondary"><i class="fas fa-user mr-1"></i>Solicitante</span>'
+        'solicitante': '<span class="badge badge-secondary"><i class="fas fa-user mr-1"></i>Solicitante</span>',
+        'aprobador': '<span class="badge badge-primary"><i class="fas fa-user-check mr-1"></i>Aprobador</span>',
+        'pagador': '<span class="badge badge-teal"><i class="fas fa-money-bill-wave mr-1"></i>Pagador</span>'
     };
-    return badges[role] || '<span class="badge badge-secondary">Desconocido</span>';
+    // Alias comunes: mapear variaciones a claves canónicas
+    const alias = {
+        'payer': 'pagador',
+        'pay': 'pagador',
+        'payment': 'pagador'
+    };
+    const key = badges[r] ? r : (alias[r] || r);
+    return badges[key] || '<span class="badge badge-secondary">Desconocido</span>';
 }
 
 // Función para confirmar acciones

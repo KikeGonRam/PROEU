@@ -169,7 +169,7 @@ async function handleRegister(event) {
             last_name: formData.get('lastName'),
             department: formData.get('department'),
             phone: formData.get('phone') || null,
-            role: 'solicitante', // Por defecto, todos los registros son solicitantes
+            role: 'solicitante', // por defecto
             status: 'active'
         };
         
@@ -283,41 +283,46 @@ function updateUIForUnauthenticatedUser() {
 // Actualizar información del usuario
 function updateUserInfo() {
     if (!currentUser) return;
-    
+
     // Actualizar nombre en el header
     const userNameElements = document.querySelectorAll('.user-name');
     userNameElements.forEach(element => {
         element.textContent = `${currentUser.first_name} ${currentUser.last_name}`;
     });
-    
+
     // Actualizar email
     const userEmailElements = document.querySelectorAll('.user-email');
     userEmailElements.forEach(element => {
         element.textContent = currentUser.email;
     });
-    
+
     // Actualizar departamento
     const userDepartmentElements = document.querySelectorAll('.user-department');
     userDepartmentElements.forEach(element => {
         element.textContent = currentUser.department;
     });
-    
-    // Actualizar rol
+
+    // Actualizar rol (texto legible)
     const userRoleElements = document.querySelectorAll('.user-role');
     userRoleElements.forEach(element => {
-        element.textContent = currentUser.role === 'admin' ? 'Administrador' : 'Solicitante';
+        if (currentUser.role === 'admin') element.textContent = 'Administrador';
+        else if (currentUser.role === 'pagador') element.textContent = 'Pagador';
+        else if (currentUser.role === 'aprobador') element.textContent = 'Aprobador';
+        else element.textContent = 'Solicitante';
     });
-    
-    // Mostrar/ocultar elementos según el rol
-    if (currentUser.role === 'admin') {
-        document.querySelectorAll('.admin-only').forEach(element => {
-            element.style.display = 'block';
-        });
-    } else {
-        document.querySelectorAll('.admin-only').forEach(element => {
-            element.style.display = 'none';
-        });
-    }
+
+    // Mostrar/ocultar elementos según el rol (admin, aprobador, pagador)
+    document.querySelectorAll('.admin-only').forEach(element => {
+        element.style.display = (currentUser.role === 'admin') ? 'block' : 'none';
+    });
+
+    document.querySelectorAll('.aprobador-only').forEach(element => {
+        element.style.display = (currentUser.role === 'aprobador' || currentUser.role === 'admin') ? 'block' : 'none';
+    });
+
+    document.querySelectorAll('.pagador-only').forEach(element => {
+        element.style.display = (currentUser.role === 'pagador' || currentUser.role === 'admin') ? 'block' : 'none';
+    });
 }
 
 // Verificar si el usuario tiene permiso de administrador

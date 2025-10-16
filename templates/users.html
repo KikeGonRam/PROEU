@@ -186,10 +186,10 @@
             <form id="userForm">
                 <input type="hidden" id="userId" name="userId">
                 <!-- Campo de contraseña para crear/editar usuario -->
-                <div class="mb-4 p-4" style="background: #fff700; font-size: 1.1rem; font-weight: bold; border-radius: 8px; border: 2px solid #eab308;">
-                    <label for="password" id="passwordLabel" class="block mb-2 text-gray-900">Contraseña (solo si deseas cambiarla)</label>
-                    <input type="password" id="password" name="password" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-yellow-400" placeholder="Nueva contraseña...">
-                    <p id="passwordHelp" class="text-sm text-gray-700 mt-2 font-bold">Dejar vacío para mantener la contraseña actual</p>
+                <div id="passwordBlock" class="mb-4 p-4 bg-gray-50 border border-gray-200 rounded">
+                    <label for="password" id="passwordLabel" class="block mb-2 text-sm font-medium text-gray-700">Contraseña (solo si deseas cambiarla)</label>
+                    <input type="password" id="password" name="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Nueva contraseña...">
+                    <p id="passwordHelp" class="text-sm text-gray-500 mt-2">Dejar vacío para mantener la contraseña actual</p>
                 </div>
                 
                 <!-- Grid de dos columnas -->
@@ -464,7 +464,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', path='/js/users_crud.js') }}"></script>
+<script src="{{ url_for('static', path='/js/users_crud.js') }}?v=2"></script>
 <script>
     // Inicializar página de usuarios
     document.addEventListener('DOMContentLoaded', function() {

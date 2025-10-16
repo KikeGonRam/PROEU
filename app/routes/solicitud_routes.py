@@ -44,9 +44,9 @@ async def crear_solicitud_estandar(
         print(f"Usuario actual: {current_user.email}, rol: {current_user.role}")
         print(f"Datos recibidos: {solicitud}")
         
-        # Verificar que el usuario sea solicitante
-        if current_user.role != "solicitante":
-            raise HTTPException(status_code=403, detail="Solo los solicitantes pueden crear solicitudes")
+        # Verificar que el usuario sea solicitante o administrador
+        if current_user.role not in ["solicitante", "admin"]:
+            raise HTTPException(status_code=403, detail="Solo los solicitantes o administradores pueden crear solicitudes")
         
         # Crear objeto solicitud
         solicitud_data = {
@@ -100,9 +100,9 @@ async def guardar_borrador_estandar(
     Guardar una solicitud estándar como borrador
     """
     try:
-        # Verificar que el usuario sea solicitante
-        if current_user.role != "solicitante":
-            raise HTTPException(status_code=403, detail="Solo los solicitantes pueden crear solicitudes")
+        # Verificar que el usuario sea solicitante o administrador
+        if current_user.role not in ["solicitante", "admin"]:
+            raise HTTPException(status_code=403, detail="Solo los solicitantes o administradores pueden crear solicitudes")
         
         # Crear objeto solicitud como borrador
         solicitud_data = {
@@ -150,9 +150,13 @@ async def obtener_mis_solicitudes(
     """
     try:
         collection = db["solicitudes_estandar"]
-        
-        # Buscar solicitudes del usuario
-        solicitudes = list(collection.find({"solicitante_email": current_user.email}))
+
+        # Si el usuario es admin, retornar todas las solicitudes; si no, solo las del solicitante
+        if current_user.role == "admin":
+            solicitudes = list(collection.find({}))
+        else:
+            # Buscar solicitudes del usuario
+            solicitudes = list(collection.find({"solicitante_email": current_user.email}))
         
         # Convertir ObjectId a string
         for solicitud in solicitudes:
@@ -174,16 +178,26 @@ async def obtener_estadisticas(
     """
     try:
         collection = db["solicitudes_estandar"]
-        
+
         # Contar solicitudes por estado
-        pipeline = [
-            {"$match": {"solicitante_email": current_user.email}},
-            {"$group": {
-                "_id": "$estado",
-                "count": {"$sum": 1},
-                "total_monto": {"$sum": "$monto"}
-            }}
-        ]
+        if current_user.role == "admin":
+            # Admins ven estadísticas globales
+            pipeline = [
+                {"$group": {
+                    "_id": "$estado",
+                    "count": {"$sum": 1},
+                    "total_monto": {"$sum": "$monto"}
+                }}
+            ]
+        else:
+            pipeline = [
+                {"$match": {"solicitante_email": current_user.email}},
+                {"$group": {
+                    "_id": "$estado",
+                    "count": {"$sum": 1},
+                    "total_monto": {"$sum": "$monto"}
+                }}
+            ]
         
         resultados = list(collection.aggregate(pipeline))
         
@@ -232,14 +246,17 @@ async def subir_archivos(
     try:
         collection = db["solicitudes_estandar"]
         
-        # Verificar que la solicitud existe y pertenece al usuario
+        # Verificar que la solicitud existe
         solicitud = collection.find_one({
-            "_id": ObjectId(solicitud_id),
-            "solicitante_email": current_user.email
+            "_id": ObjectId(solicitud_id)
         })
         
         if not solicitud:
             raise HTTPException(status_code=404, detail="Solicitud no encontrada")
+
+        # Permitir al solicitante propietario o al admin subir archivos
+        if solicitud.get("solicitante_email") != current_user.email and current_user.role != "admin":
+            raise HTTPException(status_code=403, detail="No tienes permisos para subir archivos a esta solicitud")
         
         # Procesar archivos
         archivos_guardados = []
@@ -336,9 +353,9 @@ async def actualizar_solicitud_estandar(
         if not solicitud_existente:
             raise HTTPException(status_code=404, detail="Solicitud no encontrada")
         
-        # Verificar permisos
-        if solicitud_existente.get("solicitante_email") != current_user.email:
-            raise HTTPException(status_code=403, detail="Solo puedes editar tus propias solicitudes")
+        # Verificar permisos: el propietario o el admin pueden editar
+        if solicitud_existente.get("solicitante_email") != current_user.email and current_user.role != "admin":
+            raise HTTPException(status_code=403, detail="Solo el propietario o un administrador pueden editar esta solicitud")
         
         # Verificar estado: solo se pueden editar borradores y pendientes
         estado_actual = solicitud_existente.get("estado", "borrador")
@@ -397,9 +414,9 @@ async def eliminar_solicitud_estandar(
         if not solicitud:
             raise HTTPException(status_code=404, detail="Solicitud no encontrada")
         
-        # Verificar permisos
-        if solicitud.get("solicitante_email") != current_user.email:
-            raise HTTPException(status_code=403, detail="Solo puedes eliminar tus propias solicitudes")
+        # Verificar permisos: el propietario o el admin pueden eliminar
+        if solicitud.get("solicitante_email") != current_user.email and current_user.role != "admin":
+            raise HTTPException(status_code=403, detail="Solo el propietario o un administrador pueden eliminar esta solicitud")
         
         # Verificar estado: solo se pueden eliminar borradores
         estado_actual = solicitud.get("estado", "borrador")
