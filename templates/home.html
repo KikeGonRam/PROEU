@@ -7,7 +7,7 @@
 
 {% block header_actions %}
 <div class="flex space-x-3">
-    <button onclick="refreshDashboard()" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+    <button onclick="refreshDashboard()" class="inline-flex items-center px-4 py-2 border border-primary-500 text-sm font-semibold rounded-md text-primary-700 bg-white hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-150" aria-label="Actualizar dashboard">
         <i class="fas fa-sync-alt mr-2"></i>
         Actualizar
     </button>
@@ -16,6 +16,8 @@
 
 {% block content %}
 <div class="space-y-6">
+    <!-- Notificaciones toast accesibles -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
     <!-- Saludo personalizado -->
     <div class="bg-gradient-to-r from-primary-600 to-blue-600 rounded-lg shadow-lg p-6 text-white">
         <div class="flex items-center justify-between">
@@ -43,7 +45,7 @@
     <!-- Estadísticas disponibles -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Total de Usuarios -->
-        <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow duration-150 focus-within:ring-2 focus-within:ring-primary-500" tabindex="0" aria-label="Total de usuarios">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
@@ -60,7 +62,7 @@
         </div>
 
         <!-- Estado del Sistema -->
-        <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow duration-150 focus-within:ring-2 focus-within:ring-green-500" tabindex="0" aria-label="Estado del sistema">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
@@ -80,7 +82,7 @@
         </div>
 
         <!-- Base de Datos -->
-        <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow duration-150 focus-within:ring-2 focus-within:ring-blue-500" tabindex="0" aria-label="Base de datos">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
@@ -105,7 +107,7 @@
         <!-- Columna principal -->
         <div class="lg:col-span-8">
             <!-- Información del sistema -->
-            <div class="bg-white shadow rounded-lg">
+            <div class="bg-white shadow rounded-lg hover:shadow-lg transition-shadow duration-150 focus-within:ring-2 focus-within:ring-blue-500" tabindex="0" aria-label="Información del sistema">
                 <div class="px-4 py-5 sm:p-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
                         <i class="fas fa-info-circle mr-2 text-blue-600"></i>
@@ -148,7 +150,7 @@
             </div>
 
             <!-- Próximas funcionalidades -->
-            <div class="bg-white shadow rounded-lg mt-6">
+            <div class="bg-white shadow rounded-lg mt-6 hover:shadow-lg transition-shadow duration-150 focus-within:ring-2 focus-within:ring-purple-500" tabindex="0" aria-label="Próximas funcionalidades">
                 <div class="px-4 py-5 sm:p-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
                         <i class="fas fa-road mr-2 text-purple-600"></i>
@@ -192,7 +194,7 @@
         <!-- Sidebar -->
         <div class="mt-6 lg:mt-0 lg:col-span-4">
             <!-- Información del usuario -->
-            <div class="bg-white shadow rounded-lg mb-6">
+            <div class="bg-white shadow rounded-lg mb-6 hover:shadow-lg transition-shadow duration-150 focus-within:ring-2 focus-within:ring-blue-500" tabindex="0" aria-label="Perfil de usuario">
                 <div class="px-4 py-5 sm:p-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
                         <i class="fas fa-user-circle mr-2 text-blue-500"></i>
@@ -209,7 +211,7 @@
             </div>
 
             <!-- Funciones disponibles -->
-            <div class="bg-white shadow rounded-lg mb-6">
+            <div class="bg-white shadow rounded-lg mb-6 hover:shadow-lg transition-shadow duration-150 focus-within:ring-2 focus-within:ring-green-500" tabindex="0" aria-label="Funciones disponibles">
                 <div class="px-4 py-5 sm:p-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
                         <i class="fas fa-tools mr-2 text-green-500"></i>
@@ -250,7 +252,7 @@
             </div>
 
             <!-- Información de desarrollo -->
-            <div class="bg-white shadow rounded-lg">
+            <div class="bg-white shadow rounded-lg hover:shadow-lg transition-shadow duration-150 focus-within:ring-2 focus-within:ring-purple-500" tabindex="0" aria-label="Información técnica">
                 <div class="px-4 py-5 sm:p-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
                         <i class="fas fa-code mr-2 text-purple-500"></i>

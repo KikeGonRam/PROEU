@@ -21,13 +21,13 @@
 {% block content %}
 <div class="space-y-6">
     <!-- Saludo personalizado -->
-    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg shadow-lg p-6 text-white">
+    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg shadow-lg p-8 text-white">
         <div class="flex items-center justify-between">
             <div>
-                <h3 id="welcomeMessage" class="text-2xl font-bold mb-2">
+                <h3 id="welcomeMessage" class="text-3xl font-extrabold mb-3 tracking-tight">
                     ¡Bienvenido, Solicitante!
                 </h3>
-                <p class="text-blue-100">
+                <p class="text-blue-100 text-lg">
                     <i class="fas fa-calendar-alt mr-2"></i>
                     <span id="currentDate"></span>
                 </p>
@@ -36,10 +36,8 @@
                     Desde aquí puedes crear y gestionar tus solicitudes de pago
                 </p>
             </div>
-            <div class="hidden md:block">
-                <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                    <i class="fas fa-file-invoice-dollar text-4xl"></i>
-                </div>
+            <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <i class="fas fa-file-invoice-dollar text-4xl"></i>
             </div>
         </div>
     </div>
@@ -47,61 +45,61 @@
     <!-- Estadísticas de mis solicitudes -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Mis Solicitudes Totales -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-xl shadow-lg p-6 border-l-8 border-blue-500">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <i class="fas fa-file-alt text-blue-600"></i>
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-file-alt text-blue-600 text-xl"></i>
                     </div>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-500">Mis Solicitudes</p>
-                    <p id="totalSolicitudes" class="text-2xl font-semibold text-gray-900">0</p>
+                    <p id="totalSolicitudes" class="text-3xl font-bold text-gray-900">0</p>
                 </div>
             </div>
         </div>
 
         <!-- Solicitudes Pendientes -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-xl shadow-lg p-6 border-l-8 border-yellow-500">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
-                        <i class="fas fa-clock text-yellow-600"></i>
+                    <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-hourglass-half text-yellow-600 text-xl"></i>
                     </div>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-500">Pendientes</p>
-                    <p id="solicitudesPendientes" class="text-2xl font-semibold text-gray-900">0</p>
+                    <p id="solicitudesPendientes" class="text-3xl font-bold text-gray-900">0</p>
                 </div>
             </div>
         </div>
 
         <!-- Solicitudes Aprobadas -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-xl shadow-lg p-6 border-l-8 border-green-500">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                        <i class="fas fa-check-circle text-green-600"></i>
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
                     </div>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-500">Aprobadas</p>
-                    <p id="solicitudesAprobadas" class="text-2xl font-semibold text-gray-900">0</p>
+                    <p id="solicitudesAprobadas" class="text-3xl font-bold text-gray-900">0</p>
                 </div>
             </div>
         </div>
 
-        <!-- Total Solicitado -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <!-- Solicitudes Rechazadas -->
+        <div class="bg-white rounded-xl shadow-lg p-6 border-l-8 border-red-500">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                        <i class="fas fa-dollar-sign text-green-600"></i>
+                    <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-times-circle text-red-600 text-xl"></i>
                     </div>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500">Total Solicitado</p>
-                    <p id="montoTotal" class="text-2xl font-semibold text-gray-900">$0.00</p>
+                    <p class="text-sm font-medium text-gray-500">Rechazadas</p>
+                    <p id="solicitudesRechazadas" class="text-3xl font-bold text-gray-900">0</p>
                 </div>
             </div>
         </div>
@@ -116,19 +114,17 @@
                 </div>
                 <div>
                     <h2 class="text-xl font-semibold text-gray-900">Seleccionar Plantilla</h2>
-                    <p class="text-sm text-gray-500">Toca para ver opciones</p>
+                    <p class="text-sm text-gray-500">Elige el tipo de solicitud que deseas crear</p>
                 </div>
             </div>
             <button onclick="cerrarSelectorSolicitudes()" class="text-gray-400 hover:text-gray-600">
-                <i class="fas fa-chevron-up text-xl"></i>
+                <i class="fas fa-times text-xl"></i>
             </button>
         </div>
 
-        <p class="text-gray-600 mb-6">Selecciona una plantilla o usa el formulario estándar:</p>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Formulario Estándar -->
-            <div class="border-2 border-blue-200 bg-blue-50 rounded-lg p-4 cursor-pointer hover:border-blue-300 transition-colors" onclick="crearSolicitudEstandar()">
+            <div class="border-2 border-blue-500 bg-blue-50 rounded-lg p-4 cursor-pointer hover:bg-blue-100 transition-colors" onclick="crearSolicitudEstandar()">
                 <div class="flex items-start space-x-3">
                     <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
                         <i class="fas fa-file-alt text-white"></i>
@@ -136,81 +132,81 @@
                     <div class="flex-1">
                         <div class="flex items-center space-x-2 mb-1">
                             <h3 class="font-semibold text-gray-900">Formulario Estándar</h3>
-                            <i class="fas fa-check-circle text-blue-600"></i>
+                            <i class="fas fa-star text-blue-600"></i>
                         </div>
                         <p class="text-sm text-gray-600 mb-2">Sistema general</p>
-                        <p class="text-xs text-gray-500">Formulario tradicional con campos personalizables</p>
+                        <p class="text-xs text-gray-500">Formulario flexible con campos personalizables</p>
                     </div>
                 </div>
             </div>
 
             <!-- Solicitud de Pago Tarjetas -->
-            <div class="border rounded-lg p-4 cursor-pointer hover:border-gray-300 transition-colors bg-gray-50" onclick="mostrarProximamente('SOLICITUD DE PAGO TARJETAS')">
+            <div class="border rounded-lg p-4 cursor-pointer hover:border-gray-400 transition-colors bg-gray-50" onclick="mostrarProximamente('SOLICITUD DE PAGO TARJETAS')">
                 <div class="flex items-start space-x-3">
                     <div class="w-10 h-10 bg-gray-400 rounded-lg flex items-center justify-center flex-shrink-0">
                         <i class="fas fa-credit-card text-white"></i>
                     </div>
                     <div class="flex-1">
-                        <h3 class="font-semibold text-gray-900">SOLICITUD DE PAGO T...</h3>
+                        <h3 class="font-semibold text-gray-900">Solicitud de Pago Tarjetas</h3>
                         <p class="text-sm text-gray-600 mb-1">Pagos Corporativos</p>
-                        <p class="text-xs text-gray-500 mb-2">Plantilla especializada para pagos a proveedores de tarjetas NO9 y...</p>
+                        <p class="text-xs text-gray-500 mb-2">Para pagos a proveedores de tarjetas corporativas</p>
                         <div class="flex items-center justify-between">
                             <span class="text-xs text-gray-400">v1.0</span>
-                            <span class="text-xs text-gray-400">0 usos</span>
+                            <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded">Próximamente</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Pago SUA Internas -->
-            <div class="border rounded-lg p-4 cursor-pointer hover:border-gray-300 transition-colors bg-gray-50" onclick="mostrarProximamente('PAGO SUA INTERNAS')">
+            <div class="border rounded-lg p-4 cursor-pointer hover:border-gray-400 transition-colors bg-gray-50" onclick="mostrarProximamente('PAGO SUA INTERNAS')">
                 <div class="flex items-start space-x-3">
                     <div class="w-10 h-10 bg-gray-400 rounded-lg flex items-center justify-center flex-shrink-0">
                         <i class="fas fa-university text-white"></i>
                     </div>
                     <div class="flex-1">
-                        <h3 class="font-semibold text-gray-900">PAGO SUA INTERNAS</h3>
+                        <h3 class="font-semibold text-gray-900">Pago SUA Internas</h3>
                         <p class="text-sm text-gray-600 mb-1">Pagos Fiscales</p>
-                        <p class="text-xs text-gray-500 mb-2">Plantilla especializada para pagos de impuestos relacionados con el...</p>
+                        <p class="text-xs text-gray-500 mb-2">Para pagos de impuestos SUA internos</p>
                         <div class="flex items-center justify-between">
                             <span class="text-xs text-gray-400">v1.0</span>
-                            <span class="text-xs text-gray-400">0 usos</span>
+                            <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded">Próximamente</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Pago SUA Frenshetsi -->
-            <div class="border rounded-lg p-4 cursor-pointer hover:border-gray-300 transition-colors bg-gray-50" onclick="mostrarProximamente('PAGO SUA FRENSHETSI')">
+            <div class="border rounded-lg p-4 cursor-pointer hover:border-gray-400 transition-colors bg-gray-50" onclick="mostrarProximamente('PAGO SUA FRENSHETSI')">
                 <div class="flex items-start space-x-3">
                     <div class="w-10 h-10 bg-gray-400 rounded-lg flex items-center justify-center flex-shrink-0">
                         <i class="fas fa-file-invoice text-white"></i>
                     </div>
                     <div class="flex-1">
-                        <h3 class="font-semibold text-gray-900">PAGO SUA FRENSHETSI</h3>
+                        <h3 class="font-semibold text-gray-900">Pago SUA Frenshetsi</h3>
                         <p class="text-sm text-gray-600 mb-1">Pagos Fiscales</p>
-                        <p class="text-xs text-gray-500 mb-2">Plantilla especializada para pagos de impuestos SUA FRENSHETSI...</p>
+                        <p class="text-xs text-gray-500 mb-2">Para pagos de impuestos SUA Frenshetsi</p>
                         <div class="flex items-center justify-between">
                             <span class="text-xs text-gray-400">v1.0</span>
-                            <span class="text-xs text-gray-400">0 usos</span>
+                            <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded">Próximamente</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Pago Comisiones -->
-            <div class="border rounded-lg p-4 cursor-pointer hover:border-gray-300 transition-colors bg-gray-50" onclick="mostrarProximamente('PAGO COMISIONES')">
+            <div class="border rounded-lg p-4 cursor-pointer hover:border-gray-400 transition-colors bg-gray-50" onclick="mostrarProximamente('PAGO COMISIONES')">
                 <div class="flex items-start space-x-3">
                     <div class="w-10 h-10 bg-gray-400 rounded-lg flex items-center justify-center flex-shrink-0">
                         <i class="fas fa-hand-holding-usd text-white"></i>
                     </div>
                     <div class="flex-1">
-                        <h3 class="font-semibold text-gray-900">PAGO COMISIONES</h3>
-                        <p class="text-sm text-gray-600 mb-1">pagos</p>
-                        <p class="text-xs text-gray-500 mb-2">Plantilla para solicitudes de pago de comisiones</p>
+                        <h3 class="font-semibold text-gray-900">Pago Comisiones</h3>
+                        <p class="text-sm text-gray-600 mb-1">Pagos</p>
+                        <p class="text-xs text-gray-500 mb-2">Para solicitudes de pago de comisiones</p>
                         <div class="flex items-center justify-between">
                             <span class="text-xs text-gray-400">v1.0.0</span>
-                            <span class="text-xs text-gray-400">0 usos</span>
+                            <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded">Próximamente</span>
                         </div>
                     </div>
                 </div>
@@ -324,6 +320,8 @@
 <script>
     // Variables globales
     let solicitudesData = [];
+    let currentUser = null;
+    let isAuthenticated = false;
 
     // Inicializar página
     document.addEventListener('DOMContentLoaded', function() {
@@ -349,12 +347,13 @@
         }
 
         // Mostrar fecha actual
-        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('es-ES', {
+        const fechaActual = new Date().toLocaleDateString('es-ES', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
             day: 'numeric'
         });
+        document.getElementById('currentDate').textContent = fechaActual;
 
         // Personalizar saludo
         if (currentUser) {
@@ -381,6 +380,7 @@
                     total: 0,
                     pendientes: 0,
                     aprobadas: 0,
+                    rechazadas: 0,
                     monto_total: 0
                 });
             }
@@ -392,6 +392,7 @@
                 total: 0,
                 pendientes: 0,
                 aprobadas: 0,
+                rechazadas: 0,
                 monto_total: 0
             });
         }
@@ -401,11 +402,10 @@
      * Actualizar estadísticas del dashboard
      */
     function updateDashboardStats(stats) {
-        document.getElementById('totalSolicitudes').textContent = stats.total;
-        document.getElementById('solicitudesPendientes').textContent = stats.pendientes;
-        document.getElementById('solicitudesAprobadas').textContent = stats.aprobadas;
-        document.getElementById('montoTotal').textContent = 
-            new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(stats.monto_total || 0);
+        document.getElementById('totalSolicitudes').textContent = stats.total || 0;
+        document.getElementById('solicitudesPendientes').textContent = stats.pendientes || 0;
+        document.getElementById('solicitudesAprobadas').textContent = stats.aprobadas || 0;
+        document.getElementById('solicitudesRechazadas').textContent = stats.rechazadas || 0;
     }
 
     /**
@@ -414,7 +414,7 @@
     function mostrarSelectorSolicitudes() {
         const selector = document.getElementById('selectorSolicitudes');
         selector.style.display = 'block';
-        selector.scrollIntoView({ behavior: 'smooth' });
+        selector.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     /**
@@ -437,7 +437,7 @@
      * Mostrar mensaje de próximamente para plantillas
      */
     function mostrarProximamente(tipoPlantilla) {
-        showAlert(`Próximamente: ${tipoPlantilla}`, 'info');
+        showAlert(`La plantilla "${tipoPlantilla}" estará disponible próximamente`, 'info');
     }
 
     /**
@@ -458,8 +458,7 @@
      * Ver historial de pagos
      */
     function verHistorialPagos() {
-        // TODO: Implementar cuando tengamos el módulo de solicitudes
-        showAlert('Próximamente: Historial de pagos', 'info');
+        showAlert('El módulo de historial estará disponible próximamente', 'info');
     }
 
     /**
@@ -467,7 +466,54 @@
      */
     function refreshDashboard() {
         loadDashboardData();
-        showAlert('Dashboard actualizado', 'success');
+        showAlert('Dashboard actualizado correctamente', 'success');
+    }
+
+    /**
+     * Función auxiliar para mostrar alertas (debe estar definida en base.html o aquí)
+     */
+    function showAlert(message, type = 'info') {
+        // Implementación básica - ajusta según tu sistema de alertas
+        alert(message);
+    }
+
+    /**
+     * Función auxiliar para hacer peticiones API (debe estar definida en base.html)
+     */
+    async function apiRequest(url, options = {}) {
+        try {
+            const response = await fetch(url, {
+                ...options,
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('API Request error:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Función auxiliar para redireccionar según rol
+     */
+    function redirectByRole(role) {
+        const roleRoutes = {
+            'admin': '/admin/dashboard',
+            'aprobador': '/aprobador/dashboard',
+            'finanzas': '/finanzas/dashboard'
+        };
+        
+        if (roleRoutes[role]) {
+            window.location.href = roleRoutes[role];
+        }
     }
 </script>
 {% endblock %}

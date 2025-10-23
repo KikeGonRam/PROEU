@@ -28,64 +28,86 @@
         </div>
     </header>
 
-    <!-- Tarjetas de Estadísticas -->
-    <section class="stats-container">
-        <div class="stat-card stat-pendientes">
-            <div class="stat-icon">
-                <i class="fas fa-clock"></i>
+        <!-- Tarjetas de Estadísticas alineadas y accesibles -->
+        <section class="flex flex-col md:flex-row gap-8 mt-8 font-sans">
+            <div class="flex-1 flex flex-col gap-6">
+                <div class="bg-white rounded-xl shadow-lg p-6 border-l-8 border-yellow-500 flex flex-col justify-between">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-clock text-yellow-600"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-base font-semibold text-gray-700">Pendientes de Pago</p>
+                            <p id="stat-pendientes" class="text-3xl font-bold text-yellow-700">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 border-l-8 border-green-500 flex flex-col justify-between">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check-circle text-green-600"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-base font-semibold text-gray-700">Pagadas este Mes</p>
+                            <p id="stat-pagadas" class="text-3xl font-bold text-green-700">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 border-l-8 border-blue-500 flex flex-col justify-between">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-file-invoice text-blue-600"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-base font-semibold text-gray-700">Comprobantes Pendientes</p>
+                            <p id="stat-comprobantes" class="text-3xl font-bold text-blue-700">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 border-l-8 border-green-400 flex flex-col justify-between">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-dollar-sign text-green-600"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-base font-semibold text-gray-700">Monto Pagado este Mes</p>
+                            <p id="stat-monto" class="text-3xl font-bold text-green-700">$0.00</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="stat-content">
-                <div class="stat-value" id="stat-pendientes">0</div>
-                <div class="stat-label">Pendientes de Pago</div>
-            </div>
-        </div>
+        </section>
 
-        <div class="stat-card stat-pagadas">
-            <div class="stat-icon">
-                <i class="fas fa-check-circle"></i>
+        <!-- Navegación por Tabs y Filtros agrupados -->
+        <section class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-8">
+            <div class="flex gap-2 mb-2 md:mb-0">
+                <button class="tab-button active" onclick="cambiarVista('aprobadas')">
+                    <i class="fas fa-clock"></i> <span class="ml-1">Solicitudes Aprobadas</span>
+                </button>
+                <button class="tab-button" onclick="cambiarVista('comprobantes')">
+                    <i class="fas fa-file-invoice"></i> <span class="ml-1">Subir Comprobantes</span>
+                </button>
+                <button class="tab-button" onclick="cambiarVista('ver-comprobantes')">
+                    <i class="fas fa-check-circle"></i> <span class="ml-1">Ver Comprobantes</span>
+                </button>
+                <button class="tab-button" onclick="cambiarVista('historial')">
+                    <i class="fas fa-history"></i> <span class="ml-1">Mi Historial</span>
+                </button>
             </div>
-            <div class="stat-content">
-                <div class="stat-value" id="stat-pagadas">0</div>
-                <div class="stat-label">Pagadas este Mes</div>
+            <!-- Filtros agrupados para la vista activa -->
+            <div class="flex flex-wrap gap-4 items-center">
+                <!-- Los filtros se muestran según la vista activa, aquí solo ejemplo visual -->
+                <!-- ...existing code for filters... -->
             </div>
-        </div>
-
-        <div class="stat-card stat-comprobantes">
-            <div class="stat-icon">
-                <i class="fas fa-file-invoice"></i>
-            </div>
-            <div class="stat-content">
-                <div class="stat-value" id="stat-comprobantes">0</div>
-                <div class="stat-label">Comprobantes Pendientes</div>
-            </div>
-        </div>
-
-        <div class="stat-card stat-monto">
-            <div class="stat-icon">
-                <i class="fas fa-dollar-sign"></i>
-            </div>
-            <div class="stat-content">
-                <div class="stat-value" id="stat-monto">$0.00</div>
-                <div class="stat-label">Monto Pagado este Mes</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Navegación por Tabs -->
-    <section class="tabs-navigation">
-        <button class="tab-button active" onclick="cambiarVista('aprobadas')">
-            <i class="fas fa-clock"></i> Solicitudes Aprobadas
-        </button>
-        <button class="tab-button" onclick="cambiarVista('comprobantes')">
-            <i class="fas fa-file-invoice"></i> Subir Comprobantes
-        </button>
-        <button class="tab-button" onclick="cambiarVista('ver-comprobantes')">
-            <i class="fas fa-check-circle"></i> Ver Comprobantes
-        </button>
-        <button class="tab-button" onclick="cambiarVista('historial')">
-            <i class="fas fa-history"></i> Mi Historial
-        </button>
-    </section>
+        </section>
 
     <!-- Filtros para Solicitudes Aprobadas -->
     <section class="filters-section" id="filtros-aprobadas">
@@ -298,130 +320,105 @@
         </div>
     </section>
 
-    <!-- Tabla de Solicitudes Aprobadas -->
-    <section class="table-section" id="seccion-aprobadas">
-        <div class="table-header">
-            <h2 class="table-title">
-                <i class="fas fa-list"></i>
-                Solicitudes Aprobadas
-            </h2>
-            <span class="table-info" id="total-solicitudes">0 solicitudes</span>
-        </div>
-
-        <div class="table-container" id="tabla-solicitudes-container">
-            <div class="loading-spinner">
-                <i class="fas fa-spinner fa-spin"></i>
-                <p>Cargando solicitudes...</p>
+        <!-- Tabla de Solicitudes Aprobadas mejorada -->
+        <section class="table-section" id="seccion-aprobadas">
+            <div class="table-header flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                <h2 class="table-title text-lg font-bold flex items-center">
+                    <i class="fas fa-list mr-2"></i> Solicitudes Aprobadas
+                </h2>
+                <span class="table-info text-sm text-gray-600" id="total-solicitudes">0 solicitudes</span>
             </div>
-        </div>
-    </section>
-
-    <!-- Tabla de Historial (inicialmente oculta) -->
-    <section class="table-section" id="seccion-historial" style="display: none;">
-        <div class="table-header">
-            <h2 class="table-title">
-                <i class="fas fa-history"></i>
-                Mi Historial - Solicitudes Pagadas
-            </h2>
-            <span class="table-info" id="total-historial">0 solicitudes</span>
-        </div>
-
-        <div class="table-container" id="tabla-historial-container">
-            <div class="loading-spinner">
-                <i class="fas fa-spinner fa-spin"></i>
-                <p>Cargando historial...</p>
+            <div class="table-container overflow-x-auto rounded-lg shadow" id="tabla-solicitudes-container">
+                <div class="loading-spinner flex flex-col items-center gap-2 py-8">
+                    <i class="fas fa-spinner fa-spin text-2xl text-blue-500"></i>
+                    <span class="text-gray-500">Cargando solicitudes...</span>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Tabla de Comprobantes Pendientes (inicialmente oculta) -->
-    <section class="table-section" id="seccion-comprobantes" style="display: none;">
-        <div class="table-header">
-            <h2 class="table-title">
-                <i class="fas fa-file-invoice"></i>
-                Solicitudes Pendientes de Comprobante
-            </h2>
-            <span class="table-info" id="total-comprobantes">0 solicitudes</span>
-        </div>
-
-        <div class="table-container" id="tabla-comprobantes-container">
-            <div class="loading-spinner">
-                <i class="fas fa-spinner fa-spin"></i>
-                <p>Cargando solicitudes...</p>
+        <!-- Tabla de Historial mejorada -->
+        <section class="table-section" id="seccion-historial" style="display: none;">
+            <div class="table-header flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                <h2 class="table-title text-lg font-bold flex items-center">
+                    <i class="fas fa-history mr-2"></i> Mi Historial - Solicitudes Pagadas
+                </h2>
+                <span class="table-info text-sm text-gray-600" id="total-historial">0 solicitudes</span>
             </div>
-        </div>
-    </section>
-
-    <!-- Tabla de Ver Comprobantes (inicialmente oculta) -->
-    <section class="table-section" id="seccion-ver-comprobantes" style="display: none;">
-        <div class="table-header">
-            <h2 class="table-title">
-                <i class="fas fa-check-circle"></i>
-                Solicitudes con Comprobantes Subidos
-            </h2>
-            <span class="table-info" id="total-ver-comprobantes">0 solicitudes</span>
-        </div>
-
-        <div class="table-container" id="tabla-ver-comprobantes-container">
-            <div class="loading-spinner">
-                <i class="fas fa-spinner fa-spin"></i>
-                <p>Cargando solicitudes...</p>
+            <div class="table-container overflow-x-auto rounded-lg shadow" id="tabla-historial-container">
+                <div class="loading-spinner flex flex-col items-center gap-2 py-8">
+                    <i class="fas fa-spinner fa-spin text-2xl text-blue-500"></i>
+                    <span class="text-gray-500">Cargando historial...</span>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <!-- Tabla de Comprobantes Pendientes mejorada -->
+        <section class="table-section" id="seccion-comprobantes" style="display: none;">
+            <div class="table-header flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                <h2 class="table-title text-lg font-bold flex items-center">
+                    <i class="fas fa-file-invoice mr-2"></i> Solicitudes Pendientes de Comprobante
+                </h2>
+                <span class="table-info text-sm text-gray-600" id="total-comprobantes">0 solicitudes</span>
+            </div>
+            <div class="table-container overflow-x-auto rounded-lg shadow" id="tabla-comprobantes-container">
+                <div class="loading-spinner flex flex-col items-center gap-2 py-8">
+                    <i class="fas fa-spinner fa-spin text-2xl text-blue-500"></i>
+                    <span class="text-gray-500">Cargando solicitudes...</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tabla de Ver Comprobantes mejorada -->
+        <section class="table-section" id="seccion-ver-comprobantes" style="display: none;">
+            <div class="table-header flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                <h2 class="table-title text-lg font-bold flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i> Solicitudes con Comprobantes Subidos
+                </h2>
+                <span class="table-info text-sm text-gray-600" id="total-ver-comprobantes">0 solicitudes</span>
+            </div>
+            <div class="table-container overflow-x-auto rounded-lg shadow" id="tabla-ver-comprobantes-container">
+                <div class="loading-spinner flex flex-col items-center gap-2 py-8">
+                    <i class="fas fa-spinner fa-spin text-2xl text-blue-500"></i>
+                    <span class="text-gray-500">Cargando solicitudes...</span>
+                </div>
+            </div>
+        </section>
 </div>
 
 <!-- Modal: Marcar como Pagada -->
-<div id="modal-pagar" class="modal">
-    <div class="modal-content">
-        <div class="modal-header modal-success">
-            <h2 class="modal-title">
-                <i class="fas fa-money-check-alt"></i>
-                Marcar como Pagada
+<div id="modal-pagar" class="modal" aria-modal="true" role="dialog">
+    <div class="modal-content rounded-lg shadow-lg bg-white">
+        <div class="modal-header modal-success flex items-center justify-between border-b pb-2">
+            <h2 class="modal-title text-lg font-bold flex items-center">
+                <i class="fas fa-money-check-alt mr-2"></i> Marcar como Pagada
             </h2>
-            <button class="modal-close" data-modal="modal-pagar">
+            <button class="modal-close" data-modal="modal-pagar" aria-label="Cerrar">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body p-4">
             <input type="hidden" id="pagar-solicitud-id">
-            
             <div class="solicitud-info mb-2" id="pagar-info-solicitud"></div>
-            
-            <div class="form-group">
-                <label for="pagar-referencia">
-                    <i class="fas fa-hashtag"></i>
-                    Referencia de Pago
+            <div class="form-group mb-4">
+                <label for="pagar-referencia" class="block text-sm font-medium text-gray-700 mb-1">
+                    <i class="fas fa-hashtag mr-1"></i> Referencia de Pago
                 </label>
-                <input 
-                    type="text" 
-                    id="pagar-referencia" 
-                    class="form-control" 
-                    placeholder="Ej: TRX-20231215-001234"
-                    maxlength="100">
-                <small class="form-text">Opcional: Número de transacción o referencia bancaria</small>
+                <input type="text" id="pagar-referencia" class="form-control w-full rounded border-gray-300 p-2" placeholder="Ej: TRX-20231215-001234" maxlength="100">
+                <small class="form-text text-gray-500">Opcional: Número de transacción o referencia bancaria</small>
             </div>
-
-            <div class="form-group">
-                <label for="pagar-comentarios">
-                    <i class="fas fa-comment"></i>
-                    Comentarios
+            <div class="form-group mb-4">
+                <label for="pagar-comentarios" class="block text-sm font-medium text-gray-700 mb-1">
+                    <i class="fas fa-comment mr-1"></i> Comentarios
                 </label>
-                <textarea 
-                    id="pagar-comentarios" 
-                    class="form-control" 
-                    rows="3" 
-                    placeholder="Comentarios adicionales sobre el pago (opcional)"
-                    maxlength="500"></textarea>
-                <small class="form-text">Opcional: Máximo 500 caracteres</small>
+                <textarea id="pagar-comentarios" class="form-control w-full rounded border-gray-300 p-2" rows="3" placeholder="Comentarios adicionales sobre el pago (opcional)" maxlength="500"></textarea>
+                <small class="form-text text-gray-500">Opcional: Máximo 500 caracteres</small>
             </div>
-
-            <div class="alert alert-info">
+            <div class="alert alert-info bg-blue-50 border-l-4 border-blue-400 text-blue-900 p-3 rounded mb-2 flex items-center gap-2">
                 <i class="fas fa-info-circle"></i>
-                <strong>Importante:</strong> Al marcar como pagada, tendrás <strong>3 días hábiles</strong> para subir los comprobantes de pago.
+                <span><strong>Importante:</strong> Al marcar como pagada, tendrás <strong>3 días hábiles</strong> para subir los comprobantes de pago.</span>
             </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer flex justify-end gap-2 p-4 border-t">
             <button class="btn btn-secondary" data-modal="modal-pagar" onclick="cerrarModal('modal-pagar')">
                 <i class="fas fa-times"></i> Cancelar
             </button>
@@ -433,47 +430,38 @@
 </div>
 
 <!-- Modal: Subir Comprobantes -->
-<div id="modal-comprobantes" class="modal">
-    <div class="modal-content modal-large">
-        <div class="modal-header">
-            <h2 class="modal-title">
-                <i class="fas fa-file-upload"></i>
-                Subir Comprobantes de Pago
+<div id="modal-comprobantes" class="modal" aria-modal="true" role="dialog">
+    <div class="modal-content modal-large rounded-lg shadow-lg bg-white">
+        <div class="modal-header flex items-center justify-between border-b pb-2">
+            <h2 class="modal-title text-lg font-bold flex items-center">
+                <i class="fas fa-file-upload mr-2"></i> Subir Comprobantes de Pago
             </h2>
-            <button class="modal-close" data-modal="modal-comprobantes">
+            <button class="modal-close" data-modal="modal-comprobantes" aria-label="Cerrar">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body p-4">
             <input type="hidden" id="comprobantes-solicitud-id">
-            
             <div class="solicitud-info mb-2" id="comprobantes-info-solicitud"></div>
-
-            <div class="upload-section">
-                <div class="upload-area" id="upload-area">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <h3>Arrastra archivos aquí o haz clic para seleccionar</h3>
-                    <p>Sin límite de archivos ni tamaño</p>
-                    <p class="upload-formats">Formatos: PDF, JPG, PNG, XLSX, DOCX, etc.</p>
-                    <input 
-                        type="file" 
-                        id="comprobantes-archivos" 
-                        multiple 
-                        style="display: none;">
+            <div class="upload-section mb-4">
+                <div class="upload-area border-2 border-dashed border-blue-400 rounded-lg p-6 text-center cursor-pointer hover:bg-blue-50" id="upload-area">
+                    <i class="fas fa-cloud-upload-alt text-3xl text-blue-600 mb-2"></i>
+                    <h3 class="text-lg font-semibold mb-1">Arrastra archivos aquí o haz clic para seleccionar</h3>
+                    <p class="text-sm text-gray-600">Sin límite de archivos ni tamaño</p>
+                    <p class="upload-formats text-xs text-gray-500">Formatos: PDF, JPG, PNG, XLSX, DOCX, etc.</p>
+                    <input type="file" id="comprobantes-archivos" multiple style="display: none;">
                 </div>
-
-                <div class="archivos-seleccionados" id="archivos-seleccionados" style="display: none;">
-                    <h4><i class="fas fa-file-alt"></i> Archivos Seleccionados</h4>
+                <div class="archivos-seleccionados mt-4" id="archivos-seleccionados" style="display: none;">
+                    <h4 class="font-semibold mb-2"><i class="fas fa-file-alt mr-1"></i> Archivos Seleccionados</h4>
                     <div class="archivos-lista" id="archivos-lista"></div>
                 </div>
             </div>
-
-            <div class="comprobantes-existentes" id="comprobantes-existentes" style="display: none;">
-                <h4><i class="fas fa-check-circle"></i> Comprobantes Ya Subidos</h4>
+            <div class="comprobantes-existentes mt-4" id="comprobantes-existentes" style="display: none;">
+                <h4 class="font-semibold mb-2"><i class="fas fa-check-circle mr-1"></i> Comprobantes Ya Subidos</h4>
                 <div class="comprobantes-grid" id="comprobantes-grid"></div>
             </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer flex justify-end gap-2 p-4 border-t">
             <button class="btn btn-secondary" onclick="cerrarModal('modal-comprobantes')">
                 <i class="fas fa-times"></i> Cerrar
             </button>
@@ -485,24 +473,23 @@
 </div>
 
 <!-- Modal: Ver Detalles -->
-<div id="modal-detalles" class="modal">
-    <div class="modal-content modal-large">
-        <div class="modal-header">
-            <h2 class="modal-title">
-                <i class="fas fa-info-circle"></i>
-                Detalles de la Solicitud
+<div id="modal-detalles" class="modal" aria-modal="true" role="dialog">
+    <div class="modal-content modal-large rounded-lg shadow-lg bg-white">
+        <div class="modal-header flex items-center justify-between border-b pb-2">
+            <h2 class="modal-title text-lg font-bold flex items-center">
+                <i class="fas fa-info-circle mr-2"></i> Detalles de la Solicitud
             </h2>
-            <button class="modal-close" data-modal="modal-detalles">
+            <button class="modal-close" data-modal="modal-detalles" aria-label="Cerrar">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        <div class="modal-body" id="detalles-content">
-            <div class="loading-spinner">
-                <i class="fas fa-spinner fa-spin"></i>
-                <p>Cargando detalles...</p>
+        <div class="modal-body p-4" id="detalles-content">
+            <div class="loading-spinner flex flex-col items-center gap-2 py-8">
+                <i class="fas fa-spinner fa-spin text-2xl text-blue-500"></i>
+                <span class="text-gray-500">Cargando detalles...</span>
             </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer flex justify-end gap-2 p-4 border-t">
             <button class="btn btn-secondary" onclick="cerrarModal('modal-detalles')">
                 <i class="fas fa-times"></i> Cerrar
             </button>
@@ -510,11 +497,59 @@
     </div>
 </div>
 
-<!-- Toast Container -->
-<div id="toast-container" class="toast-container"></div>
+<!-- Toast Container accesible y responsivo -->
+<div id="toast-container" class="toast-container fixed top-4 right-4 z-50 flex flex-col gap-2">
+    <!-- Ejemplo de toast:
+    <div class="toast bg-blue-600 text-white px-4 py-3 rounded shadow flex items-center gap-2 animate-fade-in" role="alert" aria-live="assertive">
+        <i class="fas fa-info-circle"></i>
+        <span>Mensaje de información</span>
+        <button class="ml-auto text-white hover:text-gray-200" onclick="this.parentElement.remove()" aria-label="Cerrar">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    -->
+</div>
 
 {% endblock %}
 
 {% block scripts %}
 <script src="/static/js/pagador.js?v=5.5"></script>
+<script>
+// Toast: mostrar notificación accesible
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const colors = {
+        info: 'bg-blue-600',
+        success: 'bg-green-600',
+        error: 'bg-red-600',
+        warning: 'bg-yellow-500 text-gray-900',
+    };
+    const icons = {
+        info: 'fa-info-circle',
+        success: 'fa-check-circle',
+        error: 'fa-exclamation-circle',
+        warning: 'fa-exclamation-triangle',
+    };
+    const toast = document.createElement('div');
+    toast.className = `toast ${colors[type] || colors.info} text-white px-4 py-3 rounded shadow flex items-center gap-2 animate-fade-in`;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.innerHTML = `
+        <i class='fas ${icons[type] || icons.info}'></i>
+        <span class='font-medium'>${message}</span>
+        <button class='ml-auto text-white hover:text-gray-200 focus:outline-none' aria-label='Cerrar' onclick='this.parentElement.remove()'>
+            <i class='fas fa-times'></i>
+        </button>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+}
+</script>
+<style>
+.toast-container { pointer-events: none; }
+.toast { pointer-events: auto; min-width: 220px; max-width: 350px; font-size: 1rem; box-sizing: border-box; }
+.animate-fade-in { animation: fadeIn 0.4s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+</style>
 {% endblock %}

@@ -5,6 +5,66 @@
 {% block extra_css %}
 <link rel="stylesheet" href="/static/css/aprobador.css?v=2.2">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    body, .aprobador-dashboard {
+        background-color: #f7f9fc;
+        color: #222;
+    }
+    .dashboard-header, .table-section, .filters-section {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+    }
+    .dashboard-title, .table-title {
+        color: #1a237e;
+    }
+    .btn-primary {
+        background: #2563eb;
+        color: #fff;
+        border: none;
+    }
+    .btn-primary:hover {
+        background: #1e40af;
+    }
+    .btn-secondary {
+        background: #e0e7ef;
+        color: #222;
+        border: none;
+    }
+    .btn-secondary:hover {
+        background: #cfd8dc;
+    }
+    .btn-refresh {
+        background: #fff;
+        color: #2563eb;
+        border: 1px solid #2563eb;
+    }
+    .btn-refresh:hover {
+        background: #e3eafe;
+    }
+    .modal-content {
+        background: #fff;
+        color: #222;
+    }
+    .modal-header {
+        background: #f1f5fb;
+    }
+    .modal-success {
+        background: #e8f5e9;
+        color: #256029;
+    }
+    .modal-danger {
+        background: #ffebee;
+        color: #b71c1c;
+    }
+    .toast {
+        font-size: 1rem;
+        min-width: 220px;
+        max-width: 350px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.08);
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -31,119 +91,109 @@
         </div>
     </div>
 
-    <!-- Tarjetas de Estadísticas -->
-    <div class="stats-container">
-        <div class="stat-card stat-pendientes">
-            <div class="stat-icon">
-                <i class="fas fa-clock"></i>
-            </div>
-            <div class="stat-content">
-                <h3 class="stat-value" id="stat-pendientes">0</h3>
-                <p class="stat-label">Solicitudes Pendientes</p>
+        <!-- Tarjetas de Estadísticas alineadas y accesibles -->
+        <div class="flex flex-col md:flex-row gap-8 mt-8 font-sans">
+            <div class="flex-1 flex flex-col gap-6">
+                <div class="bg-white rounded-xl shadow-lg p-6 border-l-8 border-yellow-500 flex flex-col justify-between">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-clock text-yellow-600"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-base font-semibold text-gray-700">Pendientes</p>
+                            <p id="stat-pendientes" class="text-3xl font-bold text-yellow-700">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 border-l-8 border-green-500 flex flex-col justify-between">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check-circle text-green-600"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-base font-semibold text-gray-700">Aprobadas por Mí</p>
+                            <p id="stat-aprobadas" class="text-3xl font-bold text-green-700">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 border-l-8 border-red-500 flex flex-col justify-between">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-times-circle text-red-600"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-base font-semibold text-gray-700">Rechazadas</p>
+                            <p id="stat-rechazadas" class="text-3xl font-bold text-red-700">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 border-l-8 border-green-400 flex flex-col justify-between">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-money-bill-wave text-green-600"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-base font-semibold text-gray-700">Monto Pendiente</p>
+                            <p id="stat-monto" class="text-3xl font-bold text-green-700">$0</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="stat-card stat-aprobadas">
-            <div class="stat-icon">
-                <i class="fas fa-check-circle"></i>
-            </div>
-            <div class="stat-content">
-                <h3 class="stat-value" id="stat-aprobadas">0</h3>
-                <p class="stat-label">Aprobadas por Mí</p>
-            </div>
-        </div>
-
-        <div class="stat-card stat-rechazadas">
-            <div class="stat-icon">
-                <i class="fas fa-times-circle"></i>
-            </div>
-            <div class="stat-content">
-                <h3 class="stat-value" id="stat-rechazadas">0</h3>
-                <p class="stat-label">Rechazadas por Mí</p>
-            </div>
-        </div>
-
-        <div class="stat-card stat-monto">
-            <div class="stat-icon">
-                <i class="fas fa-money-bill-wave"></i>
-            </div>
-            <div class="stat-content">
-                <h3 class="stat-value" id="stat-monto">$0</h3>
-                <p class="stat-label">Monto Pendiente</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Filtros y Búsqueda -->
-    <div class="filters-section">
-        <!-- Pestañas de Navegación -->
-        <div class="tabs-navigation">
-            <button class="tab-button active" data-tab="pendientes" onclick="cambiarVista('pendientes')">
-                <i class="fas fa-clock"></i>
-                Solicitudes Pendientes
-            </button>
-            <button class="tab-button" data-tab="historial" onclick="cambiarVista('historial')">
-                <i class="fas fa-history"></i>
-                Mi Historial
-            </button>
-        </div>
-
-        <!-- Filtros para Pendientes -->
-        <div class="filters-container" id="filtros-pendientes">
-            <div class="filter-group">
-                <label for="filter-departamento">
-                    <i class="fas fa-building"></i>
-                    Departamento
-                </label>
-                <select id="filter-departamento" class="filter-select">
-                    <option value="">Todos los departamentos</option>
-                    <option value="Rectoría">Rectoría</option>
-                    <option value="Dirección Académica">Dirección Académica</option>
-                    <option value="Dirección Administrativa">Dirección Administrativa</option>
-                    <option value="Finanzas">Finanzas</option>
-                    <option value="Recursos Humanos">Recursos Humanos</option>
-                    <option value="Sistemas y TI">Sistemas y TI</option>
-                    <option value="Mantenimiento">Mantenimiento</option>
-                    <option value="Biblioteca">Biblioteca</option>
-                    <option value="Servicios Escolares">Servicios Escolares</option>
-                    <option value="Vinculación">Vinculación</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="filter-tipo-pago">
-                    <i class="fas fa-tags"></i>
-                    Tipo de Pago
-                </label>
-                <select id="filter-tipo-pago" class="filter-select">
-                    <option value="">Todos los tipos</option>
-                    <option value="Proveedores">Proveedores</option>
-                    <option value="Póliza - Seguro">Póliza - Seguro</option>
-                    <option value="Donativos">Donativos</option>
-                    <option value="Operativos">Operativos</option>
-                    <option value="Fiscales y Legales">Fiscales y Legales</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <button id="btn-aplicar-filtros" class="btn btn-primary">
-                    <i class="fas fa-filter"></i>
-                    Aplicar Filtros
-                </button>
-            </div>
-
-            <div class="filter-group">
-                <button id="btn-limpiar-filtros" class="btn btn-secondary">
-                    <i class="fas fa-eraser"></i>
-                    Limpiar
-                </button>
-            </div>
-
-            <div class="filter-group ml-auto">
-                <button id="btn-refrescar" class="btn btn-refresh">
-                    <i class="fas fa-sync-alt"></i>
-                    Refrescar
-                </button>
+        <!-- Filtros y Navegación mejorados -->
+        <div class="filters-section mt-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <!-- Pestañas de Navegación -->
+                <div class="flex gap-2 mb-2 md:mb-0">
+                    <button class="tab-button active" data-tab="pendientes" onclick="cambiarVista('pendientes')">
+                        <i class="fas fa-clock"></i> <span class="ml-1">Pendientes</span>
+                    </button>
+                    <button class="tab-button" data-tab="historial" onclick="cambiarVista('historial')">
+                        <i class="fas fa-history"></i> <span class="ml-1">Mi Historial</span>
+                    </button>
+                </div>
+                <!-- Filtros agrupados -->
+                <div class="flex flex-wrap gap-4 items-center">
+                    <div>
+                        <label for="filter-departamento" class="text-sm font-medium text-gray-700 mr-2"><i class="fas fa-building"></i> Departamento</label>
+                        <select id="filter-departamento" class="filter-select">
+                            <option value="">Todos</option>
+                            <option value="Rectoría">Rectoría</option>
+                            <option value="Dirección Académica">Dirección Académica</option>
+                            <option value="Dirección Administrativa">Dirección Administrativa</option>
+                            <option value="Finanzas">Finanzas</option>
+                            <option value="Recursos Humanos">Recursos Humanos</option>
+                            <option value="Sistemas y TI">Sistemas y TI</option>
+                            <option value="Mantenimiento">Mantenimiento</option>
+                            <option value="Biblioteca">Biblioteca</option>
+                            <option value="Servicios Escolares">Servicios Escolares</option>
+                            <option value="Vinculación">Vinculación</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="filter-tipo-pago" class="text-sm font-medium text-gray-700 mr-2"><i class="fas fa-tags"></i> Tipo de Pago</label>
+                        <select id="filter-tipo-pago" class="filter-select">
+                            <option value="">Todos</option>
+                            <option value="Proveedores">Proveedores</option>
+                            <option value="Póliza - Seguro">Póliza - Seguro</option>
+                            <option value="Donativos">Donativos</option>
+                            <option value="Operativos">Operativos</option>
+                            <option value="Fiscales y Legales">Fiscales y Legales</option>
+                        </select>
+                    </div>
+                    <button id="btn-aplicar-filtros" class="btn btn-primary"><i class="fas fa-filter"></i> <span class="ml-1">Filtrar</span></button>
+                    <button id="btn-limpiar-filtros" class="btn btn-secondary"><i class="fas fa-eraser"></i> <span class="ml-1">Limpiar</span></button>
+                    <button id="btn-refrescar" class="btn btn-refresh"><i class="fas fa-sync-alt"></i> <span class="ml-1">Refrescar</span></button>
+                </div>
             </div>
         </div>
 
@@ -220,214 +270,191 @@
         </div>
     </div>
 
-    <!-- Tabla de Solicitudes Pendientes -->
-    <div class="table-section" id="seccion-pendientes">
-        <div class="table-header">
-            <h2 class="table-title">
-                <i class="fas fa-list"></i>
-                Solicitudes Pendientes de Aprobación
-            </h2>
-            <div class="table-info">
-                <span id="total-solicitudes">0 solicitudes</span>
+        <!-- Tabla de Solicitudes Pendientes mejorada -->
+        <div class="table-section" id="seccion-pendientes">
+            <div class="table-header flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                <h2 class="table-title text-lg font-bold flex items-center">
+                    <i class="fas fa-list mr-2"></i>
+                    Solicitudes Pendientes de Aprobación
+                </h2>
+                <div class="table-info text-sm text-gray-600">
+                    <span id="total-solicitudes">0 solicitudes</span>
+                </div>
+            </div>
+            <div class="table-container overflow-x-auto rounded-lg shadow">
+                <table class="solicitudes-table min-w-full text-sm text-gray-800" id="tabla-solicitudes" aria-label="Solicitudes pendientes">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th scope="col" class="px-4 py-2 font-semibold text-left">ID</th>
+                            <th scope="col" class="px-4 py-2 font-semibold text-left">Fecha</th>
+                            <th scope="col" class="px-4 py-2 font-semibold text-left">Solicitante</th>
+                            <th scope="col" class="px-4 py-2 font-semibold text-left">Departamento</th>
+                            <th scope="col" class="px-4 py-2 font-semibold text-left">Beneficiario</th>
+                            <th scope="col" class="px-4 py-2 font-semibold text-left">Monto</th>
+                            <th scope="col" class="px-4 py-2 font-semibold text-left">Tipo de Pago</th>
+                            <th scope="col" class="px-4 py-2 font-semibold text-left">Estado</th>
+                            <th scope="col" class="px-4 py-2 font-semibold text-left">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-solicitudes">
+                        <tr class="loading-row">
+                            <td colspan="9" class="text-center py-8">
+                                <div class="loading-spinner flex flex-col items-center gap-2">
+                                    <i class="fas fa-spinner fa-spin text-2xl text-blue-500"></i>
+                                    <span class="text-gray-500">Cargando solicitudes...</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <div class="table-container">
-            <table class="solicitudes-table" id="tabla-solicitudes">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Fecha</th>
-                        <th>Solicitante</th>
-                        <th>Departamento</th>
-                        <th>Beneficiario</th>
-                        <th>Monto</th>
-                        <th>Tipo de Pago</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody-solicitudes">
-                    <tr class="loading-row">
-                        <td colspan="9" class="text-center">
-                            <div class="loading-spinner">
-                                <i class="fas fa-spinner fa-spin"></i>
-                                Cargando solicitudes...
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Tabla de Historial -->
-    <div class="table-section" id="seccion-historial" style="display: none;">
-        <div class="table-header">
-            <h2 class="table-title">
-                <i class="fas fa-history"></i>
-                Mi Historial de Aprobaciones y Rechazos
-            </h2>
-            <div class="table-info">
-                <span id="total-historial">0 solicitudes</span>
+        <!-- Tabla de Historial mejorada -->
+        <div class="table-section" id="seccion-historial" style="display: none;">
+            <div class="table-header flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                <h2 class="table-title text-lg font-bold flex items-center">
+                    <i class="fas fa-history mr-2"></i>
+                    Mi Historial de Aprobaciones y Rechazos
+                </h2>
+                <div class="table-info text-sm text-gray-600">
+                    <span id="total-historial">0 solicitudes</span>
+                </div>
+            </div>
+            <div class="table-container overflow-x-auto rounded-lg shadow">
+                <table class="solicitudes-table min-w-full text-sm text-gray-800" id="tabla-historial" aria-label="Historial de aprobaciones y rechazos">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th scope="col" class="px-4 py-2 font-semibold text-left">Folio</th>
+                            <th scope="col" class="px-4 py-2 font-semibold text-left">Fecha Procesada</th>
+                            <th scope="col" class="px-4 py-2 font-semibold text-left">Solicitante</th>
+                            <th scope="col" class="px-4 py-2 font-semibold text-left">Departamento</th>
+                            <th scope="col" class="px-4 py-2 font-semibold text-left">Beneficiario</th>
+                            <th scope="col" class="px-4 py-2 font-semibold text-left">Monto</th>
+                            <th scope="col" class="px-4 py-2 font-semibold text-left">Tipo de Pago</th>
+                            <th scope="col" class="px-4 py-2 font-semibold text-left">Estado</th>
+                            <th scope="col" class="px-4 py-2 font-semibold text-left">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-historial">
+                        <tr class="loading-row">
+                            <td colspan="9" class="text-center py-8">
+                                <div class="loading-spinner flex flex-col items-center gap-2">
+                                    <i class="fas fa-spinner fa-spin text-2xl text-blue-500"></i>
+                                    <span class="text-gray-500">Cargando historial...</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-
-        <div class="table-container">
-            <table class="solicitudes-table" id="tabla-historial">
-                <thead>
-                    <tr>
-                        <th>Folio</th>
-                        <th>Fecha Procesada</th>
-                        <th>Solicitante</th>
-                        <th>Departamento</th>
-                        <th>Beneficiario</th>
-                        <th>Monto</th>
-                        <th>Tipo de Pago</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody-historial">
-                    <tr class="loading-row">
-                        <td colspan="9" class="text-center">
-                            <div class="loading-spinner">
-                                <i class="fas fa-spinner fa-spin"></i>
-                                Cargando historial...
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
 </div>
 
 <!-- Modal Ver Detalles -->
-<div id="modal-detalles" class="modal">
-    <div class="modal-content modal-large">
-        <div class="modal-header">
-            <h2 class="modal-title">
-                <i class="fas fa-file-alt"></i>
-                Detalles de la Solicitud
+<div id="modal-detalles" class="modal" aria-modal="true" role="dialog">
+    <div class="modal-content modal-large rounded-lg shadow-lg bg-white">
+        <div class="modal-header flex items-center justify-between border-b pb-2">
+            <h2 class="modal-title text-lg font-bold flex items-center">
+                <i class="fas fa-file-alt mr-2"></i> Detalles de la Solicitud
             </h2>
-            <button class="modal-close" data-modal="modal-detalles">
+            <button class="modal-close" data-modal="modal-detalles" aria-label="Cerrar">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        <div class="modal-body" id="detalles-content">
+        <div class="modal-body p-4" id="detalles-content">
             <!-- Contenido dinámico -->
         </div>
     </div>
 </div>
 
 <!-- Modal Aprobar -->
-<div id="modal-aprobar" class="modal">
-    <div class="modal-content">
-        <div class="modal-header modal-success">
-            <h2 class="modal-title">
-                <i class="fas fa-check-circle"></i>
-                Aprobar Solicitud
+<div id="modal-aprobar" class="modal" aria-modal="true" role="dialog">
+    <div class="modal-content rounded-lg shadow-lg bg-white">
+        <div class="modal-header modal-success flex items-center justify-between border-b pb-2">
+            <h2 class="modal-title text-lg font-bold flex items-center">
+                <i class="fas fa-check-circle mr-2"></i> Aprobar Solicitud
             </h2>
-            <button class="modal-close" data-modal="modal-aprobar">
+            <button class="modal-close" data-modal="modal-aprobar" aria-label="Cerrar">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        <div class="modal-body">
-            <div class="confirmation-message">
-                <i class="fas fa-question-circle"></i>
-                <p>¿Está seguro que desea <strong>APROBAR</strong> esta solicitud?</p>
-                <p class="solicitud-info" id="aprobar-solicitud-info"></p>
+        <div class="modal-body p-4">
+            <div class="confirmation-message flex items-center gap-2 mb-4">
+                <i class="fas fa-question-circle text-blue-600 text-xl"></i>
+                <span>¿Está seguro que desea <strong>APROBAR</strong> esta solicitud?</span>
             </div>
-
-            <div class="form-group">
-                <label for="aprobar-comentarios">
-                    <i class="fas fa-comment"></i>
-                    Comentarios (Opcional)
+            <p class="solicitud-info mb-2" id="aprobar-solicitud-info"></p>
+            <div class="form-group mb-4">
+                <label for="aprobar-comentarios" class="block text-sm font-medium text-gray-700 mb-1">
+                    <i class="fas fa-comment mr-1"></i> Comentarios (Opcional)
                 </label>
-                <textarea 
-                    id="aprobar-comentarios" 
-                    class="form-control" 
-                    rows="4"
-                    placeholder="Agregue comentarios adicionales si lo desea..."
-                    maxlength="500"
-                ></textarea>
-                <small class="form-text">Máximo 500 caracteres</small>
+                <textarea id="aprobar-comentarios" class="form-control w-full rounded border-gray-300 p-2" rows="3" placeholder="Agregue comentarios adicionales si lo desea..." maxlength="500"></textarea>
+                <small class="form-text text-gray-500">Máximo 500 caracteres</small>
             </div>
-
             <input type="hidden" id="aprobar-solicitud-id">
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer flex justify-end gap-2 p-4 border-t">
             <button class="btn btn-secondary" data-modal="modal-aprobar">
-                <i class="fas fa-times"></i>
-                Cancelar
+                <i class="fas fa-times"></i> Cancelar
             </button>
             <button id="btn-confirmar-aprobar" class="btn btn-success">
-                <i class="fas fa-check"></i>
-                Aprobar Solicitud
+                <i class="fas fa-check"></i> Aprobar Solicitud
             </button>
         </div>
     </div>
 </div>
 
 <!-- Modal Rechazar -->
-<div id="modal-rechazar" class="modal">
-    <div class="modal-content">
-        <div class="modal-header modal-danger">
-            <h2 class="modal-title">
-                <i class="fas fa-times-circle"></i>
-                Rechazar Solicitud
+<div id="modal-rechazar" class="modal" aria-modal="true" role="dialog">
+    <div class="modal-content rounded-lg shadow-lg bg-white">
+        <div class="modal-header modal-danger flex items-center justify-between border-b pb-2">
+            <h2 class="modal-title text-lg font-bold flex items-center">
+                <i class="fas fa-times-circle mr-2"></i> Rechazar Solicitud
             </h2>
-            <button class="modal-close" data-modal="modal-rechazar">
+            <button class="modal-close" data-modal="modal-rechazar" aria-label="Cerrar">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        <div class="modal-body">
-            <div class="confirmation-message alert-danger">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>¿Está seguro que desea <strong>RECHAZAR</strong> esta solicitud?</p>
-                <p class="solicitud-info" id="rechazar-solicitud-info"></p>
+        <div class="modal-body p-4">
+            <div class="confirmation-message alert-danger flex items-center gap-2 mb-4">
+                <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                <span>¿Está seguro que desea <strong>RECHAZAR</strong> esta solicitud?</span>
             </div>
-
-            <div class="form-group">
-                <label for="rechazar-comentarios" class="required">
-                    <i class="fas fa-comment-dots"></i>
-                    Motivo del Rechazo (Obligatorio)
+            <p class="solicitud-info mb-2" id="rechazar-solicitud-info"></p>
+            <div class="form-group mb-4">
+                <label for="rechazar-comentarios" class="block text-sm font-medium text-gray-700 mb-1 required">
+                    <i class="fas fa-comment-dots mr-1"></i> Motivo del Rechazo (Obligatorio)
                 </label>
-                <textarea 
-                    id="rechazar-comentarios" 
-                    class="form-control" 
-                    rows="5"
-                    placeholder="Debe especificar claramente el motivo del rechazo (mínimo 10 caracteres)..."
-                    minlength="10"
-                    maxlength="500"
-                    required
-                ></textarea>
-                <small class="form-text text-danger">
-                    * Es obligatorio proporcionar un motivo detallado del rechazo
-                </small>
-                <small class="form-text">
-                    Mínimo 10 caracteres, máximo 500
-                </small>
+                <textarea id="rechazar-comentarios" class="form-control w-full rounded border-gray-300 p-2" rows="4" placeholder="Debe especificar claramente el motivo del rechazo (mínimo 10 caracteres)..." minlength="10" maxlength="500" required></textarea>
+                <small class="form-text text-danger">* Es obligatorio proporcionar un motivo detallado del rechazo</small>
+                <small class="form-text text-gray-500">Mínimo 10 caracteres, máximo 500</small>
             </div>
-
             <input type="hidden" id="rechazar-solicitud-id">
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer flex justify-end gap-2 p-4 border-t">
             <button class="btn btn-secondary" data-modal="modal-rechazar">
-                <i class="fas fa-times"></i>
-                Cancelar
+                <i class="fas fa-times"></i> Cancelar
             </button>
             <button id="btn-confirmar-rechazar" class="btn btn-danger">
-                <i class="fas fa-ban"></i>
-                Rechazar Solicitud
+                <i class="fas fa-ban"></i> Rechazar Solicitud
             </button>
         </div>
     </div>
 </div>
 
-<!-- Notificaciones Toast -->
-<div id="toast-container" class="toast-container"></div>
+<!-- Notificaciones Toast accesibles y responsivas -->
+<div id="toast-container" class="toast-container fixed top-4 right-4 z-50 flex flex-col gap-2">
+    <!-- Ejemplo de toast:
+    <div class="toast bg-blue-600 text-white px-4 py-3 rounded shadow flex items-center gap-2 animate-fade-in" role="alert" aria-live="assertive">
+        <i class="fas fa-info-circle"></i>
+        <span>Mensaje de información</span>
+        <button class="ml-auto text-white hover:text-gray-200" onclick="this.parentElement.remove()" aria-label="Cerrar">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    -->
+</div>
 
 {% endblock %}
 
