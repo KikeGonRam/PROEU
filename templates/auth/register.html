@@ -11,254 +11,396 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            200: '#bfdbfe',
-                            300: '#93c5fd',
-                            400: '#60a5fa',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
-                        }
-                    }
-                }
-            }
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-    </script>
+        
+        .gradient-left {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%);
+        }
+        
+        .card-shadow {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .input-field {
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            border-color: #2196F3;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+        
+        .btn-primary {
+            background: #2196F3;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #1976D2;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #E3F2FD;
+            color: #2196F3;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #BBDEFB;
+        }
+        
+        .icon-circle {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .step-hidden {
+            display: none;
+        }
+        
+        .step-active {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .progress-step {
+            transition: all 0.3s ease;
+        }
+        
+        .progress-step.active {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .progress-step.completed {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .progress-line {
+            transition: all 0.3s ease;
+        }
+        
+        .progress-line.completed {
+            background: #4CAF50;
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-green-50 to-blue-100 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
     <!-- Contenedor principal -->
-    <div class="max-w-2xl w-full space-y-8">
-        <!-- Header -->
-        <div class="text-center">
-            <div class="mx-auto h-16 w-16 bg-green-600 rounded-full flex items-center justify-center mb-4">
-                <i class="fas fa-user-plus text-white text-2xl"></i>
+    <div class="max-w-6xl w-full bg-white rounded-2xl card-shadow overflow-hidden flex flex-col md:flex-row">
+        
+        <!-- Panel izquierdo - Información -->
+        <div class="gradient-left w-full md:w-5/12 p-12 flex flex-col items-center justify-center text-center">
+            <div class="icon-circle mb-8">
+                <div class="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-lg">
+                    <i id="leftPanelIcon" class="fas fa-user-plus text-blue-500 text-5xl"></i>
+                </div>
             </div>
-            <h2 class="text-3xl font-bold text-gray-900 mb-2">
-                Crear Nueva Cuenta
-            </h2>
-            <p class="text-sm text-gray-600">
-                Únete al Sistema de Solicitudes de Pagos - UTVT
+            
+            <h1 class="text-4xl font-bold text-blue-900 mb-4">
+                Crear Cuenta
+            </h1>
+            
+            <p id="stepDescription" class="text-blue-800 text-lg mb-8">
+                Paso 1: Información Personal
             </p>
+            
+            <!-- Indicador de progreso -->
+            <div class="w-full max-w-xs">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="progress-step active w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm border-2 border-white shadow-md">
+                        1
+                    </div>
+                    <div class="progress-line flex-1 h-1 bg-white/30 mx-2"></div>
+                    <div class="progress-step w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm bg-white/30 border-2 border-white shadow-md">
+                        2
+                    </div>
+                    <div class="progress-line flex-1 h-1 bg-white/30 mx-2"></div>
+                    <div class="progress-step w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm bg-white/30 border-2 border-white shadow-md">
+                        3
+                    </div>
+                </div>
+                <div class="flex justify-between text-xs text-blue-700 font-medium">
+                    <span>Personal</span>
+                    <span>Laboral</span>
+                    <span>Seguridad</span>
+                </div>
+            </div>
+            
+            <div class="mt-auto pt-8">
+                <p class="text-blue-700 text-sm">
+                    © 2025 Universidad Tecnológica del Valle de Toluca
+                </p>
+                <p class="text-blue-600 text-xs mt-2">
+                    Sistema de Solicitudes de Pagos
+                </p>
+            </div>
         </div>
 
-        <!-- Formulario de Registro -->
-        <div class="bg-white py-8 px-6 shadow-xl rounded-lg">
+        <!-- Panel derecho - Formulario -->
+        <div class="w-full md:w-7/12 p-8 md:p-12">
             <!-- Flash Messages -->
             <div id="flash-messages" class="mb-6">
                 <!-- Messages will be inserted here -->
             </div>
 
-            <form id="registerForm" class="space-y-6">
-                <!-- Información Personal -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Nombre -->
-                    <div>
-                        <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-user mr-2 text-gray-400"></i>
-                            Nombre *
-                        </label>
-                        <input id="firstName" 
-                               name="firstName" 
-                               type="text" 
-                               required 
-                               class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
-                               placeholder="Juan">
-                    </div>
-
-                    <!-- Apellido -->
-                    <div>
-                        <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-user mr-2 text-gray-400"></i>
-                            Apellido *
-                        </label>
-                        <input id="lastName" 
-                               name="lastName" 
-                               type="text" 
-                               required 
-                               class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
-                               placeholder="Pérez">
-                    </div>
-                </div>
-
-                <!-- Email -->
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-envelope mr-2 text-gray-400"></i>
-                        Correo Electrónico *
-                    </label>
-                    <input id="email" 
-                           name="email" 
-                           type="email" 
-                           required 
-                           class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
-                           placeholder="juan.perez@utvt.edu.mx">
-                    <p class="mt-1 text-xs text-gray-500">
-                        <i class="fas fa-info-circle mr-1"></i>
-                        Preferiblemente usar email institucional @utvt.edu.mx
-                    </p>
-                </div>
-
-                <!-- Departamento y Teléfono -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Departamento -->
-                    <div>
-                        <label for="department" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-building mr-2 text-gray-400"></i>
-                            Departamento *
-                        </label>
-                        <select id="department" 
-                                name="department" 
-                                required 
-                                class="appearance-none relative block w-full px-3 py-3 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm">
-                            <option value="">Selecciona tu departamento</option>
-                            <option value="Tecnologías de la Información">Tecnologías de la Información</option>
-                            <option value="Coordinación Académica">Coordinación Académica</option>
-                            <option value="Recursos Humanos">Recursos Humanos</option>
-                            <option value="Contabilidad">Contabilidad</option>
-                            <option value="Compras y Adquisiciones">Compras y Adquisiciones</option>
-                            <option value="Mantenimiento">Mantenimiento</option>
-                            <option value="Dirección General">Dirección General</option>
-                            <option value="Servicios Escolares">Servicios Escolares</option>
-                            <option value="Biblioteca">Biblioteca</option>
-                            <option value="Vinculación">Vinculación</option>
-                            <option value="Otro">Otro</option>
-                        </select>
-                    </div>
-
-                    <!-- Teléfono -->
-                    <div>
-                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-phone mr-2 text-gray-400"></i>
-                            Teléfono
-                        </label>
-                        <input id="phone" 
-                               name="phone" 
-                               type="tel" 
-                               class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
-                               placeholder="+52 722 123 4567">
-                    </div>
-                </div>
-
-                <!-- Contraseñas -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Contraseña -->
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-lock mr-2 text-gray-400"></i>
-                            Contraseña *
-                        </label>
-                        <div class="relative">
-                            <input id="password" 
-                                   name="password" 
-                                   type="password" 
+            <form id="registerForm" class="space-y-5">
+                
+                <!-- PASO 1: Información Personal -->
+                <div id="step1" class="step-active">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                        <i class="fas fa-user text-blue-500"></i>
+                        Información Personal
+                    </h3>
+                    
+                    <div class="space-y-5">
+                        <div>
+                            <label class="flex items-center text-blue-600 font-semibold mb-2 text-sm">
+                                <i class="fas fa-user mr-2"></i>
+                                Nombre
+                            </label>
+                            <input id="firstName" 
+                                   name="firstName" 
+                                   type="text" 
                                    required 
-                                   minlength="6"
-                                   class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm pr-10"
-                                   placeholder="••••••••">
-                            <button type="button" 
-                                    onclick="togglePassword('password')" 
-                                    class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                                <i id="passwordToggle" class="fas fa-eye-slash text-gray-400 hover:text-gray-600"></i>
-                            </button>
+                                   class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none text-gray-900 bg-gray-50"
+                                   placeholder="Ingresa tu nombre">
                         </div>
-                        <div id="passwordStrength" class="mt-1 text-xs">
-                            <!-- Password strength indicator -->
-                        </div>
-                    </div>
 
-                    <!-- Confirmar Contraseña -->
-                    <div>
-                        <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-lock mr-2 text-gray-400"></i>
-                            Confirmar Contraseña *
-                        </label>
-                        <div class="relative">
-                            <input id="confirmPassword" 
-                                   name="confirmPassword" 
-                                   type="password" 
+                        <div>
+                            <label class="flex items-center text-blue-600 font-semibold mb-2 text-sm">
+                                <i class="fas fa-user mr-2"></i>
+                                Apellido
+                            </label>
+                            <input id="lastName" 
+                                   name="lastName" 
+                                   type="text" 
                                    required 
-                                   class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm pr-10"
-                                   placeholder="••••••••">
-                            <button type="button" 
-                                    onclick="togglePassword('confirmPassword')" 
-                                    class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                                <i id="confirmPasswordToggle" class="fas fa-eye-slash text-gray-400 hover:text-gray-600"></i>
-                            </button>
+                                   class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none text-gray-900 bg-gray-50"
+                                   placeholder="Ingresa tu apellido">
                         </div>
-                        <div id="passwordMatch" class="mt-1 text-xs">
-                            <!-- Password match indicator -->
+
+                        <div>
+                            <label class="flex items-center text-blue-600 font-semibold mb-2 text-sm">
+                                <i class="fas fa-envelope mr-2"></i>
+                                Correo Electrónico
+                            </label>
+                            <input id="email" 
+                                   name="email" 
+                                   type="email" 
+                                   required 
+                                   class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none text-gray-900 bg-gray-50"
+                                   placeholder="usuario@utvt.edu.mx">
+                            <p class="mt-1 text-xs text-gray-500 ml-1">
+                                Preferiblemente usar email institucional @utvt.edu.mx
+                            </p>
                         </div>
                     </div>
-                </div>
 
-                <!-- Términos y condiciones -->
-                <div class="flex items-start">
-                    <div class="flex items-center h-5">
-                        <input id="terms" 
-                               name="terms" 
-                               type="checkbox" 
-                               required
-                               class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded">
-                    </div>
-                    <div class="ml-3 text-sm">
-                        <label for="terms" class="text-gray-700">
-                            Acepto los 
-                            <a href="#" class="font-medium text-green-600 hover:text-green-500">términos y condiciones</a>
-                            y la 
-                            <a href="#" class="font-medium text-green-600 hover:text-green-500">política de privacidad</a>
-                            del sistema.
-                        </label>
+                    <div class="flex justify-end gap-3 mt-8">
+                        <button type="button" 
+                                onclick="nextStep()"
+                                class="btn-primary flex items-center gap-2 py-3 px-6 rounded-lg text-white font-semibold shadow-md">
+                            Siguiente
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
                     </div>
                 </div>
 
-                <!-- Submit button -->
-                <div>
-                    <button type="submit" 
-                            id="registerButton"
-                            class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-200 ease-in-out">
-                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                            <i class="fas fa-user-plus text-green-500 group-hover:text-green-400"></i>
-                        </span>
-                        <span id="registerButtonText">Crear Cuenta</span>
-                    </button>
+                <!-- PASO 2: Información Laboral -->
+                <div id="step2" class="step-hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                        <i class="fas fa-briefcase text-blue-500"></i>
+                        Información Laboral
+                    </h3>
+                    
+                    <div class="space-y-5">
+                        <div>
+                            <label class="flex items-center text-blue-600 font-semibold mb-2 text-sm">
+                                <i class="fas fa-building mr-2"></i>
+                                Departamento
+                            </label>
+                            <select id="department" 
+                                    name="department" 
+                                    required 
+                                    class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none text-gray-900 bg-gray-50">
+                                <option value="">Selecciona tu departamento</option>
+                                <option value="Tecnologías de la Información">Tecnologías de la Información</option>
+                                <option value="Coordinación Académica">Coordinación Académica</option>
+                                <option value="Recursos Humanos">Recursos Humanos</option>
+                                <option value="Contabilidad">Contabilidad</option>
+                                <option value="Compras y Adquisiciones">Compras y Adquisiciones</option>
+                                <option value="Mantenimiento">Mantenimiento</option>
+                                <option value="Dirección General">Dirección General</option>
+                                <option value="Servicios Escolares">Servicios Escolares</option>
+                                <option value="Biblioteca">Biblioteca</option>
+                                <option value="Vinculación">Vinculación</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="flex items-center text-blue-600 font-semibold mb-2 text-sm">
+                                <i class="fas fa-phone mr-2"></i>
+                                Teléfono
+                            </label>
+                            <input id="phone" 
+                                   name="phone" 
+                                   type="tel" 
+                                   class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none text-gray-900 bg-gray-50"
+                                   placeholder="+52 722 123 4567">
+                            <p class="mt-1 text-xs text-gray-500 ml-1">
+                                Opcional: Número de contacto institucional
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between gap-3 mt-8">
+                        <button type="button" 
+                                onclick="prevStep()"
+                                class="btn-secondary flex items-center gap-2 py-3 px-6 rounded-lg font-semibold">
+                            <i class="fas fa-arrow-left"></i>
+                            Anterior
+                        </button>
+                        <button type="button" 
+                                onclick="nextStep()"
+                                class="btn-primary flex items-center gap-2 py-3 px-6 rounded-lg text-white font-semibold shadow-md">
+                            Siguiente
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Divider -->
-                <div class="mt-6">
-                    <div class="relative">
+                <!-- PASO 3: Seguridad -->
+                <div id="step3" class="step-hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                        <i class="fas fa-shield-alt text-blue-500"></i>
+                        Seguridad de la Cuenta
+                    </h3>
+                    
+                    <div class="space-y-5">
+                        <div>
+                            <label class="flex items-center text-blue-600 font-semibold mb-2 text-sm">
+                                <i class="fas fa-lock mr-2"></i>
+                                Contraseña
+                            </label>
+                            <div class="relative">
+                                <input id="password" 
+                                       name="password" 
+                                       type="password" 
+                                       required 
+                                       minlength="6"
+                                       class="input-field w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none text-gray-900 bg-gray-50"
+                                       placeholder="••••••••">
+                                <button type="button" 
+                                        onclick="togglePassword('password')" 
+                                        class="absolute right-4 top-1/2 -translate-y-1/2 text-blue-400 hover:text-blue-600">
+                                    <i id="passwordToggle" class="fas fa-eye-slash"></i>
+                                </button>
+                            </div>
+                            <div id="passwordStrength" class="mt-2 text-xs">
+                                <!-- Password strength indicator -->
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="flex items-center text-blue-600 font-semibold mb-2 text-sm">
+                                <i class="fas fa-lock mr-2"></i>
+                                Confirmar Contraseña
+                            </label>
+                            <div class="relative">
+                                <input id="confirmPassword" 
+                                       name="confirmPassword" 
+                                       type="password" 
+                                       required 
+                                       class="input-field w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none text-gray-900 bg-gray-50"
+                                       placeholder="••••••••">
+                                <button type="button" 
+                                        onclick="togglePassword('confirmPassword')" 
+                                        class="absolute right-4 top-1/2 -translate-y-1/2 text-blue-400 hover:text-blue-600">
+                                    <i id="confirmPasswordToggle" class="fas fa-eye-slash"></i>
+                                </button>
+                            </div>
+                            <div id="passwordMatch" class="mt-2 text-xs">
+                                <!-- Password match indicator -->
+                            </div>
+                        </div>
+
+                        <!-- Términos y condiciones -->
+                        <div class="flex items-start pt-2 bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <div class="flex items-center h-5">
+                                <input id="terms" 
+                                       name="terms" 
+                                       type="checkbox" 
+                                       required
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="terms" class="text-gray-700 cursor-pointer">
+                                    Acepto los 
+                                    <a href="#" class="text-blue-600 hover:text-blue-800 font-semibold">términos y condiciones</a>
+                                    y la 
+                                    <a href="#" class="text-blue-600 hover:text-blue-800 font-semibold">política de privacidad</a>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between gap-3 mt-8">
+                        <button type="button" 
+                                onclick="prevStep()"
+                                class="btn-secondary flex items-center gap-2 py-3 px-6 rounded-lg font-semibold">
+                            <i class="fas fa-arrow-left"></i>
+                            Anterior
+                        </button>
+                        <button type="submit" 
+                                id="registerButton"
+                                class="btn-primary flex items-center gap-2 py-3 px-6 rounded-lg text-white font-semibold shadow-md">
+                            <i class="fas fa-check"></i>
+                            <span id="registerButtonText">Crear Cuenta</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Divider (solo visible en último paso) -->
+                <div id="loginSection" class="step-hidden">
+                    <div class="relative py-4">
                         <div class="absolute inset-0 flex items-center">
                             <div class="w-full border-t border-gray-300"></div>
                         </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-2 bg-white text-gray-500">¿Ya tienes cuenta?</span>
+                        <div class="relative flex justify-center">
+                            <span class="px-3 bg-white text-gray-500 text-sm">¿Ya tienes cuenta?</span>
                         </div>
                     </div>
-                </div>
 
-                <!-- Login link -->
-                <div class="text-center">
-                    <a href="/login" 
-                       class="font-medium text-green-600 hover:text-green-500 text-sm">
-                        <i class="fas fa-sign-in-alt mr-2"></i>
-                        Iniciar sesión
-                    </a>
+                        <!-- Botón destacado para iniciar sesión si ya tiene cuenta -->
+                        <div class="text-center mt-4">
+                            <a href="/login"
+                               class="group relative w-full max-w-xs mx-auto flex justify-center items-center py-3 px-6 border border-transparent text-base font-semibold rounded-lg text-white bg-gradient-to-r from-primary-600 to-blue-500 hover:from-primary-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-200 ease-in-out shadow-lg">
+                                <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                                    <i class="fas fa-sign-in-alt text-white group-hover:text-primary-200"></i>
+                                </span>
+                                <span class="ml-6">Iniciar Sesión</span>
+                            </a>
+                        </div>
                 </div>
             </form>
-        </div>
-
-        <!-- Footer -->
-        <div class="text-center text-sm text-gray-500">
-            <p>&copy; 2025 Universidad Tecnológica del Valle de Toluca</p>
-            <p class="mt-1">Sistema de Solicitudes de Pagos</p>
         </div>
     </div>
 
@@ -267,6 +409,121 @@
     <script src="{{ url_for('static', path='/js/auth.js') }}"></script>
 
     <script>
+        let currentStep = 1;
+        const totalSteps = 3;
+        
+        const stepDescriptions = [
+            "Paso 1: Información Personal",
+            "Paso 2: Información Laboral",
+            "Paso 3: Seguridad de la Cuenta"
+        ];
+        
+        const stepIcons = [
+            "fa-user-plus",
+            "fa-briefcase",
+            "fa-shield-alt"
+        ];
+
+        function updateProgressBar() {
+            const steps = document.querySelectorAll('.progress-step');
+            const lines = document.querySelectorAll('.progress-line');
+            
+            steps.forEach((step, index) => {
+                const stepNumber = index + 1;
+                if (stepNumber < currentStep) {
+                    step.classList.add('completed');
+                    step.classList.remove('active');
+                } else if (stepNumber === currentStep) {
+                    step.classList.add('active');
+                    step.classList.remove('completed');
+                } else {
+                    step.classList.remove('active', 'completed');
+                }
+            });
+            
+            lines.forEach((line, index) => {
+                if (index < currentStep - 1) {
+                    line.classList.add('completed');
+                } else {
+                    line.classList.remove('completed');
+                }
+            });
+        }
+
+        function updateLeftPanel() {
+            const description = document.getElementById('stepDescription');
+            const icon = document.getElementById('leftPanelIcon');
+            
+            description.textContent = stepDescriptions[currentStep - 1];
+            icon.className = `fas ${stepIcons[currentStep - 1]} text-blue-500 text-5xl`;
+        }
+
+        function nextStep() {
+            // Validar campos del paso actual
+            const currentStepDiv = document.getElementById(`step${currentStep}`);
+            const inputs = currentStepDiv.querySelectorAll('input[required], select[required]');
+            let valid = true;
+            
+            inputs.forEach(input => {
+                if (!input.value) {
+                    valid = false;
+                    input.classList.add('border-red-500');
+                    setTimeout(() => input.classList.remove('border-red-500'), 2000);
+                }
+            });
+            
+            if (!valid) {
+                if (typeof showAlert === 'function') {
+                    showAlert('Por favor completa todos los campos requeridos', 'error');
+                } else {
+                    // Fallback visual si showAlert no está disponible
+                    const flash = document.getElementById('flash-messages');
+                    if (flash) {
+                        flash.innerHTML = `<div class="alert alert-error fade-in"><div class="flex"><div class="flex-shrink-0"><i class="fas fa-exclamation-circle"></i></div><div class="ml-3"><p class="text-sm">Por favor completa todos los campos requeridos</p></div></div></div>`;
+                    }
+                }
+                return;
+            }
+            
+            if (currentStep < totalSteps) {
+                // Ocultar paso actual
+                document.getElementById(`step${currentStep}`).classList.add('step-hidden');
+                document.getElementById(`step${currentStep}`).classList.remove('step-active');
+                
+                // Mostrar siguiente paso
+                currentStep++;
+                document.getElementById(`step${currentStep}`).classList.remove('step-hidden');
+                document.getElementById(`step${currentStep}`).classList.add('step-active');
+                
+                // Mostrar sección de login en el último paso
+                if (currentStep === totalSteps) {
+                    document.getElementById('loginSection').classList.remove('step-hidden');
+                }
+                
+                updateProgressBar();
+                updateLeftPanel();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                // Ocultar paso actual
+                document.getElementById(`step${currentStep}`).classList.add('step-hidden');
+                document.getElementById(`step${currentStep}`).classList.remove('step-active');
+                
+                // Ocultar sección de login
+                document.getElementById('loginSection').classList.add('step-hidden');
+                
+                // Mostrar paso anterior
+                currentStep--;
+                document.getElementById(`step${currentStep}`).classList.remove('step-hidden');
+                document.getElementById(`step${currentStep}`).classList.add('step-active');
+                
+                updateProgressBar();
+                updateLeftPanel();
+            }
+        }
+
         // Toggle password visibility
         function togglePassword(fieldId) {
             const passwordInput = document.getElementById(fieldId);
@@ -316,7 +573,7 @@
                     break;
                 case 3:
                     message = 'Moderada';
-                    color = 'text-yellow-500';
+                    color = 'text-yellow-600';
                     break;
                 case 4:
                     message = 'Fuerte';
@@ -328,7 +585,7 @@
                     break;
             }
             
-            strengthDiv.innerHTML = `<span class="${color}"><i class="fas fa-shield-alt mr-1"></i>${message}</span>`;
+            strengthDiv.innerHTML = `<span class="${color} flex items-center gap-1"><i class="fas fa-shield-alt"></i>Seguridad: ${message}</span>`;
         });
 
         // Password match checker
@@ -343,11 +600,14 @@
             }
             
             if (password === confirmPassword) {
-                matchDiv.innerHTML = '<span class="text-green-500"><i class="fas fa-check mr-1"></i>Las contraseñas coinciden</span>';
+                matchDiv.innerHTML = '<span class="text-green-500 flex items-center gap-1"><i class="fas fa-check-circle"></i>Las contraseñas coinciden</span>';
             } else {
-                matchDiv.innerHTML = '<span class="text-red-500"><i class="fas fa-times mr-1"></i>Las contraseñas no coinciden</span>';
+                matchDiv.innerHTML = '<span class="text-red-500 flex items-center gap-1"><i class="fas fa-times-circle"></i>Las contraseñas no coinciden</span>';
             }
         });
+
+        // Inicializar
+        updateProgressBar();
     </script>
 </body>
 </html>

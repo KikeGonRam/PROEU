@@ -120,10 +120,18 @@ async function handleLogin(event) {
             body: JSON.stringify(loginData)
         });
         
+        // Validar respuesta de login
+        if (!response || !response.access_token || !response.user) {
+            showAlert('Correo o contraseña incorrectos. Por favor verifica tus datos.', 'error');
+            loginButton.disabled = false;
+            loginButtonText.textContent = originalText;
+            return;
+        }
+
         // Guardar token y datos del usuario
         localStorage.setItem('authToken', response.access_token);
         localStorage.setItem('userData', JSON.stringify(response.user));
-        
+
         // Actualizar variables globales
         authToken = response.access_token;
         window.authToken = response.access_token;
@@ -131,19 +139,22 @@ async function handleLogin(event) {
         window.currentUser = response.user;
         isAuthenticated = true;
         window.isAuthenticated = true;
-        
+
         // Mostrar mensaje de éxito
         showAlert(`¡Bienvenido, ${response.user.first_name}!`, 'success');
-        
+
         // Redirigir según el rol del usuario
         setTimeout(() => {
             redirectByRole(response.user.role);
         }, 1000);
-        
+
     } catch (error) {
-        console.error('Error en login:', error);
-        showAlert('Error al iniciar sesión: ' + error.message, 'error');
-        
+        // Siempre mostrar solo mensajes amigables, nunca técnicos
+        let msg = 'Correo o contraseña incorrectos. Por favor verifica tus datos.';
+        if (error && error.message && error.message.includes('Failed to fetch')) {
+            msg = 'No se pudo conectar con el servidor. Intenta más tarde.';
+        }
+        showAlert(msg, 'error');
         // Restaurar botón
         loginButton.disabled = false;
         loginButtonText.textContent = originalText;
@@ -207,28 +218,43 @@ async function handleRegister(event) {
 
 // Validar formulario de registro
 function validateRegisterForm() {
+    const requiredFields = [
+        'firstName', 'lastName', 'email', 'department', 'password', 'confirmPassword'
+    ];
+    let valid = true;
+    let firstInvalid = null;
+    for (const field of requiredFields) {
+        const el = document.getElementById(field);
+        if (!el || !el.value.trim()) {
+            valid = false;
+            if (!firstInvalid) firstInvalid = el;
+        }
+    }
+    if (!valid) {
+        showAlert('Por favor completa todos los campos requeridos', 'error');
+        if (firstInvalid) firstInvalid.focus();
+        return false;
+    }
+
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
     const terms = document.getElementById('terms').checked;
-    
-    // Verificar que las contraseñas coincidan
+
     if (password !== confirmPassword) {
         showAlert('Las contraseñas no coinciden', 'error');
+        document.getElementById('confirmPassword').focus();
         return false;
     }
-    
-    // Verificar longitud mínima de contraseña
     if (password.length < 6) {
         showAlert('La contraseña debe tener al menos 6 caracteres', 'error');
+        document.getElementById('password').focus();
         return false;
     }
-    
-    // Verificar términos y condiciones
     if (!terms) {
         showAlert('Debes aceptar los términos y condiciones', 'error');
+        document.getElementById('terms').focus();
         return false;
     }
-    
     return true;
 }
 
