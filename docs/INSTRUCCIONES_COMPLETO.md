@@ -192,7 +192,7 @@ python main.py
 
 ## 🎓 **PROYECTO EDUCATIVO UTVT**
 
-Este proyecto ha sido desarrollado completamente para la materia de **Experiencia de Usuario** en la Universidad Tecnológica del Valle de Toluca (UTVT).
+Este proyecto ha sido desarrollado completamente para la materia de **Experiencia de Usuario**.
 
 **¡El sistema está 100% funcional y listo para usar!** 🚀
 

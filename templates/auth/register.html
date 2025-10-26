@@ -142,10 +142,20 @@
                     <span>Seguridad</span>
                 </div>
             </div>
+
+            <!-- Botón destacado para iniciar sesión si ya tiene cuenta -->
+            <div class="mt-8 text-center">
+                <p class="text-gray-700 text-sm mb-4">¿Ya tienes una cuenta?</p>
+                <a href="/login" 
+                   class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 ease-in-out shadow-md">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Iniciar Sesión
+                </a>
+            </div>
             
             <div class="mt-auto pt-8">
                 <p class="text-blue-700 text-sm">
-                    © 2025 Universidad Tecnológica del Valle de Toluca
+                    © 2025 Sistema de Pagos
                 </p>
                 <p class="text-blue-600 text-xs mt-2">
                     Sistema de Solicitudes de Pagos
@@ -206,10 +216,7 @@
                                    type="email" 
                                    required 
                                    class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none text-gray-900 bg-gray-50"
-                                   placeholder="usuario@utvt.edu.mx">
-                            <p class="mt-1 text-xs text-gray-500 ml-1">
-                                Preferiblemente usar email institucional @utvt.edu.mx
-                            </p>
+                                   placeholder="Correo Electrónico">
                         </div>
                     </div>
 
@@ -240,7 +247,7 @@
                                     name="department" 
                                     required 
                                     class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none text-gray-900 bg-gray-50">
-                                <option value="">Selecciona tu departamento</option>
+                               <option value="">Selecciona tu departamento</option>
                                 <option value="Tecnologías de la Información">Tecnologías de la Información</option>
                                 <option value="Coordinación Académica">Coordinación Académica</option>
                                 <option value="Recursos Humanos">Recursos Humanos</option>
@@ -251,7 +258,6 @@
                                 <option value="Servicios Escolares">Servicios Escolares</option>
                                 <option value="Biblioteca">Biblioteca</option>
                                 <option value="Vinculación">Vinculación</option>
-                                <option value="Otro">Otro</option>
                             </select>
                         </div>
 
@@ -264,7 +270,7 @@
                                    name="phone" 
                                    type="tel" 
                                    class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none text-gray-900 bg-gray-50"
-                                   placeholder="+52 722 123 4567">
+                                   placeholder="Numero de contacto">
                             <p class="mt-1 text-xs text-gray-500 ml-1">
                                 Opcional: Número de contacto institucional
                             </p>
@@ -307,7 +313,7 @@
                                        required 
                                        minlength="6"
                                        class="input-field w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none text-gray-900 bg-gray-50"
-                                       placeholder="••••••••">
+                                       placeholder="Contraseña">
                                 <button type="button" 
                                         onclick="togglePassword('password')" 
                                         class="absolute right-4 top-1/2 -translate-y-1/2 text-blue-400 hover:text-blue-600">
@@ -330,7 +336,7 @@
                                        type="password" 
                                        required 
                                        class="input-field w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none text-gray-900 bg-gray-50"
-                                       placeholder="••••••••">
+                                       placeholder="Contraseña">
                                 <button type="button" 
                                         onclick="togglePassword('confirmPassword')" 
                                         class="absolute right-4 top-1/2 -translate-y-1/2 text-blue-400 hover:text-blue-600">
@@ -343,22 +349,13 @@
                         </div>
 
                         <!-- Términos y condiciones -->
-                        <div class="flex items-start pt-2 bg-blue-50 p-4 rounded-lg border border-blue-200">
-                            <div class="flex items-center h-5">
-                                <input id="terms" 
-                                       name="terms" 
-                                       type="checkbox" 
-                                       required
-                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer">
-                            </div>
-                            <div class="ml-3 text-sm">
-                                <label for="terms" class="text-gray-700 cursor-pointer">
-                                    Acepto los 
-                                    <a href="#" class="text-blue-600 hover:text-blue-800 font-semibold">términos y condiciones</a>
-                                    y la 
-                                    <a href="#" class="text-blue-600 hover:text-blue-800 font-semibold">política de privacidad</a>
-                                </label>
-                            </div>
+                        <div class="mt-6">
+                            <label class="flex items-center">
+                                <input id="terms" name="terms" type="checkbox" required class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <span class="ml-2 text-sm text-gray-700">
+                                    Acepto los <a href="/terms" class="text-blue-600 hover:underline">términos y condiciones</a> y la <a href="/privacy" class="text-blue-600 hover:underline">política de privacidad</a>.
+                                </span>
+                            </label>
                         </div>
                     </div>
 
@@ -389,16 +386,6 @@
                         </div>
                     </div>
 
-                        <!-- Botón destacado para iniciar sesión si ya tiene cuenta -->
-                        <div class="text-center mt-4">
-                            <a href="/login"
-                               class="group relative w-full max-w-xs mx-auto flex justify-center items-center py-3 px-6 border border-transparent text-base font-semibold rounded-lg text-white bg-gradient-to-r from-primary-600 to-blue-500 hover:from-primary-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-200 ease-in-out shadow-lg">
-                                <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                                    <i class="fas fa-sign-in-alt text-white group-hover:text-primary-200"></i>
-                                </span>
-                                <span class="ml-6">Iniciar Sesión</span>
-                            </a>
-                        </div>
                 </div>
             </form>
         </div>
@@ -604,6 +591,15 @@
             } else {
                 matchDiv.innerHTML = '<span class="text-red-500 flex items-center gap-1"><i class="fas fa-times-circle"></i>Las contraseñas no coinciden</span>';
             }
+        });
+
+        // Capitalizar la primera letra de cada palabra
+        document.getElementById('firstName').addEventListener('input', function() {
+            this.value = this.value.replace(/\b\w/g, char => char.toUpperCase());
+        });
+
+        document.getElementById('lastName').addEventListener('input', function() {
+            this.value = this.value.replace(/\b\w/g, char => char.toUpperCase());
         });
 
         // Inicializar

@@ -203,7 +203,7 @@ async function handleRegister(event) {
         
         // Redirigir al login después de un momento
         setTimeout(() => {
-            window.location.href = '/login';
+            redirectByRole(response.role);
         }, 2000);
         
     } catch (error) {

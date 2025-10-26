@@ -345,7 +345,7 @@ Este proyecto está desarrollado con fines educativos para la materia de **Exper
 
 ## � Soporte y Contacto
 
-- **Institución**: Universidad Tecnológica del Valle de Toluca (UTVT)
+- **Institución**: Sistema de Pagos
 - **Materia**: Experiencia de Usuario
 - **Año**: 2025
 - **Propósito**: Proyecto educativo
