@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Request, HTTPException, Depends
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from app.routes.user_routes import get_current_admin_user
 from app.middleware.auth_middleware import get_current_user, get_optional_current_user
-from app.models.user import UserResponse
+from app.models.user import UserResponse, UserRole
+from app.controllers.user_controller import user_controller
 
 # Configurar router y templates
 router = APIRouter()
@@ -40,6 +41,56 @@ async def users_page(request: Request):
         "title": "Gestión de Usuarios"
     })
 
+
+@router.get("/users/charts", response_class=HTMLResponse, summary="Estadísticas de usuarios")
+async def users_charts_page(request: Request):
+    """
+    Página con gráficas y estadísticas de usuarios (solo admin).
+    Intentamos obtener el token desde el Authorization header o desde la
+    cookie "access_token" (esta cookie se define al iniciar sesión).
+
+    Devuelve 403 si no hay token válido o si el usuario no es administrador.
+    """
+    # 1) Intentar leer Authorization header
+    auth_header = request.headers.get("authorization") or request.headers.get("Authorization")
+    # Debug log: print incoming headers and cookies to server stdout to help diagnose missing cookie
+    try:
+        print(f"[DEBUG] /users/charts request Authorization header: {auth_header}")
+        print(f"[DEBUG] /users/charts request.cookies: {request.cookies}")
+    except Exception:
+        pass
+    token = None
+    if auth_header and auth_header.lower().startswith("bearer "):
+        token = auth_header.split()[1]
+    else:
+        # 2) Intentar leer cookie (set by login route)
+        token = request.cookies.get("access_token")
+
+    if not token:
+        raise HTTPException(status_code=403, detail="Acceso denegado. Solo administradores.")
+
+    # Verificar token y obtener email
+    email = user_controller.verify_token(token)
+    if email is None:
+        raise HTTPException(status_code=403, detail="Token inválido o expirado")
+
+    # Obtener usuario y verificar rol
+    user = await user_controller.get_user_by_email(email)
+    if user is None or (user.role != UserRole.ADMIN):
+        raise HTTPException(status_code=403, detail="Acceso denegado. Se requiere rol de administrador.")
+
+    return templates.TemplateResponse("users/charts.html", {
+        "request": request,
+        "title": "Estadísticas de Usuarios",
+        "user": {
+            "id": str(user.id),
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "role": user.role,
+        }
+    })
+
 @router.get("/login", response_class=HTMLResponse, summary="Página de login")
 async def login_page(request: Request):
     """
@@ -49,6 +100,17 @@ async def login_page(request: Request):
         "request": request,
         "title": "Iniciar Sesión"
     })
+
+
+@router.get('/debug/headers')
+async def debug_headers(request: Request):
+    """Debug endpoint that returns incoming request headers and cookies as JSON.
+    Use this to verify whether the browser is sending the access_token cookie.
+    """
+    # Convert headers to a normal dict (may contain bytes) and cookies
+    headers = dict(request.headers)
+    cookies = dict(request.cookies)
+    return {"headers": headers, "cookies": cookies}
 
 @router.get("/register", response_class=HTMLResponse, summary="Página de registro")
 async def register_page(request: Request):

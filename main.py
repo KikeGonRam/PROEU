@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request, BackgroundTasks, Form
+from fastapi import FastAPI, Request, BackgroundTasks, Form, Depends, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,6 +9,7 @@ from app.routes import chat_routes
 from app.config.database import connect_to_mongo, close_mongo_connection
 import smtplib
 from fastapi.responses import HTMLResponse
+from app.utils.auth import get_current_user
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -97,6 +98,13 @@ async def privacy_page(request: Request):
 @app.get("/terms", response_class=HTMLResponse)
 async def terms_page(request: Request):
     return templates.TemplateResponse("terms.html", {"request": request, "title": "Términos y Condiciones"})
+
+# Ruta para la página de inicio
+@app.get("/home", response_class=HTMLResponse)
+async def home(request: Request, user: dict = Depends(get_current_user)):
+    if user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Access forbidden: Admins only")
+    return templates.TemplateResponse("home.html", {"request": request, "user": user})
 
 if __name__ == "__main__":
     import uvicorn

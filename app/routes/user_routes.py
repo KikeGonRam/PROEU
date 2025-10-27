@@ -1,5 +1,5 @@
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Response, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from app.models.user import (
@@ -7,6 +7,7 @@ from app.models.user import (
     Token, UserListResponse, UserRole, UserStatus
 )
 from app.controllers.user_controller import user_controller
+from app.middleware.auth_middleware import get_optional_current_user
 
 # Configurar router
 router = APIRouter()
@@ -46,12 +47,41 @@ async def get_current_admin_user(current_user: UserResponse = Depends(get_curren
 
 # Rutas de autenticación
 @router.post("/login", response_model=Token, summary="Iniciar sesión")
-async def login(login_data: UserLogin):
+async def login(login_data: UserLogin, response: Response, request: Request):
     """
     Iniciar sesión con email y contraseña.
     Retorna un token JWT para autenticación.
     """
-    return await user_controller.login(login_data)
+    token = await user_controller.login(login_data)
+    # Debug: log incoming request headers and cookies to help diagnose cookie issues
+    try:
+        print(f"[DEBUG] /api/users/login request.headers: {dict(request.headers)}")
+        print(f"[DEBUG] /api/users/login request.cookies: {request.cookies}")
+    except Exception:
+        pass
+    # Set a secure HttpOnly cookie so server-rendered pages can also
+    # detect the logged-in user on subsequent navigations.
+    # Cookie value is the raw access token (jwt). Keep it HttpOnly to
+    # avoid XSS access; client JS will continue to use localStorage.
+    try:
+        response.set_cookie(
+            key="access_token",
+            value=token.access_token,
+            httponly=True,
+            samesite="lax",
+            # secure=False so it works in local dev (http); in prod set True
+            secure=False,
+            max_age=60 * 60 * 24 * 7  # 7 days
+        )
+        try:
+            print(f"[DEBUG] set_cookie called for access_token (len={len(token.access_token)})")
+        except Exception:
+            pass
+    except Exception:
+        # If setting cookie fails for some environment, still return token.
+        pass
+
+    return token
 
 @router.post("/register", response_model=UserResponse, summary="Registro público")
 async def register(user_data: UserCreate):
@@ -79,6 +109,20 @@ async def refresh_token(current_user: UserResponse = Depends(get_current_user)):
     """
     return await user_controller.refresh_token(current_user.email)
 
+
+@router.post('/logout', summary="Logout y borrar cookie")
+async def logout(response: Response, current_user: UserResponse | None = Depends(get_optional_current_user)):
+    """
+    Endpoint para cerrar sesión: borra la cookie `access_token`.
+    Se permite ser llamado aunque no haya usuario autenticado (idempotente).
+    """
+    # Borrar cookie (será silencioso si no existe)
+    try:
+        response.delete_cookie('access_token', path='/')
+    except Exception:
+        pass
+    return {"message": "Sesión cerrada"}
+
 # Rutas CRUD (solo para administradores)
 @router.post("/", response_model=UserResponse, summary="Crear usuario")
 async def create_user(
@@ -94,7 +138,7 @@ async def create_user(
 @router.get("/", response_model=UserListResponse, summary="Listar usuarios")
 async def get_users(
     page: int = Query(1, ge=1, description="Número de página"),
-    limit: int = Query(10, ge=1, le=100, description="Elementos por página"),
+    limit: int = Query(5, ge=1, le=100, description="Elementos por página"),
     search: Optional[str] = Query(None, description="Buscar por nombre, apellido, email o departamento"),
     role: Optional[UserRole] = Query(None, description="Filtrar por rol"),
     status: Optional[UserStatus] = Query(None, description="Filtrar por estado"),
@@ -130,6 +174,45 @@ async def get_user_stats(current_user: UserResponse = Depends(get_current_user))
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error obteniendo estadísticas: {str(e)}"
         )
+
+
+@router.get("/stats/roles", summary="Distribución de usuarios por rol")
+async def stats_roles(current_admin: UserResponse = Depends(get_current_admin_user)):
+    data = await user_controller.get_role_distribution()
+    labels = [d['role'] for d in data]
+    counts = [d['count'] for d in data]
+    return {"success": True, "data": {"labels": labels, "datasets": [{"label": "Usuarios", "data": counts}]}}
+
+
+@router.get("/stats/registrations", summary="Altas de usuarios por periodo")
+async def stats_registrations(
+    period: str = Query('month'),
+    start: Optional[str] = None,
+    end: Optional[str] = None,
+    current_admin: UserResponse = Depends(get_current_admin_user)
+):
+    # parse start/end if given
+    s = None
+    e = None
+    from datetime import datetime
+    if start:
+        s = datetime.fromisoformat(start)
+    if end:
+        e = datetime.fromisoformat(end)
+    payload = await user_controller.get_registrations(period=period, start=s, end=e)
+    return {"success": True, "data": {"labels": payload['labels'], "datasets": [{"label": "Altas", "data": payload['data']}]}}
+
+
+@router.get("/stats/last_logins", summary="Buckets de últimos logins")
+async def stats_last_logins(current_admin: UserResponse = Depends(get_current_admin_user)):
+    payload = await user_controller.get_last_login_buckets()
+    return {"success": True, "data": {"labels": payload['labels'], "datasets": [{"label": "Usuarios", "data": payload['data']}]} }
+
+
+@router.get("/stats/departments", summary="Top departamentos por número de usuarios")
+async def stats_departments(top: int = Query(10, ge=1, le=100), current_admin: UserResponse = Depends(get_current_admin_user)):
+    payload = await user_controller.get_departments_top(top=top)
+    return {"success": True, "data": {"labels": payload['labels'], "datasets": [{"label": "Usuarios", "data": payload['data']}]}}
 
 @router.get("/{user_id}", response_model=UserResponse, summary="Obtener usuario por ID")
 async def get_user(

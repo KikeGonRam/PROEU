@@ -2,7 +2,7 @@
 
 // Variables globales
 let currentPage = 1;
-let pageSize = 10;
+let pageSize = 5;
 let totalUsers = 0;
 let totalPages = 0;
 let currentFilters = {};
@@ -10,6 +10,9 @@ let editingUserId = null;
 // Compatibilidad: alias usados en otras partes del código
 let currentLimit = pageSize;
 let currentTotal = totalUsers;
+
+// Abort controller para cancelar peticiones previas y mejorar la sensación de responsividad
+let currentAbortController = null;
 
 // Estado del modal
 let isModalOpen = false;
@@ -92,7 +95,34 @@ async function loadUsers(page = currentPage, limit = currentLimit, filters = cur
 
     const url = `/users?${params}`;
     console.log('loadUsers requesting URL:', url);
-    const data = await apiRequest(url);
+
+    // Cancelar petición previa si existe
+    try {
+        if (currentAbortController) {
+            try { currentAbortController.abort(); } catch (e) { /* ignore */ }
+        }
+    } catch (e) {
+        console.warn('Error aborting previous controller:', e);
+    }
+    currentAbortController = new AbortController();
+
+    // Pasar la señal al helper apiRequest para que la petición pueda ser abortada
+    let data;
+    try {
+        data = await apiRequest(url, { signal: currentAbortController.signal });
+    } catch (err) {
+        // Si la petición fue abortada, solo retornamos silenciosamente
+        if (err && (err.name === 'AbortError' || (err.message && err.message.toLowerCase().includes('abort')))) {
+            console.log('loadUsers: petición abortada');
+            return;
+        }
+        throw err; // rethrow para que el outer catch lo maneje
+    } finally {
+        // limpiar controller si corresponde
+        if (currentAbortController) {
+            currentAbortController = null;
+        }
+    }
         // Debug: mostrar en consola los datos recibidos y los roles de los usuarios
         try {
             console.log('loadUsers params:', { page, limit, filters });
@@ -326,7 +356,16 @@ function openCreateModal() {
     const passwordBlock = document.getElementById('passwordBlock');
     if (passwordBlock) {
         passwordBlock.classList.remove('bg-gray-50','border-gray-200');
-        passwordBlock.classList.add('bg-yellow-100','border-yellow-400');
+        // usar estilo más sutil para creación
+        passwordBlock.classList.add('bg-yellow-50','border-yellow-200');
+    }
+    // Ocultar la opción de administrador al crear (no permitir crear admin desde UI)
+    const roleInput = document.getElementById('role');
+    if (roleInput) {
+        // seleccionar placeholder
+        try { roleInput.value = ''; } catch (e) {}
+        const adminOpt = roleInput.querySelector('option[value="admin"]');
+        if (adminOpt) adminOpt.hidden = true;
     }
 }
 
@@ -359,10 +398,8 @@ async function editUser(userId) {
 
     
         if (departmentInput) departmentInput.value = user.department;
-        const phoneInput = document.getElementById('phone');
-        if (phoneInput) phoneInput.value = user.phone || '';
-        const roleInput = document.getElementById('role');
-        if (roleInput) roleInput.value = user.role;
+    const phoneInput = document.getElementById('phone');
+    if (phoneInput) phoneInput.value = user.phone || '';
         const statusInput = document.getElementById('status');
         if (statusInput) statusInput.value = user.status;
         if (passwordInput) passwordInput.value = '';
@@ -371,8 +408,17 @@ async function editUser(userId) {
         // Mostrar passwordBlock neutral para edición
         const passwordBlock = document.getElementById('passwordBlock');
         if (passwordBlock) {
-            passwordBlock.classList.remove('bg-yellow-100','border-yellow-400');
+            // restaurar estilo neutral para edición
+            passwordBlock.classList.remove('bg-yellow-50','border-yellow-200');
             passwordBlock.classList.add('bg-gray-50','border-gray-200');
+        }
+        // Asegurarse de mostrar la opción admin si corresponde (edición)
+        const roleInput = document.getElementById('role');
+        if (roleInput) {
+            const adminOpt = roleInput.querySelector('option[value="admin"]');
+            if (adminOpt) adminOpt.hidden = false;
+            // si el usuario tiene rol admin, mostrarlo
+            try { roleInput.value = user.role; } catch (e) {}
         }
     } catch (error) {
         console.error('Error loading user:', error);

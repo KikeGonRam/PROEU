@@ -66,6 +66,10 @@ async function apiRequest(url, options = {}) {
     }
     
     try {
+        // Ensure cookies (Set-Cookie) are accepted for same-origin requests
+        if (!('credentials' in config)) {
+            config.credentials = 'same-origin';
+        }
         const response = await fetch(API_BASE_URL + url, config);
         
         if (!response.ok) {

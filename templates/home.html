@@ -20,8 +20,8 @@
     <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
     <!-- Saludo personalizado -->
     <div class="bg-gradient-to-r from-primary-600 to-blue-600 rounded-lg shadow-lg p-6 text-white">
-        <div class="flex items-center justify-between">
-            <div>
+        <div class="flex flex-col md:flex-row items-center justify-between">
+            <div class="text-center md:text-left">
                 <h3 id="welcomeMessage" class="text-2xl font-bold mb-2">
                     ¡Bienvenido al Sistema de Solicitudes de Pagos!
                 </h3>
@@ -34,7 +34,7 @@
                     Sistema inicializado y listo para usar
                 </p>
             </div>
-            <div class="hidden md:block">
+            <div class="mt-4 md:mt-0">
                 <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
                     <i class="fas fa-money-check-alt text-4xl"></i>
                 </div>
@@ -43,9 +43,9 @@
     </div>
 
     <!-- Estadísticas disponibles -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Total de Usuarios -->
-    <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow duration-150 focus-within:ring-2 focus-within:ring-primary-500" tabindex="0" aria-label="Total de usuarios">
+        <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow duration-150 focus-within:ring-2 focus-within:ring-primary-500" tabindex="0" aria-label="Total de usuarios">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
@@ -62,7 +62,7 @@
         </div>
 
         <!-- Estado del Sistema -->
-    <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow duration-150 focus-within:ring-2 focus-within:ring-green-500" tabindex="0" aria-label="Estado del sistema">
+        <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow duration-150 focus-within:ring-2 focus-within:ring-green-500" tabindex="0" aria-label="Estado del sistema">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
@@ -82,7 +82,7 @@
         </div>
 
         <!-- Base de Datos -->
-    <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow duration-150 focus-within:ring-2 focus-within:ring-blue-500" tabindex="0" aria-label="Base de datos">
+        <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow duration-150 focus-within:ring-2 focus-within:ring-blue-500" tabindex="0" aria-label="Base de datos">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">

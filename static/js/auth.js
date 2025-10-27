@@ -128,8 +128,8 @@ async function handleLogin(event) {
             return;
         }
 
-        // Guardar token y datos del usuario
-        localStorage.setItem('authToken', response.access_token);
+    // Guardar token y datos del usuario
+    localStorage.setItem('authToken', response.access_token);
         localStorage.setItem('userData', JSON.stringify(response.user));
 
         // Actualizar variables globales
@@ -139,6 +139,16 @@ async function handleLogin(event) {
         window.currentUser = response.user;
         isAuthenticated = true;
         window.isAuthenticated = true;
+
+        // También crear una cookie accesible por el navegador para navegaciones normales
+        // (Nota: la cookie HttpOnly la establece el servidor; esto es un respaldo no-HttpOnly
+        // para entornos de desarrollo donde la cookie del servidor no se persista por alguna razón.)
+        try {
+            const maxAge = 60 * 60 * 24 * 7; // 7 días
+            document.cookie = `access_token=${response.access_token}; path=/; max-age=${maxAge}; samesite=lax`;
+        } catch (e) {
+            // ignore
+        }
 
         // Mostrar mensaje de éxito
         showAlert(`¡Bienvenido, ${response.user.first_name}!`, 'success');
@@ -259,11 +269,18 @@ function validateRegisterForm() {
 }
 
 // Cerrar sesión
-function logout() {
+async function logout() {
+    // Ask server to clear cookie (if any), then clear local storage
+    try {
+        await apiRequest('/users/logout', { method: 'POST' });
+    } catch (e) {
+        // ignore
+    }
+
     // Limpiar localStorage
     localStorage.removeItem('authToken');
     localStorage.removeItem('userData');
-    
+
     // Limpiar variables globales
     authToken = null;
     window.authToken = null;
@@ -271,14 +288,21 @@ function logout() {
     window.currentUser = null;
     isAuthenticated = false;
     window.isAuthenticated = false;
-    
+
     // Mostrar mensaje
     showAlert('Sesión cerrada exitosamente', 'success');
-    
+
     // Redirigir al login
     setTimeout(() => {
         window.location.href = '/login';
     }, 1000);
+
+    // Borrar cookie de acceso client-side (fallback)
+    try {
+        document.cookie = 'access_token=; Max-Age=0; path=/';
+    } catch (e) {
+        // ignore
+    }
 }
 
 // Actualizar UI para usuario autenticado
@@ -400,7 +424,28 @@ window.apiRequest = async function(url, options = {}) {
     }
     
     try {
-        return await originalApiRequest(url, options);
+        // Ensure credentials are sent so browser accepts Set-Cookie on login
+        if (!options) options = {};
+        if (!options.credentials) options.credentials = 'same-origin';
+
+        // Add Authorization header if token present (keeps parity with main.apiRequest)
+        options.headers = options.headers || {};
+        if (window.authToken) {
+            options.headers['Authorization'] = `Bearer ${window.authToken}`;
+        }
+
+        if (typeof originalApiRequest === 'function') {
+            return await originalApiRequest(url, options);
+        } else {
+            // Fallback: perform fetch directly to /api prefixed URL
+            const cfg = Object.assign({}, options, { headers: options.headers });
+            const res = await fetch('/api' + url, cfg);
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({ detail: 'Error desconocido' }));
+                throw new Error(JSON.stringify(err));
+            }
+            return await res.json();
+        }
     } catch (error) {
         // Si el error es 401 (no autorizado), redirigir al login
         if (error.message.includes('401') || error.message.includes('Unauthorized')) {

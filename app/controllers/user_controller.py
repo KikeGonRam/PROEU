@@ -374,7 +374,6 @@ class UserController:
                 token_type="bearer",
                 user=UserResponse(**user_obj.dict())
             )
-
         except Exception as e:
             if isinstance(e, HTTPException):
                 raise e
@@ -382,6 +381,118 @@ class UserController:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Error renovando token: {str(e)}"
             )
+        
+
+    # Estadísticas para gráficas
+    async def get_role_distribution(self):
+        """Distribución de usuarios por rol"""
+        try:
+            pipeline = [
+                {"$group": {"_id": "$role", "count": {"$sum": 1}}},
+                {"$project": {"role": "$_id", "count": 1, "_id": 0}},
+                {"$sort": {"count": -1}}
+            ]
+            result = list(self.collection.aggregate(pipeline))
+            return [{"role": r.get('role') or 'unknown', "count": r.get('count', 0)} for r in result]
+        except Exception as e:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+    async def get_registrations(self, period: str = 'month', start: Optional[datetime] = None, end: Optional[datetime] = None):
+        """Altas de usuarios agrupadas por periodo (day, week, month)"""
+        try:
+            if period == 'day':
+                fmt = "%Y-%m-%d"
+            elif period == 'week':
+                # ISO week as YYYY-ww
+                fmt = "%G-%V"
+            else:
+                fmt = "%Y-%m"
+
+            match = {}
+            if start or end:
+                match['created_at'] = {}
+                if start:
+                    match['created_at']['$gte'] = start
+                if end:
+                    match['created_at']['$lte'] = end
+
+            pipeline = []
+            if match:
+                pipeline.append({'$match': match})
+
+            pipeline.extend([
+                {"$project": {"period": {"$dateToString": {"format": fmt, "date": "$created_at"}}}},
+                {"$group": {"_id": "$period", "count": {"$sum": 1}}},
+                {"$sort": {"_id": 1}}
+            ])
+
+            result = list(self.collection.aggregate(pipeline))
+            # Convertir a etiquetas y datos
+            labels = [r['_id'] for r in result]
+            data = [r['count'] for r in result]
+            return {"labels": labels, "data": data}
+        except Exception as e:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+    async def get_last_login_buckets(self, boundaries = [7,30,90]):
+        """Buckets de última conexión: <=7, <=30, <=90, >90"""
+        try:
+            # boundaries are days
+            # Build bucket boundaries in days
+            bounds = [0] + boundaries + [100000]
+            # We will compute days since last_login and bucket
+            # Use an epoch fallback date instead of datetime(0) (which raises)
+            epoch = datetime(1970, 1, 1)
+            pipeline = [
+                {"$project": {"last_login": 1}},
+                {"$addFields": {"daysSince": {"$floor": {"$divide": [{"$subtract": ["$$NOW", {"$ifNull": ["$last_login", epoch]}]}, 1000*60*60*24]}}}},
+                {"$bucket": {"groupBy": "$daysSince", "boundaries": [0,7,30,90,100000], "default": ">=", "output": {"count": {"$sum": 1}}}}
+            ]
+            agg = list(self.collection.aggregate(pipeline))
+            # Map results to known labels
+            mapping = {0: 0, 7: 0, 30: 0, 90: 0, '>=': 0}
+            for item in agg:
+                b = item.get('_id')
+                c = item.get('count', 0)
+                mapping[b] = mapping.get(b, 0) + c
+
+            labels = ['Últimos 7 días', 'Últimos 30 días', 'Últimos 90 días', '> 90 días']
+            # The bucket aggregation above uses boundaries 0,7,30,90,100000 with _id equal to the lower boundary of the bucket.
+            bucket_map = {0:0,7:0,30:0,90:0,'>=':0}
+            for it in agg:
+                key = it.get('_id')
+                cnt = it.get('count',0)
+                if key == 0:
+                    bucket_map[0] += cnt
+                elif key == 7:
+                    bucket_map[7] += cnt
+                elif key == 30:
+                    bucket_map[30] += cnt
+                elif key == 90:
+                    bucket_map[90] += cnt
+                else:
+                    bucket_map['>='] += cnt
+
+            data = [bucket_map[7], bucket_map[30], bucket_map[90], bucket_map['>=']]
+            return {"labels": labels, "data": data}
+        except Exception as e:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+    async def get_departments_top(self, top: int = 10):
+        """Top N departamentos por número de usuarios"""
+        try:
+            pipeline = [
+                {"$group": {"_id": "$department", "count": {"$sum": 1}}},
+                {"$sort": {"count": -1}},
+                {"$limit": top},
+                {"$project": {"department": "$_id", "count": 1, "_id": 0}}
+            ]
+            res = list(self.collection.aggregate(pipeline))
+            labels = [r.get('department') or 'Sin departamento' for r in res]
+            data = [r.get('count',0) for r in res]
+            return {"labels": labels, "data": data}
+        except Exception as e:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 # Instancia global del controlador
 user_controller = UserController()

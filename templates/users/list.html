@@ -79,57 +79,66 @@
 </div>
 
 <!-- Modal para Crear/Editar Usuario -->
-<div id="userModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
-    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 shadow-lg rounded-md bg-white">
-        <div class="mt-3">
-            <div class="flex items-center justify-between mb-4">
-                <h3 id="modalTitle" class="text-lg font-medium text-gray-900">Nuevo Usuario</h3>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times"></i>
-                </button>
+<div id="userModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-start md:items-center justify-center py-8 hidden z-50">
+    <div class="w-11/12 md:max-w-2xl bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-100">
+        <!-- Header -->
+        <div class="flex items-center gap-3 px-6 py-4 border-b border-gray-100 bg-white">
+            <div class="flex items-center justify-center h-12 w-12 rounded-full bg-primary-50 text-primary-600">
+                <i class="fas fa-user-plus"></i>
             </div>
-            
-            <form id="userForm">
+            <div class="flex-1">
+                <h3 id="modalTitle" class="text-lg font-semibold text-gray-900">Nuevo Usuario</h3>
+                <p class="text-sm text-gray-500">Crea o edita usuarios del sistema</p>
+            </div>
+            <button onclick="closeModal()" aria-label="Cerrar" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="px-6 py-6">
+            <form id="userForm" class="space-y-4">
                 <input type="hidden" id="userId" name="userId">
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                        <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">Nombre *</label>
-                        <input type="text" id="firstName" name="firstName" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                        <label for="firstName" class="block text-sm font-medium text-gray-700">Nombre *</label>
+                        <input placeholder="Nombre" type="text" id="firstName" name="firstName" required class="mt-1 w-full rounded-lg border-gray-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500">
                     </div>
                     <div>
-                        <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Apellido *</label>
-                        <input type="text" id="lastName" name="lastName" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                        <label for="lastName" class="block text-sm font-medium text-gray-700">Apellido *</label>
+                        <input placeholder="Apellido" type="text" id="lastName" name="lastName" required class="mt-1 w-full rounded-lg border-gray-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500">
                     </div>
                 </div>
 
-                <div class="mb-4">
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-                    <input type="email" id="email" name="email" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email *</label>
+                    <input placeholder="correo@dominio.com" type="email" id="email" name="email" required class="mt-1 w-full rounded-lg border-gray-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500">
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                        <label for="department" class="block text-sm font-medium text-gray-700 mb-1">Departamento *</label>
-                        <input type="text" id="department" name="department" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                        <label for="department" class="block text-sm font-medium text-gray-700">Departamento *</label>
+                        <input placeholder="Recursos Humanos" type="text" id="department" name="department" required class="mt-1 w-full rounded-lg border-gray-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500">
                     </div>
                     <div>
-                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
-                        <input type="tel" id="phone" name="phone" class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                        <label for="phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
+                        <input placeholder="(123) 456-7890" type="tel" id="phone" name="phone" class="mt-1 w-full rounded-lg border-gray-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                        <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Rol *</label>
-                        <select id="role" name="role" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                        <label for="role" class="block text-sm font-medium text-gray-700">Rol *</label>
+                        <select id="role" name="role" required class="mt-1 w-full rounded-lg border-gray-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                            <option value="">Seleccionar rol</option>
                             <option value="solicitante">Solicitante</option>
-                            <option value="admin">Administrador</option>
+                            <option value="admin" class="admin-option">Administrador</option>
                         </select>
                     </div>
                     <div>
-                        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Estado *</label>
-                        <select id="status" name="status" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                        <label for="status" class="block text-sm font-medium text-gray-700">Estado *</label>
+                        <select id="status" name="status" required class="mt-1 w-full rounded-lg border-gray-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500">
                             <option value="active">Activo</option>
                             <option value="inactive">Inactivo</option>
                             <option value="suspended">Suspendido</option>
@@ -137,24 +146,15 @@
                     </div>
                 </div>
 
-                <div class="mb-6">
-                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
-                        <span id="passwordLabel">Contraseña *</span>
-                    </label>
-                    <input type="password" id="password" name="password" class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
-                    <p class="mt-1 text-sm text-gray-500">
-                        <span id="passwordHelp">Mínimo 6 caracteres</span>
-                    </p>
+                <div id="passwordBlock" class="bg-gray-50 border border-gray-100 rounded-lg p-3">
+                    <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
+                    <input placeholder="Nueva contraseña (mín. 6 caracteres)" type="password" id="password" name="password" class="mt-1 w-full rounded-lg border-gray-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                    <p class="mt-2 text-xs text-gray-500">Dejar vacío para mantener la contraseña actual (si aplica).</p>
                 </div>
 
-                <div class="flex justify-end space-x-3">
-                    <button type="button" onclick="closeModal()" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                        Cancelar
-                    </button>
-                    <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                        <i class="fas fa-save mr-2"></i>
-                        <span id="submitButtonText">Crear Usuario</span>
-                    </button>
+                <div class="flex items-center justify-end gap-3 pt-2">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium shadow"> <i class="fas fa-save mr-2"></i> <span id="submitButtonText">Crear Usuario</span></button>
                 </div>
             </form>
         </div>
