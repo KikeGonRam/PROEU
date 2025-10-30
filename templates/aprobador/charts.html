@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Estadísticas Aprobador{% endblock %}
+
+{% block page_title %}Estadísticas - Aprobador{% endblock %}
+{% block page_description %}Métricas y gráficas relevantes para el aprobador.{% endblock %}
+
+{% block content %}
+<div class="p-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white rounded-lg shadow p-4">
+            <h4 class="text-base font-semibold text-gray-700 mb-3">Distribución por Estado</h4>
+            <div class="chart-container" style="height:300px;">
+                <canvas id="chartAprobStates"></canvas>
+            </div>
+            <div class="mt-3 text-sm text-gray-600">Leyenda y explicación de estados.</div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4">
+            <h4 class="text-base font-semibold text-gray-700 mb-3">Montos por Estado</h4>
+            <div class="chart-container" style="height:300px;">
+                <canvas id="chartAprobAmounts"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4">
+            <h4 class="text-base font-semibold text-gray-700 mb-3">Resumen rápido</h4>
+            <div class="flex flex-col gap-3">
+                <div class="p-4 bg-gray-50 rounded">Pendientes: <span id="stat-pendientes" class="font-semibold"></span></div>
+                <div class="p-4 bg-gray-50 rounded">Aprobadas: <span id="stat-aprobadas" class="font-semibold"></span></div>
+                <div class="p-4 bg-gray-50 rounded">Rechazadas: <span id="stat-rechazadas" class="font-semibold"></span></div>
+                <div class="p-4 bg-gray-50 rounded">Monto pendiente: <span id="stat-monto" class="font-semibold"></span></div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4">
+            <h4 class="text-base font-semibold text-gray-700 mb-3">Top tipos de pago (conteo)</h4>
+            <div class="chart-container" style="height:300px;">
+                <canvas id="chartAprobTypes"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', path='/js/aprobador_charts.js') }}?v=1"></script>
+{% endblock %}

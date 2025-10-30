@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Estadísticas de Solicitudes{% endblock %}
+
+{% block page_title %}Estadísticas de Solicitudes{% endblock %}
+{% block page_description %}Panel con métricas y gráficas sobre las solicitudes{% endblock %}
+
+{% block content %}
+<div class="p-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white rounded-lg shadow p-4">
+            <h4 class="text-base font-semibold text-gray-700 mb-3">Distribución por estado</h4>
+            <div class="chart-container" style="height:320px;">
+                <canvas id="chartStates"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4">
+            <h4 class="text-base font-semibold text-gray-700 mb-3">Montos por estado</h4>
+            <div class="chart-container" style="height:320px;">
+                <canvas id="chartAmounts"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4">
+            <h4 class="text-base font-semibold text-gray-700 mb-3">Resumen rápido</h4>
+            <div class="flex flex-col gap-3">
+                <div class="p-4 bg-gray-50 rounded">Total solicitudes: <span id="totalSolicitudes" class="font-semibold"></span></div>
+                <div class="p-4 bg-gray-50 rounded">Solicitudes pendientes: <span id="pendientes" class="font-semibold"></span></div>
+                <div class="p-4 bg-gray-50 rounded">Solicitudes aprobadas: <span id="aprobadas" class="font-semibold"></span></div>
+                <div class="p-4 bg-gray-50 rounded">Monto total: <span id="montoTotal" class="font-semibold"></span></div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4">
+            <h4 class="text-base font-semibold text-gray-700 mb-3">Top tipos de pago (por cantidad)</h4>
+            <div class="chart-container" style="height:320px;">
+                <canvas id="chartTypes"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', path='/js/requests_charts.js') }}?v=1"></script>
+{% endblock %}

@@ -114,11 +114,26 @@ async function handleLogin(event) {
             password: formData.get('password')
         };
         
-        // Realizar login
-        const response = await apiRequest('/users/login', {
+        // Realizar login: usamos fetch directo aquí para evitar ambigüedades
+        // con la serialización centralizada en apiRequest (depuración rápida).
+        console.log('DEBUG loginData to send:', loginData);
+        const fetchResp = await fetch('/api/users/login', {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            credentials: 'same-origin',
             body: JSON.stringify(loginData)
         });
+
+        let response;
+        if (!fetchResp.ok) {
+            // intentar leer JSON de error
+            const err = await fetchResp.json().catch(() => ({ detail: 'Error desconocido' }));
+            throw new Error(JSON.stringify(err));
+        }
+        response = await fetchResp.json();
         
         // Validar respuesta de login
         if (!response || !response.access_token || !response.user) {
@@ -202,11 +217,23 @@ async function handleRegister(event) {
             status: 'active'
         };
         
-        // Realizar registro
-        const response = await apiRequest('/users/register', {
+        // Realizar registro usando fetch directo (evitar ambigüedades en apiRequest)
+        console.log('DEBUG registerData to send:', registerData);
+        const regResp = await fetch('/api/users/register', {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            credentials: 'same-origin',
             body: JSON.stringify(registerData)
         });
+
+        if (!regResp.ok) {
+            const err = await regResp.json().catch(() => ({ detail: 'Error desconocido' }));
+            throw new Error(JSON.stringify(err));
+        }
+        const response = await regResp.json();
         
         // Mostrar mensaje de éxito
         showAlert('¡Cuenta creada exitosamente! Puedes iniciar sesión ahora.', 'success');

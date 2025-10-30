@@ -129,6 +129,37 @@ async def get_estadisticas(
         )
 
 
+@router.get("/api/estadisticas/detalle")
+async def get_estadisticas_detalle(
+    current_user: dict = Depends(require_any_role("aprobador", "admin"))
+):
+    """
+    Obtener estadísticas agregadas y detalladas para el dashboard del aprobador.
+    Devuelve agrupaciones por estado, tipo y mes, además de un resumen.
+    Requiere rol: aprobador
+    """
+    try:
+        estadisticas = aprobador_controller.get_estadisticas_aprobador_detalle(
+            aprobador_email=current_user["email"]
+        )
+
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={
+                "success": True,
+                **estadisticas
+            }
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"❌ ERROR en GET /aprobador/api/estadisticas/detalle: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error al obtener estadísticas detalladas: {str(e)}"
+        )
+
+
 @router.get("/api/historial")
 async def get_historial(
     filtro_estado: Optional[str] = Query(None, description="Filtrar por estado: aprobada, rechazada, pagada"),

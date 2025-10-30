@@ -148,6 +148,32 @@
                 </div>
             </div>
         </div>
+        <!-- Gráficas de Aprobaciones (nuevo) -->
+        <div class="charts-section mt-8 bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold mb-4">Estadísticas visuales</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="chart-card bg-white p-4 rounded-lg shadow-sm">
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">Distribución por Estado</h4>
+                    <div style="height:300px;">
+                        <canvas id="chartAprobStates"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card bg-white p-4 rounded-lg shadow-sm">
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">Monto por Estado</h4>
+                    <div style="height:300px;">
+                        <canvas id="chartAprobAmounts"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card bg-white p-4 rounded-lg shadow-sm">
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">Tipo de Pago - Conteo</h4>
+                    <div style="height:300px;">
+                        <canvas id="chartAprobTypes"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Filtros y Navegación mejorados -->
         <div class="filters-section mt-8">
@@ -460,4 +486,7 @@
 
 {% block scripts %}
 <script src="/static/js/aprobador.js?v=2.4"></script>
+<!-- Chart.js is required by aprobador_charts.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/static/js/aprobador_charts.js?v=1.0"></script>
 {% endblock %}

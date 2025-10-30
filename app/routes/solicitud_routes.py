@@ -233,6 +233,73 @@ async def obtener_estadisticas(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al obtener estadísticas: {str(e)}")
 
+
+@router.get("/estadisticas/detalle", summary="Obtener estadísticas detalladas de solicitudes (agrupadas)")
+async def obtener_estadisticas_detalle(
+    current_user: UserResponse = Depends(get_current_user),
+    db = Depends(get_database)
+):
+    """
+    Devuelve agregaciones útiles para paneles: conteo y monto por estado,
+    conteo por tipo de pago y conteo por mes (fecha_creacion). Accesible para
+    administradores como vista global; los solicitantes ven solo sus propias solicitudes.
+    """
+    try:
+        collection = db["solicitudes_estandar"]
+
+        match_stage = {}
+        if current_user.role != "admin":
+            match_stage = {"$match": {"solicitante_email": current_user.email}}
+
+        # Group by estado
+        pipeline_estado = []
+        if match_stage:
+            pipeline_estado.append(match_stage)
+        pipeline_estado.extend([
+            {"$group": {"_id": "$estado", "count": {"$sum": 1}, "total_monto": {"$sum": {"$ifNull": ["$monto", 0]}}}},
+            {"$sort": {"count": -1}}
+        ])
+        by_state = list(collection.aggregate(pipeline_estado))
+
+        # Group by tipo_pago
+        pipeline_tipo = []
+        if match_stage:
+            pipeline_tipo.append(match_stage)
+        pipeline_tipo.extend([
+            {"$group": {"_id": "$tipo_pago", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}}
+        ])
+        by_type = list(collection.aggregate(pipeline_tipo))
+
+        # Group by month (fecha_creacion)
+        pipeline_month = []
+        if match_stage:
+            pipeline_month.append(match_stage)
+        pipeline_month.extend([
+            {"$project": {"year": {"$year": "$fecha_creacion"}, "month": {"$month": "$fecha_creacion"}}},
+            {"$group": {"_id": {"year": "$year", "month": "$month"}, "count": {"$sum": 1}}},
+            {"$sort": {"_id.year": 1, "_id.month": 1}}
+        ])
+        by_month = list(collection.aggregate(pipeline_month))
+
+        # Summary totals (reuse simple aggregation)
+        summary_pipeline = []
+        if match_stage:
+            summary_pipeline.append(match_stage)
+        summary_pipeline.append({"$group": {"_id": None, "total": {"$sum": 1}, "monto_total": {"$sum": {"$ifNull": ["$monto", 0]}}}})
+        summary_res = list(collection.aggregate(summary_pipeline))
+        summary = summary_res[0] if summary_res else {"total": 0, "monto_total": 0}
+
+        return {
+            "by_state": by_state,
+            "by_type": by_type,
+            "by_month": by_month,
+            "summary": {"total": summary.get("total", 0), "monto_total": summary.get("monto_total", 0)}
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al obtener estadísticas detalladas: {str(e)}")
+
 @router.post("/upload-files/{solicitud_id}", summary="Subir archivos a una solicitud")
 async def subir_archivos(
     solicitud_id: str,

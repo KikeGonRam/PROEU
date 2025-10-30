@@ -399,6 +399,92 @@ class AprobadorController:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Error al obtener estadísticas: {str(e)}"
             )
+
+    def get_estadisticas_aprobador_detalle(self, aprobador_email: str) -> Dict:
+        """
+        Obtener estadísticas detalladas para el dashboard del aprobador.
+
+        Devuelve agrupaciones por estado, tipo de pago y por mes (basado en fecha_aprobacion / fecha_rechazo / fecha_creacion),
+        así como un resumen numérico.
+        """
+        try:
+            # Agrupar por estado (conteo y monto total por estado)
+            pipeline_by_state = [
+                {"$group": {"_id": "$estado", "count": {"$sum": 1}, "total_monto": {"$sum": {"$ifNull": ["$monto", 0]}}}},
+                {"$sort": {"count": -1}}
+            ]
+
+            by_state = list(self.solicitudes_collection.aggregate(pipeline_by_state))
+
+            # Agrupar por tipo de pago
+            pipeline_by_type = [
+                {"$group": {"_id": {"$ifNull": ["$tipo_pago", "Otros"]}, "count": {"$sum": 1}}},
+                {"$sort": {"count": -1}}
+            ]
+            by_type = list(self.solicitudes_collection.aggregate(pipeline_by_type))
+
+            # Agrupar por mes (usar fecha_aprobacion, fecha_rechazo o fecha_creacion)
+            pipeline_by_month = [
+                {"$project": {"fecha": {"$ifNull": ["$fecha_aprobacion", {"$ifNull": ["$fecha_rechazo", "$fecha_creacion"]}]}, "monto": {"$ifNull": ["$monto", 0]}}},
+                {"$match": {"fecha": {"$ne": None}}},
+                {"$group": {"_id": {"year": {"$year": "$fecha"}, "month": {"$month": "$fecha"}}, "count": {"$sum": 1}, "total_monto": {"$sum": "$monto"}}},
+                {"$sort": {"_id.year": 1, "_id.month": 1}}
+            ]
+            by_month = list(self.solicitudes_collection.aggregate(pipeline_by_month))
+
+            # Resumen numérico (reusar lógica existente)
+            pendientes = self.solicitudes_collection.count_documents({
+                "estado": {"$in": ["enviada", "en_revision"]}
+            })
+
+            aprobadas = self.solicitudes_collection.count_documents({
+                "aprobador_email": aprobador_email,
+                "estado": "aprobada"
+            })
+
+            rechazadas = self.solicitudes_collection.count_documents({
+                "aprobador_email": aprobador_email,
+                "estado": "rechazada"
+            })
+
+            # Monto pendiente
+            pipeline_monto_pendiente = [
+                {"$match": {"estado": {"$in": ["enviada", "en_revision"]}}},
+                {"$group": {"_id": None, "total": {"$sum": {"$ifNull": ["$monto", 0]}}}}
+            ]
+            resultado_monto = list(self.solicitudes_collection.aggregate(pipeline_monto_pendiente))
+            monto_pendiente = resultado_monto[0]["total"] if resultado_monto else 0
+
+            # Monto procesado por este aprobador
+            pipeline_monto_procesado = [
+                {"$match": {"aprobador_email": aprobador_email, "estado": {"$in": ["aprobada", "rechazada"]}}},
+                {"$group": {"_id": None, "total": {"$sum": {"$ifNull": ["$monto", 0]}}}}
+            ]
+            resultado_monto_proc = list(self.solicitudes_collection.aggregate(pipeline_monto_procesado))
+            monto_procesado = resultado_monto_proc[0]["total"] if resultado_monto_proc else 0
+
+            summary = {
+                "pendientes": int(pendientes),
+                "aprobadas": int(aprobadas),
+                "rechazadas": int(rechazadas),
+                "monto_pendiente": round(float(monto_pendiente), 2),
+                "monto_procesado": round(float(monto_procesado), 2),
+                "total_procesadas": int(aprobadas + rechazadas)
+            }
+
+            return {
+                "by_state": by_state,
+                "by_type": by_type,
+                "by_month": by_month,
+                "summary": summary
+            }
+
+        except Exception as e:
+            print(f"❌ ERROR en get_estadisticas_aprobador_detalle: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Error al obtener estadísticas detalladas: {str(e)}"
+            )
     
     def get_historial_aprobador(
         self,

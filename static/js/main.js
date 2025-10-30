@@ -55,6 +55,7 @@ async function apiRequest(url, options = {}) {
     const config = {
         headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
             ...options.headers
         },
         ...options
@@ -70,6 +71,71 @@ async function apiRequest(url, options = {}) {
         if (!('credentials' in config)) {
             config.credentials = 'same-origin';
         }
+        // If the caller supplied a plain object as body, stringify it here.
+        // Only stringify "plain" objects/arrays. Don't stringify FormData,
+        // URLSearchParams, Blobs, ArrayBuffers or other body types used for
+        // file uploads or urlencoded forms.
+        const isFormData = (typeof FormData !== 'undefined') && (config.body instanceof FormData);
+        const isURLSearchParams = (typeof URLSearchParams !== 'undefined') && (config.body instanceof URLSearchParams);
+        const isBlob = (typeof Blob !== 'undefined') && (config.body instanceof Blob);
+        const isArrayBuffer = (typeof ArrayBuffer !== 'undefined') && (config.body instanceof ArrayBuffer);
+        const isReadableStream = (typeof ReadableStream !== 'undefined') && (config.body instanceof ReadableStream);
+
+        if (config.body && typeof config.body === 'object' && !isFormData && !isURLSearchParams && !isBlob && !isArrayBuffer && !isReadableStream) {
+            try {
+                config.body = JSON.stringify(config.body);
+            } catch (e) {
+                console.error('apiRequest: Failed to JSON.stringify body', e, config.body);
+            }
+        }
+
+        // If body is a string, attempt to parse it. This normalizes the body so
+        // that whether callers pass an object, a JSON string, or a double-stringified
+        // JSON, the request will send a proper JSON representation of an object/array.
+        if (typeof config.body === 'string') {
+            try {
+                const firstParse = JSON.parse(config.body);
+                if (typeof firstParse === 'object') {
+                    // It was a JSON string representing an object/array -> keep as canonical JSON string
+                    config.body = JSON.stringify(firstParse);
+                } else if (typeof firstParse === 'string') {
+                    // It was double-stringified: outer JSON parsed to inner string.
+                    try {
+                        const secondParse = JSON.parse(firstParse);
+                        if (typeof secondParse === 'object') {
+                            config.body = JSON.stringify(secondParse);
+                        } else {
+                            // inner is primitive string/number -> send as JSON string
+                            config.body = JSON.stringify(firstParse);
+                        }
+                    } catch (e) {
+                        // inner is not JSON, send the parsed string as JSON string
+                        config.body = JSON.stringify(firstParse);
+                    }
+                } else {
+                    // Primitive (number, boolean, etc.) -> send as JSON string of that primitive
+                    config.body = JSON.stringify(firstParse);
+                }
+            } catch (e) {
+                // Not JSON parseable (e.g., raw text). Leave as-is so fetch can send it.
+                // We do not stringify blindly because it might be FormData-like string.
+            }
+        }
+        // Debug: log request config for diagnostics (remove in production)
+        try {
+            // Provide a safe preview of the body to help diagnose cases where
+            // an object slips through and becomes "[object Object]" on the wire.
+            let bodyType = typeof config.body;
+            let bodyPreview = null;
+            try {
+                if (bodyType === 'string') bodyPreview = config.body.slice(0, 200);
+                else if (config.body && config.body.constructor && config.body.constructor.name) bodyPreview = `<${config.body.constructor.name}>`;
+                else bodyPreview = JSON.stringify(config.body).slice(0, 200);
+            } catch (e) {
+                bodyPreview = String(config.body);
+            }
+            console.debug('apiRequest', API_BASE_URL + url, { headers: config.headers, method: config.method, credentials: config.credentials, bodyType, bodyPreview });
+        } catch (e) {}
         const response = await fetch(API_BASE_URL + url, config);
         
         if (!response.ok) {

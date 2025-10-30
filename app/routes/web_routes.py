@@ -91,6 +91,94 @@ async def users_charts_page(request: Request):
         }
     })
 
+
+@router.get("/requests/charts", response_class=HTMLResponse, summary="Estadísticas de solicitudes")
+async def requests_charts_page(request: Request):
+    """
+    Página con gráficas y estadísticas de solicitudes (solo admin).
+    """
+    # Intentar leer Authorization header o cookie
+    auth_header = request.headers.get("authorization") or request.headers.get("Authorization")
+    try:
+        print(f"[DEBUG] /requests/charts request Authorization header: {auth_header}")
+        print(f"[DEBUG] /requests/charts request.cookies: {request.cookies}")
+    except Exception:
+        pass
+
+    token = None
+    if auth_header and auth_header.lower().startswith("bearer "):
+        token = auth_header.split()[1]
+    else:
+        token = request.cookies.get("access_token")
+
+    if not token:
+        raise HTTPException(status_code=403, detail="Acceso denegado. Solo administradores.")
+
+    email = user_controller.verify_token(token)
+    if email is None:
+        raise HTTPException(status_code=403, detail="Token inválido o expirado")
+
+    user = await user_controller.get_user_by_email(email)
+    if user is None or (user.role != UserRole.ADMIN):
+        raise HTTPException(status_code=403, detail="Acceso denegado. Se requiere rol de administrador.")
+
+    return templates.TemplateResponse("requests/charts.html", {
+        "request": request,
+        "title": "Estadísticas de Solicitudes",
+        "user": {
+            "id": str(user.id),
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "role": user.role,
+        }
+    })
+
+
+@router.get("/aprobador/charts", response_class=HTMLResponse, summary="Estadísticas del Aprobador")
+async def aprobador_charts_page(request: Request):
+    """
+    Página con gráficas y estadísticas específicas para el aprobador.
+    Accesible por usuarios con rol 'aprobador' o 'admin'.
+    """
+    # Intentar leer Authorization header o cookie
+    auth_header = request.headers.get("authorization") or request.headers.get("Authorization")
+    try:
+        print(f"[DEBUG] /aprobador/charts request Authorization header: {auth_header}")
+        print(f"[DEBUG] /aprobador/charts request.cookies: {request.cookies}")
+    except Exception:
+        pass
+
+    token = None
+    if auth_header and auth_header.lower().startswith("bearer "):
+        token = auth_header.split()[1]
+    else:
+        token = request.cookies.get("access_token")
+
+    if not token:
+        raise HTTPException(status_code=403, detail="Acceso denegado. Se requiere rol de aprobador.")
+
+    email = user_controller.verify_token(token)
+    if email is None:
+        raise HTTPException(status_code=403, detail="Token inválido o expirado")
+
+    user = await user_controller.get_user_by_email(email)
+    # Allow either aprobador or admin
+    if user is None or (user.role not in (UserRole.APROBADOR, UserRole.ADMIN)):
+        raise HTTPException(status_code=403, detail="Acceso denegado. Se requiere rol de aprobador.")
+
+    return templates.TemplateResponse("aprobador/charts.html", {
+        "request": request,
+        "title": "Estadísticas Aprobador",
+        "user": {
+            "id": str(user.id),
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "role": user.role,
+        }
+    })
+
 @router.get("/login", response_class=HTMLResponse, summary="Página de login")
 async def login_page(request: Request):
     """
